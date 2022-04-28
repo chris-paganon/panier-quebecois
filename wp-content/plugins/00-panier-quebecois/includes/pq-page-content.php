@@ -21,6 +21,20 @@ function pq_count_orders_fct() {
 
 
 /**
+ * Return total carbon emissions saved
+ */
+add_shortcode( 'pq_carbon_emissions', 'pq_carbon_emissions_fct' );
+
+function pq_carbon_emissions_fct() {
+
+    $orders_count = pq_count_orders_fct();
+    $carbon_saved = $orders_count * 0.7 / 1000;
+
+    return $carbon_saved;
+}
+
+
+/**
  * Return total number of suppliers with products in stock
  */
 add_shortcode( 'pq_count_suppliers', 'pq_count_suppliers_fct' );
