@@ -1,0 +1,94 @@
+/* Fix form margins */
+body.single-product div.site-content div.product form.bundle_form {
+    margin: 0;
+}
+
+/**
+ * Style bundle items (grid layout)
+ */
+
+.theme-astra.woocommerce div.product div.pq_bundle_items form.bundle_form {
+    margin: 0;
+}
+
+.bundle_form h3.pq_optional_bundled_items_title {
+    width: 100%;
+    font-size: 28px;
+    text-align: center;
+    margin: 1em 0;
+}
+
+.pq_bundle_items div.bundle_data {
+    margin: 25px auto 0 auto;
+    width: fit-content;
+}
+
+.woocommerce div.pq_bundle_items ul.products {
+    justify-content: center;
+}
+
+.woocommerce div.pq_bundle_items ul.products li.product {
+    width: 15%;
+    margin: 5px;
+    display: flex;
+    flex-direction: column;
+    align-content: space-between;
+}
+
+@media (max-width: 1024px) {
+    .woocommerce div.pq_bundle_items ul.products li.product{
+        width: 20%;
+    }
+}
+
+@media (max-width: 768px) {
+    .woocommerce div.pq_bundle_items ul.products li.product{
+        width: 45%;
+    }
+}
+
+.woocommerce div.pq_bundle_items ul.products li.bundled_item_optional:hover {
+    box-shadow: 0 0 10px -5px rgb(0 0 0 / 50%);
+    cursor: pointer;
+}
+
+.woocommerce div.pq_bundle_items ul.products li.product .details {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+div.pq_bundle_items input.bundled_product_checkbox, .woocommerce div.pq_bundle_items ul.products li.product span.price {
+    display: inline;
+}
+
+.woocommerce div.pq_bundle_items ul.products li.product div.bundled_product_images {
+    pointer-events: none;
+}
+
+/**
+ * Style bundle items (standard layout)
+ */
+
+.theme-astra.woocommerce #content div.pq_bundle_items div.product div.bundled_product_images {
+    width: 50%;
+}
+
+.theme-astra.woocommerce #content div.pq_bundle_items div.product div.bundled_product_images .bundled_product_image {
+    margin: 0 0 0 auto;
+    width: 30%;
+}
+
+.pq_bundle_items div.bundled_product_summary:not(.thumbnail_hidden) .details {
+    width: 50%;
+}
+
+.woocommerce .pq_bundle_items div.product.bundled_product_summary {
+    padding: 1em 0;
+    margin-bottom: 0;
+}
+
+.pq_bundle_items .bundled_product_excerpt p {
+    margin-bottom: 0.5em;
+}

@@ -1,0 +1,265 @@
+/* Hide stock availability */
+.woocommerce div.product .ast-stock-detail{
+    display: none;
+}
+
+/* Onsale crossed price fix*/
+.elementor-text-editor del span.amount {
+    opacity: 0.5;
+}
+
+/* Product variation dropdown optimization */
+.woocommerce div.product form.cart div.variations {
+    border: 0;
+}
+.woocommerce div.product form.cart div.variations .pq-variation-wrapper select {
+    width: auto;
+    max-width: 100%;
+}
+
+@media (max-width: 768px) {
+    .woocommerce div.product form.cart div.variations {
+        text-align: center;
+    }
+    .woocommerce div.product form.cart div.variations .pq-variation-wrapper {
+        width: auto;
+        margin: auto;
+    }
+    #clickCat,
+    #clickFilter {
+        margin-bottom: 0 !important;
+        padding-left: 0 !important;
+    }
+}
+
+/* Centering variable product price on mobile */
+@media (max-width: 768px) {
+    .woocommerce form.variations_form div.woocommerce-variation {
+        width: fit-content;
+        margin: auto;
+    } 
+}
+
+/* Gift card fix on product page */
+.woocommerce div.product.elementor form.cart.variations_form .woocommerce-variation-add-to-cart{
+    flex-wrap:wrap;
+}
+.woocommerce_gc_giftcard_form {
+    width: 100%;
+}
+
+
+/**
+* Loading spinner on add to cart
+*/
+/* |Add loading spinner to default products single */
+.woocommerce div.product form.cart .button.single_add_to_cart_button:before {
+    content: "\e8e7";
+    font-family: eicons;
+}
+
+/* Add loading spinner and checkmark to any add to cart button. Just add 'my-spinner' id to the button wrapper */
+#my-spinner a.loading .elementor-button-content-wrapper::after{
+    font-family: WooCommerce;
+    content: '\e01c';
+    -webkit-font-smoothing: antialiased;
+    font-weight: 400;
+    animation: spin 2s linear infinite;
+    margin: auto;
+}
+#my-spinner a.added .elementor-button-content-wrapper::after {
+    font-family: WooCommerce;
+    content: '\e017';
+    margin: auto;
+}
+
+/* Add right maring to custom add to cart button */
+#my-spinner a.add_to_cart_button {
+    margin-right: 15px;
+}
+
+
+/**
+* Cross sells
+*/
+
+/* Fix button hidden after add to cart */
+.wc-prl-recommendations ul.products .button:focus {
+    background-color: #4b9d50;
+}
+
+/* Remove variable product margin under add to cart */
+.wc-prl-recommendations ul.products form.cart {
+    margin: 0;
+}
+
+/* Variable product button */
+.woocommerce div.product form.cart .woocommerce-variation-add-to-cart .button.single_add_to_cart_button {
+    padding: 10px 40px;
+}
+
+/* Title */
+.panier-perso .wc-prl-title {
+    font-size: 1.58em;
+    text-align: center;
+}
+
+/* Grid display */
+.panier-perso .elementor-widget-container div.wc-prl-recommendations ul.products {
+    display: grid;
+}
+.panier-perso .elementor-widget-container div.wc-prl-recommendations ul.products::before {
+    display: none;
+}
+.panier-perso .elementor-widget-container div.wc-prl-recommendations ul.products li.product {
+    width: auto;
+    margin: 0;
+    padding: 4px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+
+/**
+* Custom taxonomies
+*/
+.pq_product_taxonomies_wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    flex-wrap: wrap;
+}
+.pq_product_taxonomy_wrapper {
+    display: flex;
+    align-items: center;
+    margin: 20px 10px;
+}
+.pq_product_terms_name {
+    font-weight: 700;
+    font-size: 20px;
+}
+.pq_product_terms {
+    font-size: 18px;
+    font-weight: 400;
+    margin: 0;
+}
+.pq_product_terms a {
+    color: #54595f;
+    text-decoration: underline;
+}
+.pq_product_terms a:hover {
+    color: #0274be;
+}
+img.pq_product_taxonomy_img {
+    height: 55px;
+    margin: 0 20px;
+}
+@media (max-width: 767px) {
+    img.pq_product_taxonomy_img {
+        height: 45px;
+    }
+    .pq_product_terms_name {
+        font-size: 18px;
+    }
+    .pq_product_terms {
+        font-size: 16px;
+    }
+}
+@media (max-width: 480px) {
+    .pq_product_taxonomy_wrapper {
+        min-width: 240px;
+    }
+}
+
+/**
+* Custom metas
+*/
+.pq_product_additional_info_wrapper {
+    margin: 40px 0;
+}
+nav.pq_product_additional_info_menu,
+div.pq_additional_info_title_block_wrapper {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    flex-wrap: wrap;
+}
+nav.pq_product_additional_info_menu {
+    margin-bottom: 30px;
+}
+div.pq_additional_info_title_block_wrapper {
+    margin: 0 0 20px 0;
+}
+h4.pq_additonal_info_title {
+    font-weight: 700;
+}
+nav h4.pq_additonal_info_title {
+    margin-right: 60px;
+    cursor: pointer;
+    text-align: center;
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+}
+div.pq_additional_info_block_wrapper {
+    padding: 60px 80px;
+    background-color: #FEF0E7;
+    overflow: auto;
+}
+img.pq_product_meta_img {
+    height: 60px;
+    margin: 0 20px 0 0;
+}
+h4._pq_instructions {
+    color: #EFB800;
+}
+h4.product_tag, h4.pq_producer {
+    color: #4B9E50;
+}
+h4._pq_ingredients {
+    color: #EF771A;
+}
+@media (max-width: 767px) {
+    nav.pq_product_additional_info_menu,
+    div.pq_additional_info_title_block_wrapper {
+        justify-content: center;
+    }
+    nav h4.pq_additonal_info_title {
+        font-size: 18px;
+        margin-right: 20px;
+    }
+    nav.pq_product_additional_info_menu {
+        margin-bottom: 10px;
+    }
+    div.pq_additional_info_title_block_wrapper {
+        margin-bottom: 10px;
+    }
+    div.pq_additional_info_block_wrapper {
+        padding: 30px 40px;
+    }
+    img.pq_product_meta_img {
+        height: 40px;
+        margin: 0 10px 10px 0;
+    }
+}
+
+/* Images inside meta block */
+.pq_product_meta img {
+    max-width: 40%;
+    float: left;
+    margin: 0 20px 10px 0;
+}
+@media (max-width: 1024px) {
+    .pq_product_meta img {
+        max-width: 100%;
+        float: none;
+    }
+}
+
+/* Menu styles and hider */
+nav h4.pq_additonal_info_title.pq_active {
+    border-bottom: solid 2px;
+}
+div.pq_additional_info_block_wrapper:not(.pq_active) {
+    display: none;
+}

@@ -1,0 +1,66 @@
+/* Partial paiment form */
+#mycred-partial-payment-woo{
+    border-top: 1px solid #ebebeb;
+    border-bottom: 1px solid #ebebeb;
+    margin: 20px 0;
+}
+
+#mycred-partial-payment-woo h3 {
+    font-size: 21px;
+    font-weight: 700;
+    margin: 20px 0 10px 0;
+}
+
+#mycred-partial-payment-total p, #mycred-range-selector {
+    margin: 10px 0 10px 10px;
+}
+
+#mycred-range-action {
+    margin: 10px 0 20px 10px;
+}
+
+/* Points balance */
+h4.my-mycred-subheader {
+    margin-bottom: 0;
+}
+
+.mycred-my-balance-wrapper {
+    font-size: 45px;
+    font-weight: 500;
+    margin: 0 10px;
+}
+
+.my-mycred-wrapper {
+    margin-bottom: 40px;
+}
+
+/* Note in my account */
+p.pq-loyalty-note {
+    margin: 20px;
+    font-style: italic;
+    font-size: 0.9em;
+}
+
+/* Referral text my account */
+span.my-mycred-bold {
+    font-weight: 500;
+}
+
+p.pq-referral-conditions {
+    font-style: italic;
+}
+
+/* Thank you page */
+.woocommerce-order p.woocommerce-thankyou-order-received {
+    font-size: 33px;
+    font-weight: 500;
+    margin-bottom: 1em;
+}
+
+.woocommerce-order h2.myloyalty-main-message, .woocommerce-order h2#my-thankyou-intro {
+    font-size: 28px;
+}
+
+.woocommerce-order h2#my-thankyou-intro {
+    margin-top: 1em;
+}

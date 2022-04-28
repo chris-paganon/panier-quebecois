@@ -1,0 +1,227 @@
+/**
+*
+*
+* Checkout
+*
+*
+*/
+
+/* Decrease padding for order review on smaller screens */
+@media (min-width: 768px) and (max-width: 900px) {
+    .woocommerce-page.woocommerce-checkout form #order_review {
+        padding: 0 10px;
+    }
+}
+
+/* Style gift option label */
+.woocommerce form .form-row label.my-gift-checkout-field {
+    font-size: 21px;
+}
+
+.my-gift-checkout-field .optional {
+    display: none;
+}
+
+/* Checkout login anchor link offset */
+.woocommerce-form-login-toggle{
+    position: relative;
+}
+
+#my-checkout-login-id{
+    position: absolute;
+    top: -80px;
+}
+
+/* .woocommerce-form-login-toggle, .woocommerce-form-coupon-toggle */
+.woocommerce-info {
+    margin: 15px auto 15px;
+}
+
+/* Remove blank space under orddd date picker */
+p#orddd_time_slot_field {
+    margin-bottom: 0;
+}
+
+/* Change delivery date font size under the calender.*/                   
+.orddd_field_note{
+    font-size:90% !important;
+}
+
+/* Checkout page select width bug fix */
+.woocommerce form .form-row .select2-container{
+    width:100% !important;
+}
+
+/* Shipping table moved to billing style */
+.my-custom-shipping-table{
+    margin: 10px 3px;
+}
+
+.entry-content h5.custom_orddd_delivery_method_msg{
+    margin: 20px auto 5px 3px;
+}
+
+/* Connect here for subscriptions */
+.entry-content .my_checkout_registration_form_div{
+    margin: 20px auto 5px 3px;
+}
+
+.entry-content h5.my_checkout_registration_form_text{
+    display: inline;
+}
+
+/* Gift card title style on checkout */
+.add_gift_card_form h4{
+    margin-top: 10px;
+    margin-bottom: 5px;
+    font-size: 20px;
+}
+
+/* Remove useless padding for stripe */
+.woocommerce-page.woocommerce-checkout #payment .payment_method_stripe div.form-row {
+    padding: 0;
+}
+
+/* Tip */
+div#wooot_order_tip_form {
+    margin-bottom: 20px;
+}
+
+#wooot_order_tip_form div.order_tip_title {
+    font-size: 1.16rem;
+    font-weight: 500;
+    margin-bottom: 0.5em;
+}
+
+button.woo_order_tip {
+    margin: 2.5px 1.9%;
+    padding: 10px;
+    width: 45%;
+    background: #fbfbfb;
+    font-weight: 500;
+    color: #35842D;
+    border-color: #4B9E50;
+    border-width: 2px;
+}
+
+button.woo_order_tip:hover, button.woo_order_tip:focus {
+    color: #ffffff;
+    background-color: #4B9E50;
+    border-color: #4B9E50;
+}
+
+button.woo_order_tip.active {
+    background: #35842D;
+    border-color: #35842D;
+}
+
+button.woo_order_tip_apply {
+    width: 96%;
+    margin: 2.5px 2% 5px 2%;
+    font-weight: 500;
+}
+
+button.woo_order_tip_remove {
+    font-weight: 500;
+    padding: 10px;
+    width: 96%;
+    margin: 5px 2%;    
+}
+
+
+/**
+*
+*
+* Cart
+*
+*
+*/
+
+/* Mini-cart discounted items fix */
+.elementor-menu-cart__product .elementor-menu-cart__product-price .awdr_cart_strikeout_line {
+    display: inline;
+}
+
+/* Mini-cart menu buttons fix*/
+.widget_shopping_cart_content .elementor-menu-cart__footer-buttons a.elementor-button--checkout:hover, 
+.widget_shopping_cart_content .elementor-menu-cart__footer-buttons a.elementor-button--view-cart:hover {
+    color: #ffffff;
+    background-color: #35842D;
+    border-color: #35842D;
+}
+.widget_shopping_cart_content .elementor-menu-cart__footer-buttons {
+    padding: 20px 0;
+}
+.woocommerce-page #content table.cart td.actions .input-text{
+    width: 275px;
+}
+.woocommerce-page #content table.cart td.actions .button{
+    padding: 10px;
+}
+
+/* Change woocommerce cross-sells on cart page */
+.woocommerce .cart-collaterals .cross-sells, .woocommerce .cart-collaterals .cart_totals {
+    width: 49%;
+}
+.woocommerce .cart-collaterals h2 {
+    font-size: 28px;
+}
+.cart-collaterals .cross-sells h2.wc-prl-title {
+    margin: 0;
+}
+.cart-collaterals .cross-sells ul {
+    padding: 5px;
+}
+.woocommerce-cart .cart-collaterals .cross-sells {
+    padding: 0;
+}
+@media (max-width: 767px) {
+    .woocommerce .cart-collaterals .cross-sells, .woocommerce .cart-collaterals .cart_totals {
+        width: 100%;
+    }
+}
+
+
+/* Shipping notification above cart */
+.woocommerce-page table.cart td.actions .coupon{
+    padding-bottom:0.5em;
+}
+
+#cart-notification h4{
+    color: #4B9E50;
+    text-align: center;
+    font-weight: 500;
+    font-size: 1.15rem;
+    max-width: 50vw;
+}
+
+#cart-notification {
+    flex-shrink:0;
+    direction: ltr;
+}
+
+#cart-notification-wrapper {
+    display: flex;
+    --divider-border-style: solid;
+    --divider-border-color: #4B9E50;
+    --divider-border-width: 2px;
+}
+
+#cart-notification-wrapper:before, #cart-notification-wrapper:after {
+    content:"";
+    flex-grow: 1;
+    margin: 24px 10px;
+    border-top: var(--divider-border-width) var(--divider-border-style) var(--divider-border-color);
+}
+
+/* Clarify remove product on mobile */
+@media (max-width:768px) {
+    .woocommerce-cart #content table.cart td.product-thumbnail {
+        display: block;
+        border-top: 0;
+        text-align: center !important;
+    }
+    .woocommerce-cart #content table.cart td.product-thumbnail::before {
+        display: none;
+    }
+}

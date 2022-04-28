@@ -1,0 +1,98 @@
+/* 
+* 
+*  Menus style
+*  Main navbar & blog menu
+*
+*/
+
+/* ---- Next delivery date ----- */
+.pq-delivery-date {
+    margin-bottom: 0;
+}
+.pq-header-notice .pq-delivery-date {
+    text-align: center;
+    color: #FFF;
+}
+
+/* ----- Mini cart color and border ----- */
+@media (max-width: 768px){
+    #my-cart-menu .elementor-menu-cart__toggle .elementor-button-text {
+        display: none;
+    }
+}
+
+/* ----- Main navbar sticky ----- */
+section.pq_sticky{
+    position: fixed;
+    top: 0;
+    z-index: 20;
+    width: 100%;
+}
+
+/* ----- Main navbar submenu font size ----- */
+.elementor-nav-menu--dropdown.elementor-nav-menu__container .elementor-sub-item {
+    font-size: 0.92em;
+}
+
+#my-nav-bar .elementor-nav-menu__container {
+    width: 100vw !important;
+    left: 0 !important;
+}
+
+/* ----- Main navbar language menu hide current language ----- */
+.translatepress-en_US .tp_en, .translatepress-fr_FR .tp_fr { 
+    display: none;
+}
+
+/* ----- Main navbar search bar style ----- */
+.dgwt-wcas-search-wrapp.dgwt-wcas-layout-icon .dgwt-wcas-search-form {
+    min-width: 300px;
+    left: -240px !important;
+}
+
+@media (max-width: 768px){
+    #pq-search-bar .elementor-widget-container {
+        box-shadow: 0 0 5px;
+    }
+}
+
+/* ----- Navbar new item ribbon ------ */
+.pq-new-menu-item:before{
+    content: 'Nouveau';
+    font-size: 12px;
+    color: #fff;
+    background-color: #4B9E50;
+    position: absolute;
+    left: -50px;
+    height: fit-content;
+    border-radius: 10px;
+    padding: 2px 8px;
+}
+
+/* ----- Blog menu style ----- */
+#my-blog-menu .elementor-menu-toggle i:before {
+    content: "Catégories";
+    font-size: 20px;
+    font-weight:bold;
+    font-family: 'Roboto';
+    text-decoration: underline;
+    padding: 5px 15px;
+}
+
+#my-blog-menu .elementor-menu-toggle.elementor-active i:before {
+    content: "Fermer";
+}
+
+/* ------ Special event menu item style ------ */
+#my-nav-bar .elementor-nav-menu .my-gift-menu a.elementor-item, #my-nav-bar .elementor-nav-menu .my-gift-menu a.elementor-sub-item {
+    color: #E93C42;
+}
+
+#my-nav-bar .elementor-nav-menu .my-gift-menu a.elementor-item:after {
+    background-color: #E93C42;
+}
+
+#my-nav-bar .elementor-nav-menu--dropdown .elementor-nav-menu .my-gift-menu a.elementor-item:hover, #my-nav-bar .elementor-nav-menu--dropdown .elementor-nav-menu .my-gift-menu a.elementor-sub-item:hover, #my-nav-bar .elementor-nav-menu .my-gift-menu a.elementor-sub-item:hover {
+    color: #fff;
+    background-color: #E93C42;
+}

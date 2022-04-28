@@ -1,0 +1,79 @@
+/* Main slider style*/
+div.woocommerce ul.products .slick-list .slick-track li.product{
+    clear: none;
+    margin: 4px;
+    padding: 4px;
+    height: inherit;
+}
+.slick-list .slick-track li.product button.single_add_to_cart_button,
+.slick-list .slick-track li.product a.add_to_cart_button {
+    display: flex;
+    justify-content: space-around;
+}
+.slick-track {
+    display: flex !important;
+}
+
+/* Fix slides width when not enough products */
+@media (min-width: 1024px) {
+    ul.products .slick-list .slick-track li.product{
+        min-width: 196px;
+    }
+    .slick-track {
+        min-width: 1024px !important;
+    }
+}
+@media (max-width: 1023px) {
+    ul.products .slick-list .slick-track li.product{
+        min-width: 182px;
+    }
+    .slick-track {
+        min-width: 1023px !important;
+    }
+}
+@media (max-width: 767px) {
+    ul.products .slick-list .slick-track li.product{
+        min-width: 135px;
+    }
+    .slick-track {
+        min-width: 767px !important;
+    }
+}
+
+/* Navigation style */
+button.slick-arrow {
+    font-size: 0;
+    line-height: 0;
+    background-color: transparent;
+    display: inline-block;
+    position: absolute;
+    top: 50%;
+    padding: 15px 5px;
+    z-index: 1;
+}
+button.slick-arrow:hover,
+button.slick-arrow:focus {
+    background-color: transparent;
+}
+button.slick-prev::before,
+button.slick-next::before {
+    font-family: eicons;
+    font-size: 18px;
+    font-weight: 600;
+    color: #FFF;
+    background-color: #54595F;
+    border-radius: 50%;
+}
+
+/* Specific arrow position and content */
+button.slick-next {
+    right: 0;
+}
+button.slick-prev::before {
+    content: "\e87e";
+    padding: 5px 5px 5px 3px;
+}
+button.slick-next::before {
+    content: "\e87d";
+    padding: 5px 3px 5px 5px;
+}

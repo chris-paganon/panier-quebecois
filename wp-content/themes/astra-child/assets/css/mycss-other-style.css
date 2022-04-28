@@ -1,0 +1,158 @@
+/**
+*
+* Homepage
+*
+*/
+
+/* Move seperator line below text for homepage 'Main Baskets' */
+.elementor-widget-divider--view-line_text .elementor-divider-separator:before, 
+.elementor-widget-divider--view-line_text .elementor-divider-separator:after{
+    margin-top: 30px;
+}
+
+/* Move how it works steps line in the background */
+#comment-marche {
+    background-position: 50% 40%;
+}
+
+/* Count down timer */
+.pq_countdown_item {
+    display: inline-block;
+    padding: 9px;
+}
+.pq_countdown_digit, .pq_countdown_label {
+    font-size: 28px;
+    font-weight: 500;
+}
+p.pq-countdown-intro {
+    margin: 0;
+    text-align: end;
+    font-size: 22px;
+    font-weight: 600;
+}
+@media (max-width: 767px){
+    .pq_countdown_wrapper {
+        text-align: center;
+    }
+    .pq_countdown_digit, .pq_countdown_label {
+        font-size: 25px;
+    }
+    p.pq-countdown-intro {
+        text-align: center;
+    }
+}
+
+
+/**
+*
+* Blog
+*
+*/
+
+/* Blog UAE widgets style */
+@media (max-width: 1024px){
+    .uael-post__arrow-outside .uael-post-grid .slick-next{
+        right:-45px;
+    }
+    .uael-post__arrow-outside .uael-post-grid .slick-prev{
+        left:-45px;
+    }
+}
+@media (max-width: 768px){
+    .uael-post__arrow-outside .uael-post-grid .slick-next{
+        right:-30px;
+    }
+    .uael-post__arrow-outside .uael-post-grid .slick-prev{
+        left:-30px;
+    }
+}
+
+
+/**
+*
+* Forms
+*
+*/
+
+/* Formidable form style */
+.horizontal_radio .frm_opt_container .frm_radio {
+    margin: 0 12px 0 0;
+}
+
+/* Contact form style */
+@media (min-width: 768px) {
+    #my-contact-form .elementor-form-fields-wrapper{
+        flex-direction: column;
+        height: 320px;
+    }
+    #my-contact-form .elementor-form-fields-wrapper .elementor-field-type-submit{
+        justify-content: flex-start;
+        margin-left: -50px;
+        margin-top: 10px;
+    }
+    #my-contact-form #form-field-message{
+        height: 212px;
+    }
+}
+
+
+
+/**
+*
+* Popups
+*
+*/
+
+/* Fix elementor popup font-size */
+.dialog-message .elementor {
+    font-size: 18px;
+}
+@media (max-width: 768px) {
+    .dialog-message .elementor {
+        font-size: 15px;
+    }
+}
+
+/* Make bottom popup banner appear under mini-cart menu */
+.pq_bottom_popup.dialog-type-lightbox {
+    z-index: 100;
+}
+
+/* Free delivery pop for very small screen */
+@media (max-width: 340px){
+    div.pq-free-delivery-popup div.dialog-widget-content div.dialog-message{
+        width: 240px !important;
+    }
+}
+
+/* Spin the wheel html/text win message color */
+.wof-winnings {
+    color: #FFF;
+}
+
+
+
+/**
+*
+* Menus
+*
+*/
+
+@media (max-width: 767px) {
+    .pq-menu .elementor-active {
+        border-radius: 5px 5px 0 0;
+    }
+    .pq-menu .elementor-menu-toggle i {
+        padding: 5px 10px;
+    }
+    .pq-menu .elementor-nav-menu--dropdown {
+        width: 172px;
+    }
+    .elementor-sticky--active .pq-menu .elementor-menu-toggle {
+        display: block;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+    }
+    div.elementor div.elementor-container div.elementor-row section.pq-menu-wrapper {
+        background-color: transparent;
+    }
+}

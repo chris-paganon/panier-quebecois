@@ -1,0 +1,11 @@
+/* Change categories menu content */
+
+div.pq-menu .elementor-menu-toggle i:before {
+    content: 'Menu FAQ \25be';
+    font-family: 'Roboto';
+    font-weight: 500;
+}
+
+div.pq-menu .elementor-menu-toggle.elementor-active i:before {
+    content: 'Menu FAQ \2a2f'
+}
