@@ -201,3 +201,9 @@ p.pq-countdown-intro {
         background-color: transparent;
     }
 }
+
+/* Anchors shift for the top menu */
+.pq-anchor {
+    position: absolute;
+    top: -50px;
+}
