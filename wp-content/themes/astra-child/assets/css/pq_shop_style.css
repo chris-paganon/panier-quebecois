@@ -177,9 +177,8 @@ div.awwm-product-loop div div.woocommerce.columns-6 ul.products li.product {
 /* Titles */
 .awwm-product-loop div.parent-cat h3{
     color: #4b9e50;
-    font-family: "Roboto",Sans-serif;
     font-size: 32px;
-    font-weight: 500;
+    font-weight: 700;
     line-height: 1.4;
     margin-bottom: 0;
 }
@@ -189,7 +188,6 @@ div.awwm-product-loop div div.woocommerce.columns-6 ul.products li.product {
     height: 2px;
 }
 .awwm-product-loop div.parent-cat h4 {
-    font-family: "Roboto",Sans-serif;
     font-size: 27px;
     font-weight: 500;
     line-height: 41px;
@@ -533,6 +531,12 @@ ul.products li.product:hover {
 /**
 * Content
 */
+
+/* Title and price font-weight*/
+div.woocommerce ul.products li.product div.astra-shop-summary-wrap a h2.woocommerce-loop-product__title,
+div.woocommerce ul.products li.product div.astra-shop-summary-wrap span.price {
+    font-weight: 600;
+}
 
 /* Quebec icon over the thumbnail*/
 .woocommerce ul.products li.product img.pq_country_origin_icon {
