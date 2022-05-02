@@ -18,11 +18,16 @@ function pq_operations_exporter_button_fct() {
     }
 
     $timezone = new DateTimeZone( get_option( 'timezone_string' ) );
-    $default_date_obj = new DateTime( 'today', $timezone );
-    $default_date = $default_date_obj->format( 'Y-m-d' );
-    $orders = myfct_get_relevant_orders( $default_date );
+    $today_date_obj = new DateTime( 'today', $timezone );
+    $today_date = $today_date_obj->format( 'Y-m-d' );
+    $orders_today = myfct_get_relevant_orders( $today_date );
 
-    echo '<h4>Nombre de commandes aujourd\'hui: ' . count($orders) . '</h4>';
+    echo '<h4>Nombre de commandes aujourd\'hui: ' . count($orders_today) . '</h4>';
+
+    $tomorrow_date_obj = new DateTime( 'tomorrow', $timezone );
+    $tomorrow_date = $tomorrow_date_obj->format( 'Y-m-d' );
+    $orders_tomorrow = myfct_get_relevant_orders( $tomorrow_date );
+    echo '<h4>Nombre de commandes demain: ' . count($orders_tomorrow) . '</h4>';
 
     ?>
     <form action="" method="post">
