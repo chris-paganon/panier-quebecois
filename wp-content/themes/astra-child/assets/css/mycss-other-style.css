@@ -42,6 +42,11 @@ p.pq-countdown-intro {
     }
 }
 
+/* Set min height for an elementor column */
+.pq-min-height-column {
+    min-height: 400px;
+}
+
 /* Testimony image */
 #pq-testimony-img {
     position: absolute;
