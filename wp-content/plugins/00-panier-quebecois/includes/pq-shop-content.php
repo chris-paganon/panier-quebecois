@@ -190,7 +190,7 @@ class PQ_shop_content {
             253, //Beauté
             293, //Fromages et produits laitiers
             297, //Thé et café
-            299, //Épices
+            299, //Épices du monde
             300, //Riz, graines et légumineuses
             303, //Tofu et alternatives vegan
             308, //Boisson
@@ -200,10 +200,16 @@ class PQ_shop_content {
             314, //Huile et vinaigre
             315, //Olives et légumes marinés
             316, //Oeufs
-            317, //Céréales et noix
+            317, //Céréales
             319, //Autre
             343, //Farine et sucre
             358, //Maison
+            437, //Fines herbes
+            679, //Pâtes sèches
+            724, //Ingrédients pour la pâtisserie
+            725, //Noix salées
+            726, //Fruits secs et noix sucrées
+            727, //Sels et poivres
         );
 
         $hide_vege_tag = false;
