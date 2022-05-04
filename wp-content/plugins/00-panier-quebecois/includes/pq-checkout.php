@@ -56,6 +56,19 @@ function pq_move_delivery_date_selection($location, $key ) {
   return $location;
 }
 
+/**
+ * Add order meta with delivery date for pickups
+ */
+add_action( 'woocommerce_checkout_update_order_meta', 'pq_add_pickup_date_meta', 10, 2 );
+
+function pq_add_pickup_date_meta( $order_id, $data ) {
+  if ( in_array('local_pickup_plus', $data['shipping_method']) ) {
+    $pickup_date = reset($_POST['_shipping_method_pickup_date']);
+    update_post_meta($order_id, '_shipping_date', $pickup_date);
+    update_post_meta($order_id, '_pq_is_pickup', 'yes');
+  }
+}
+
 //-------- Remove product added to cart notice -------- //
 add_filter( 'wc_add_to_cart_message_html', 'myfct_remove_add_to_cart_message' );
 
