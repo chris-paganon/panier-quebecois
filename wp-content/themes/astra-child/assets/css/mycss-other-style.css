@@ -62,33 +62,34 @@ p.pq-countdown-intro {
 }
 @media( max-width:767px ) {
     #pq-testimony-img{
-        width: 70%;
+        width: 500px;
         right: -100px;
-        top: calc(100% - 225px);
-        clip: rect(0px,2000px,225px,0px);
+        top: calc(100% - 200px);
+        clip: rect(0px,calc(500px - 100px),200px,0px);
     }
 }
 @media( max-width:666px ) {
     #pq-testimony-img {
-        width: 80%;
+        width: 450px;
+        clip: rect(0px,calc(450px - 100px),200px,0px);
     }
 }
 @media( max-width:560px ) {
     #pq-testimony-img {
-        width: 90%;
+        width: 400px;
+        clip: rect(0px,calc(400px - 100px),200px,0px);
     }
 }
 @media( max-width:450px ) {
     #pq-testimony-img {
-        width: 100%;
         top: calc(100% - 200px);
-        clip: rect(0px,2000px,200px,0px);
+        clip: rect(0px,calc(400px - 100px),200px,0px);
     }
 }
 @media( max-width:380px ) {
     #pq-testimony-img {
         top: calc(100% - 180px);
-        clip: rect(0px,2000px,180px,0px);
+        clip: rect(0px,calc(400px - 100px),180px,0px);
     }
 }
 
