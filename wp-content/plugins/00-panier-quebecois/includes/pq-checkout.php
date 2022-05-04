@@ -33,6 +33,15 @@ function myfct_custom_delivery_method_msg() {
   }
 }
 
+// ------- Fix delivery days in translated calendar ------- //
+add_filter('wc_od_get_calendar_settings', 'pq_fix_translated_delivery_days', 10, 2);
+
+function pq_fix_translated_delivery_days($args, $context) {
+
+  $args['format'] = 'dd/mm/yyyy';
+  return $args;
+}
+
 //-------- Remove product added to cart notice -------- //
 add_filter( 'wc_add_to_cart_message_html', 'myfct_remove_add_to_cart_message' );
 
