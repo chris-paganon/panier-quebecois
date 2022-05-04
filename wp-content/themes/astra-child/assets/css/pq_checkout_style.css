@@ -23,11 +23,13 @@ table.my-custom-shipping-table{
 .my-custom-shipping-table td, .my-custom-shipping-table th{
     border: 0;
 }
-.my-custom-shipping-table th{
-    text-align: start;
-}
 
-.entry-content h5.custom_orddd_delivery_method_msg{
+/* Style and hide shipping titles */
+.my-custom-shipping-table th, 
+#wc-od h3{
+    display: none;
+}
+.entry-content p.custom_orddd_delivery_method_msg{
     margin: 20px auto 5px 3px;
 }
 

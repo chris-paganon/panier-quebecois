@@ -29,7 +29,8 @@ add_action( 'woocommerce_review_order_before_shipping', 'myfct_custom_delivery_m
 
 function myfct_custom_delivery_method_msg() {
   if ( !myfct_return_true_if_has_category( 'entreprise' ) ) {
-    echo '<h5 class="custom_orddd_delivery_method_msg"t>Entrez votre adresse complète pour voir toutes les méthodes de livraison disponibles:</h5>';
+    echo '<h3 class="pq-delivery-selection-title">Date de livraison</h3>';
+    echo '<p class="custom_orddd_delivery_method_msg"t>Entrez votre adresse complète pour voir toutes les méthodes de livraison disponibles:</p>';
   }
 }
 
