@@ -6,6 +6,40 @@
 *
 */
 
+/**
+* Shipping table
+*/
+
+/* Make shipping not look like a table */
+.my-custom-shipping-table tr.woocommerce-shipping-total{
+    display: inline-flex;
+    flex-direction: column;
+    width: 100%;
+}
+table.my-custom-shipping-table{
+    margin: 10px 3px;
+    border: 0;
+}
+.my-custom-shipping-table td, .my-custom-shipping-table th{
+    border: 0;
+}
+.my-custom-shipping-table th{
+    text-align: start;
+}
+
+.entry-content h5.custom_orddd_delivery_method_msg{
+    margin: 20px auto 5px 3px;
+}
+
+/* Connect here for subscriptions */
+.entry-content .my_checkout_registration_form_div{
+    margin: 20px auto 5px 3px;
+}
+
+.entry-content h5.my_checkout_registration_form_text{
+    display: inline;
+}
+
 /* Decrease padding for order review on smaller screens */
 @media (min-width: 768px) and (max-width: 900px) {
     .woocommerce-page.woocommerce-checkout form #order_review {
@@ -50,24 +84,6 @@ p#orddd_time_slot_field {
 /* Checkout page select width bug fix */
 .woocommerce form .form-row .select2-container{
     width:100% !important;
-}
-
-/* Shipping table moved to billing style */
-.my-custom-shipping-table{
-    margin: 10px 3px;
-}
-
-.entry-content h5.custom_orddd_delivery_method_msg{
-    margin: 20px auto 5px 3px;
-}
-
-/* Connect here for subscriptions */
-.entry-content .my_checkout_registration_form_div{
-    margin: 20px auto 5px 3px;
-}
-
-.entry-content h5.my_checkout_registration_form_text{
-    display: inline;
 }
 
 /* Gift card title style on checkout */
