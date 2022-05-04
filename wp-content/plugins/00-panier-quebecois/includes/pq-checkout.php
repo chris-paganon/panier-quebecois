@@ -42,6 +42,19 @@ function pq_fix_translated_delivery_days($args, $context) {
   return $args;
 }
 
+// ------- Move delivery date selection ------- //
+add_filter( 'wc_od_checkout_location', 'pq_move_delivery_date_selection', 10, 2);
+
+function pq_move_delivery_date_selection($location, $key ) {
+
+  $location = array(
+    'hook'     => 'woocommerce_after_checkout_billing_form',
+    'priority' => 10,
+  );
+
+  return $location;
+}
+
 //-------- Remove product added to cart notice -------- //
 add_filter( 'wc_add_to_cart_message_html', 'myfct_remove_add_to_cart_message' );
 
