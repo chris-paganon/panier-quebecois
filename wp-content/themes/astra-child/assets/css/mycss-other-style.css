@@ -53,6 +53,9 @@ p.pq-countdown-intro {
     top: calc(100% - 350px);
     clip: rect(0px,2000px,350px,0px);
 }
+#pq-testimony-wrapper{
+    overflow-x: clip;
+}
 @media( max-width:1024px ) {
     #pq-testimony-img {
         width: 130%;
