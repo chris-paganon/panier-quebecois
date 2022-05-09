@@ -500,7 +500,6 @@ a.pq_anchor {
     }
     .leftMenuCat#firstFilters {
         max-width: 115px;
-        left: 0;
         margin-left: 0;
     }
     .leftMenuCat#secCat, .leftMenuCat#archiveMenu {
@@ -508,6 +507,9 @@ a.pq_anchor {
     }
     .leftMenuCat#secCat{
         margin-left: 5px;
+    }
+    #secCat.elementor-sticky--active {
+        left: 125px;
     }
 }
 
