@@ -650,7 +650,13 @@ class PQ_product_page_content {
                         }
                     }
 
-                    $description_string .= '<li>' . $product_name . '&nbsp;<i>' . $product_quantity . '</i> <i>' . $product_short_desc . '</i></li>';
+                    $item_quantity = '';
+                    $bundle_item_default_quantity = $bundle_item_meta_data['quantity_default'];
+                    if ( $bundle_item_default_quantity != 1 ) {
+                        $item_quantity = $bundle_item_default_quantity . 'x ';
+                    }
+
+                    $description_string .= '<li>' . $item_quantity . $product_name . '&nbsp;<i>' . $product_quantity . '</i> <i>' . $product_short_desc . '</i></li>';
                 }
             }
 

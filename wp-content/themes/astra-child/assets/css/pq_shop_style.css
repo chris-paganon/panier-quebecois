@@ -495,19 +495,19 @@ a.pq_anchor {
 
 @media (max-width: 390px) {
     .leftMenuCat h3 {
-        padding-left: 5px;
+        padding-left: 2px;
         letter-spacing: -1px;
     }
     .leftMenuCat#firstFilters {
-        max-width: 120px;
+        max-width: 115px;
         left: 0;
+        margin-left: 0;
     }
     .leftMenuCat#secCat, .leftMenuCat#archiveMenu {
-        max-width: 165px;
+        max-width: 162px;
     }
     .leftMenuCat#secCat{
-        left: 130px;
-        margin-left: 0;
+        margin-left: 5px;
     }
 }
 

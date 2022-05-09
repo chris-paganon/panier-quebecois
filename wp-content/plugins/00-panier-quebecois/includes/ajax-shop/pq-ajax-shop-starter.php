@@ -94,11 +94,17 @@ function custom_product_function() {
         'posts_per_page' => 50,
         'tax_query' => $tax_query,
         'meta_query' => array(
+          'relation' => 'OR',
           array(
             'key' => '_wc_pb_bundle_stock_quantity',
             'value' => 0,
             'compare' => '!='
-          )
+          ),
+          array(
+            'key' => '_wc_pb_bundle_stock_quantity',
+            'compare' => 'NOT EXISTS',
+            'value' => 'useless',
+          ),
         ),
         'post_type' => 'product',
         'orderby' => 'menu_order',
