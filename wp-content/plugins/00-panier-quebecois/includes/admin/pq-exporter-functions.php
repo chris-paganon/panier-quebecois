@@ -273,7 +273,7 @@ function myfct_purchasing_export( $delivery_date_raw, $import_after_order = "" )
   $last_order_number = $last_order->get_id();
   $products = myfct_get_products_quantities( $orders );
 
-  $csv = array( array( 'Zone', 'Marchand', 'Nom Court', 'Référence fournisseur', 'Quantité', 'Quantité par lot', 'Quantité totale', 'Unité', 'ordre de Priorité', '', 'No de commandes:', $orders_count, 'Derniere commande:', $last_order_number ) );
+  $csv = array( array( 'Zone', 'Marchand', 'SKU', 'Nom Court', 'Référence fournisseur', 'Quantité', 'Quantité par lot', 'Quantité totale', 'Unité', 'ordre de Priorité', '', 'No de commandes:', $orders_count, 'Derniere commande:', $last_order_number ) );
 
   foreach ( $products as $product_id => $quantity ) {
     $product = wc_get_product( $product_id );
@@ -301,6 +301,8 @@ function myfct_purchasing_export( $delivery_date_raw, $import_after_order = "" )
     }
 
     $tags_string = implode( ', ', $tags );
+
+	$sku = $product->get_sku();
 	
     $commercial_zone = wp_get_post_terms( $product_id, 'pq_commercial_zone', array( 'fields' => 'names' ) );
     $commercial_zone_string = implode( ', ', $commercial_zone );
@@ -310,7 +312,7 @@ function myfct_purchasing_export( $delivery_date_raw, $import_after_order = "" )
 
     $total_quantity = $quantity * $lot_quantity;
 
-    $product_line = array( array( $commercial_zone_string, $tags_string, $short_name, $reference_name, $quantity, $lot_quantity, $total_quantity, $weight_with_unit, $packing_priority ) );
+    $product_line = array( array( $commercial_zone_string, $tags_string, $sku, $short_name, $reference_name, $quantity, $lot_quantity, $total_quantity, $weight_with_unit, $packing_priority ) );
     $csv = array_merge( $csv, $product_line );
   }
 
