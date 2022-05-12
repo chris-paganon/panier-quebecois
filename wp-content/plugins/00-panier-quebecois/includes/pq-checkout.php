@@ -34,6 +34,21 @@ function myfct_custom_delivery_method_msg() {
   }
 }
 
+// ------- Select first delivery date by default ------- //
+add_filter( 'wc_od_delivery_date_field_args', 'pq_default_delivery_date', 10, 2 );
+
+function pq_default_delivery_date($args, $context) {
+  
+  $delivery_date_args = WC_OD()->checkout()->get_delivery_date_args();
+  $delivery_day_start_obj = new DateTime('@' . $delivery_date_args['start_date'] );
+  $delivery_day_start = $delivery_day_start_obj->format('d/m/Y');
+
+  $args['placeholder'] = $delivery_day_start;
+  $args['value'] = $delivery_day_start;
+
+  return $args;
+}
+
 // ------- Fix delivery days in translated calendar ------- //
 add_filter('wc_od_get_calendar_settings', 'pq_fix_translated_delivery_days', 10, 2);
 
