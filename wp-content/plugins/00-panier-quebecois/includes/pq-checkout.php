@@ -49,6 +49,17 @@ function pq_default_delivery_date($args, $context) {
   return $args;
 }
 
+// ------- Select first delivery time frame by default ------- //
+add_filter( 'wc_od_get_time_frames_choices', 'pq_default_delivery_time_frame', 10, 3 );
+
+function pq_default_delivery_time_frame($choices, $time_frames, $context) {
+
+  $key_to_remove = array_search('Choose a time frame', $choices, true);
+  unset($choices[$key_to_remove]);
+  
+  return $choices;
+}
+
 // ------- Fix delivery days in translated calendar ------- //
 add_filter('wc_od_get_calendar_settings', 'pq_fix_translated_delivery_days', 10, 2);
 
