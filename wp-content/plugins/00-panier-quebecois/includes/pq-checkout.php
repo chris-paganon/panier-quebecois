@@ -40,14 +40,24 @@ add_filter( 'wc_od_delivery_date_field_args', 'pq_default_delivery_date', 10, 2 
 function pq_default_delivery_date($args, $context) {
   
   $delivery_date_args = WC_OD()->checkout()->get_delivery_date_args();
-  $delivery_day_start_obj = new DateTime('@' . $delivery_date_args['start_date'] );
-  $delivery_day_start = $delivery_day_start_obj->format('d/m/Y');
-
-  $args['placeholder'] = $delivery_day_start;
-  $args['value'] = $delivery_day_start;
+  $args['value'] = $delivery_date_args['start_date'];
 
   return $args;
 }
+
+/* add_filter( 'woocommerce_checkout_get_value', 'pq_set_default_delivery_date_value', 10, 2 );
+
+function pq_set_default_delivery_date_value( $delivery_date, $input ) {
+
+  if ( $input == 'delivery_date' ) {
+    $delivery_date_args = WC_OD()->checkout()->get_delivery_date_args();
+    $delivery_day_start_obj = new DateTime('@' . $delivery_date_args['start_date'] );
+    //$delivery_date = $delivery_day_start_obj->format('Y-m-d');
+    $delivery_date = $delivery_date_args['start_date'];
+  }
+
+  return $delivery_date;
+} */
 
 // ------- Select first delivery time frame by default ------- //
 add_filter( 'wc_od_get_time_frames_choices', 'pq_default_delivery_time_frame', 10, 3 );
