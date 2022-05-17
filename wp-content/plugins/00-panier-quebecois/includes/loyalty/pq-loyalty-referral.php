@@ -132,7 +132,7 @@ class PQ_loyalty_referral {
         'Referral Reward',
         $referrer_user_id,
         $referral_bonus,
-        'Reward for referree purchase #' . $order_id,
+        'Reward for referree purchase #' . $order_id
       );
     } else {
       $referrer_name = __( get_user_meta( $referrer_user_id, 'first_name', true ) );

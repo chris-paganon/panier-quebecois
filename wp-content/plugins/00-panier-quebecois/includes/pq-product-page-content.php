@@ -59,7 +59,7 @@ class PQ_product_page_content {
     /**
      * Register the shortcodes
      */
-    public static function pq_register_shortcodes() {
+    public function pq_register_shortcodes() {
         add_shortcode( 'basket_desciption', array( $this, 'pq_basket_desciption_fct') );
         add_shortcode( 'pq_product_taxonomies', array( $this, 'pq_product_taxonomies_fct') );
         add_shortcode( 'pq_product_additional_info', array( $this, 'pq_product_additional_info_fct') );
@@ -400,7 +400,7 @@ class PQ_product_page_content {
     /**
      * Products taxonomies shortcode function
      */
-    public static function pq_product_taxonomies_fct() {
+    public function pq_product_taxonomies_fct() {
 
         $product_id = get_the_ID();
 
@@ -443,7 +443,7 @@ class PQ_product_page_content {
     /**
      * Products addtional information shortcode function
      */
-    public static function pq_product_additional_info_fct() {
+    public function pq_product_additional_info_fct() {
 
         $product_id = get_the_ID();
 

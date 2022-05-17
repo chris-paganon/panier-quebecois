@@ -22,4 +22,11 @@ jQuery(document).ready(function ($) {
             navbar.closest("header.elementor").css("padding-bottom", "0");
         }
     }
+
+    $('#btn_empty_cart').click(function(e) {
+        var msg = $(this).data('msg');
+        if(confirm(msg) == false) {
+            e.preventDefault();
+        }   
+    });
 });

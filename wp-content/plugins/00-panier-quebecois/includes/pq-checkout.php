@@ -148,6 +148,22 @@ function bbloomer_change_continue_shopping() {
   return get_permalink( 6720 );
 }
 
+// -------- Add empty CArt button -------- //
+add_action( 'woocommerce_cart_coupon', 'custom_woocommerce_empty_cart_button' );
+function custom_woocommerce_empty_cart_button() {
+	echo '<a id="btn_empty_cart" data-msg="' . esc_attr( 'Are you sure you want to empty the cart?', 'woocommerce' ) . '" href="' . esc_url( add_query_arg( 'empty_cart', 'yes' ) ) . '" class="button" title="' . esc_attr( 'Empty Cart', 'woocommerce' ) . '">' . esc_html( 'Empty Cart', 'woocommerce' ) . '</a>';
+}
+
+add_action( 'wp_loaded', 'custom_woocommerce_empty_cart_action', 20 );
+function custom_woocommerce_empty_cart_action() {
+	if ( isset( $_GET['empty_cart'] ) && 'yes' === esc_html( $_GET['empty_cart'] ) ) {
+		WC()->cart->empty_cart();
+
+		$referer  = wp_get_referer() ? esc_url( remove_query_arg( 'empty_cart' ) ) : wc_get_cart_url();
+		wp_safe_redirect( $referer );
+	}
+}
+
 // --------------------------- THANK YOU --------------------------- //
 
 /* ------ Add Net Promoter Score on thank you page ------ */
