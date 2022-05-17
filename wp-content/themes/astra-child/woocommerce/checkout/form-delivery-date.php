@@ -33,7 +33,15 @@ defined( 'ABSPATH' ) || exit;
 		$fields = $checkout->get_checkout_fields( 'delivery' );
 
 		foreach ( $fields as $key => $field ) :
-			woocommerce_form_field( $key, $field, $checkout->get_value( $key ) );
+			
+			$checkout_value = $checkout->get_value( $key );
+
+			if ( $field['type'] == 'delivery_date' && empty($checkout_value) ) {
+				$delivery_date_args = WC_OD()->checkout()->get_delivery_date_args();
+				$checkout_value = $delivery_date_args['start_date'];
+			}
+
+			woocommerce_form_field( $key, $field, $checkout_value );
 		endforeach;
 		?>
 
