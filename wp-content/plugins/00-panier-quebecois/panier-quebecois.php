@@ -153,6 +153,10 @@ class Panier_Quebecois {
       ) );
     }
 
+    if ( get_the_ID() == get_option( 'woocommerce_checkout_page_id' ) ) {
+      wp_enqueue_script( 'pq_checkout_js', PQ_JS_URL . 'pq-checkout.js', array( 'jquery' ), rand( 111, 9999 ), true );
+    }
+
     $next_delivery_deadline = PQ_delivery_days::pq_next_delivery_deadline();
     $next_delivery_deadline_formatted_JS = $next_delivery_deadline->format(DateTime::ATOM);
     wp_localize_script( 'pq_delivery_countdown', 'next_delivery_deadline_object', array(
