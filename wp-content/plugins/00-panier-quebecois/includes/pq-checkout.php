@@ -76,7 +76,7 @@ function pq_add_pickup_date_meta( $order_id, $data ) {
   if ( in_array('local_pickup_plus', $data['shipping_method']) ) {
     $pickup_date = reset($_POST['_shipping_method_pickup_date']);
     update_post_meta($order_id, '_shipping_date', $pickup_date);
-    update_post_meta($order_id, '_pq_is_pickup', 'yes');
+    update_post_meta($order_id, 'pq_is_pickup', 'yes');
   }
 }
 
