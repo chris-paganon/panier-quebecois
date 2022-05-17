@@ -58,44 +58,35 @@ class PQ_orders_completion {
 
   /* ----- Closing the orders if orddd is same day and pickup started in the past ----- */
   public static function pq_close_orders( $date, $is_delivery ) {
-    $now = current_time( 'timestamp', false );
+    $wordpress_timezone = new DateTimeZone( get_option( 'timezone_string' ) );
+    $now = new DateTime( '+ 2 days', $wordpress_timezone );
+    $delivery_date = $now->format('Y-m-d');
 
-    if ( $is_delivery ) {
-      $start_interval = strtotime( 'yesterday 11:30pm', $now );
-      $end_interval = strtotime( 'today 11:59pm', $now );
-
-      $query = array(
-        'status' => 'wc-processing',
-        'limit' => -1,
-        'meta_key' => '_orddd_timestamp',
-        'meta_compare' => 'BETWEEN',
-        'meta_value' => array( $start_interval, $end_interval ),
-      );
-    } else {
-      $start_interval = $now - 3600;
-      $end_interval = $now + 30 * 60;
-
-      $query = array(
-        'status' => 'wc-processing',
-        'limit' => -1,
-        'meta_key' => '_orddd_timeslot_timestamp',
-        'meta_compare' => 'BETWEEN',
-        'meta_value' => array( $start_interval, $end_interval ),
-      );
-    }
+    $query = array(
+      'status' => 'wc-processing',
+      'limit' => -1,
+      '_shipping_date' => $delivery_date,
+    );
 
     $orders = wc_get_orders( $query );
 
     foreach ( $orders as $order ) {
       $order_id = $order->get_id();
-      $orddd_pickup_location_id = get_post_meta( $order_id, '_orddd_location', true );
+      $pq_is_pickup = get_post_meta( $order_id, 'pq_is_pickup', true );
 
-      if ( $is_delivery && empty( $orddd_pickup_location_id ) ) {
-
-        $order->update_status( 'completed' );
-      } elseif ( !$is_delivery && !empty( $orddd_pickup_location_id ) ) {
+      if ( $is_delivery && empty( $pq_is_pickup ) ) {
 
         $order->update_status( 'completed' );
+
+      } elseif ( !$is_delivery && !empty( $pq_is_pickup ) ) {
+
+        $now = current_time( 'timestamp', false );
+        $start_interval = $now - 3600;
+        $end_interval = $now + 30 * 60;
+
+        //Get shipping item meta _pickup_appointment_start and compare to start-end interval
+        
+        //$order->update_status( 'completed' );
       }
     }
   }
