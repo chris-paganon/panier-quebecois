@@ -24,6 +24,34 @@ table.my-custom-shipping-table{
     border: 0;
 }
 
+/* Pickup location normnalizing */
+.pickup-location-field-label{
+    font-size: 0.9rem;
+    font-weight: 700;
+}
+.pickup-location-schedule .pickup-location-field-label{
+    font-weight: 500;
+    opacity: 100;
+    display: inline;
+}
+.pickup-location-field .pickup-location-schedule ul{
+    display: inline;
+    margin: 0;
+}
+ul#shipping_method div.pickup-location-field#pickup-appointment-field-for-0 div.pickup-location-schedule ul li{
+    display: inline;
+    padding: 0;
+}
+div.pickup-location-field div.pickup-location-schedule ul li small{
+    font-size: 0.9rem;
+}
+div.pickup-location-field .pickup-location-field-label abbr{
+    color: red;
+}
+#pickup-items-field-for-0{
+    display: none;
+}
+
 /* Style and hide shipping titles */
 .my-custom-shipping-table th, 
 #wc-od h3{
