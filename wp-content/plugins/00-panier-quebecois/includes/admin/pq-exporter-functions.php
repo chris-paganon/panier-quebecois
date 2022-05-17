@@ -85,11 +85,22 @@ function myfct_is_relevant_product( $product, $to_weight_only = false ) {
 add_filter( 'woocommerce_order_data_store_cpt_get_orders_query', 'handle_custom_query_var', 10, 2 );
 
 function handle_custom_query_var( $query, $query_vars ) {
-  if ( !empty( $query_vars[ '_orddd_timestamp' ] ) ) {
-    $query[ 'meta_query' ][] = array(
-      'key' => '_orddd_timestamp',
-      'value' => esc_attr( $query_vars[ '_orddd_timestamp' ] ),
-    );
+  if ( !empty( $query_vars[ '_shipping_date' ] ) ) {
+	  
+	$delivery_date_obj = new DateTime( esc_attr($query_vars[ '_shipping_date' ]) );
+	$delivery_timestamp = $delivery_date_obj->getTimestamp();
+
+    $query[ 'meta_query' ] = array(
+		'relation' => 'OR',
+		array(
+			'key' => '_orddd_timestamp',
+			'value' => $delivery_timestamp,
+		),
+		array(
+			'key' => '_shipping_date',
+			'value' => esc_attr( $query_vars[ '_shipping_date' ] ),
+		),
+	);
   }
 
   return $query;
@@ -112,7 +123,7 @@ function pq_get_order_created_date($import_after_order) {
 function myfct_get_relevant_orders( $delivery_date_raw, $import_after_order = "" ) {
 	$delivery_date_obj = new DateTime( $delivery_date_raw );
 	if ( empty($import_after_order) ) {
-		$export_start_date_obj = new DateTime( '- 6 weeks ' );
+		$export_start_date_obj = new DateTime( '- 30 weeks ' );
 		$export_start_date = $export_start_date_obj->format( 'y-m-d' );
 	} else {
 		$export_start_date = pq_get_order_created_date($import_after_order);
@@ -120,14 +131,14 @@ function myfct_get_relevant_orders( $delivery_date_raw, $import_after_order = ""
 	
 	$export_end_date_obj = new DateTime( 'tomorrow' );
 
-	$delivery_timestamp = $delivery_date_obj->getTimestamp();
+	$delivery_date = $delivery_date_obj->format('Y-m-d');
 	$export_end_date = $export_end_date_obj->format( 'y-m-d' );
 
 	$query = array(
 		'status' => 'wc-processing',
 		'limit' => -1,
 		'date_created' => $export_start_date . '...' . $export_end_date,
-		'_orddd_timestamp' => $delivery_timestamp,
+		'_shipping_date' => $delivery_date,
 	);
 
 	$orders = wc_get_orders( $query );
