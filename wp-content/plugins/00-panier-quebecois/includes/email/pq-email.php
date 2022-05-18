@@ -54,6 +54,7 @@ function bbloomer_change_completed_email_subject( $subject, $order ) {
   }
 
   $is_pickup = false;
+  $order_id = $order->get_id();
   $pickup_datetime = get_post_meta( $order_id, 'pq_pickup_datetime', true );
   if ( !empty($pickup_datetime) ) {
     $is_pickup = true;
@@ -175,9 +176,13 @@ function myfct_order_email_custom_text( $order, $sent_to_admin, $plain_text, $em
   }
 
   $delivery_time_slot_arr = get_post_meta( $order_id, '_delivery_time_frame', true );
-  $delivery_time_slot_fr = $delivery_time_slot_arr['time_from'] . ' - ' . $delivery_time_slot_arr['time_to'];
+  if ( !empty($delivery_time_slot_arr) ) {
+    $delivery_time_slot_fr = $delivery_time_slot_arr['time_from'] . ' - ' . $delivery_time_slot_arr['time_to'];
+  } else {
+    $delivery_time_slot_fr = '';
+  }
+  
   $delivery_time_slot_en = $delivery_time_slot_fr;
-
   $nps_page_url = get_permalink( 17950 );
 
   // ---- EMAIL CONTENT ---- //
