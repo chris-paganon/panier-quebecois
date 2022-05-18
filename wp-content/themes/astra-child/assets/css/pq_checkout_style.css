@@ -29,6 +29,22 @@ table.my-custom-shipping-table{
     background-color: #FFF;
 }
 
+/* Pickup location input fields alignment */
+.my-custom-shipping-table tr.woocommerce-shipping-total>td{
+    padding: 0;
+}
+div#customer_details tr.woocommerce-shipping-total ul#shipping_method>li{
+    padding: 0.25em 0;
+    text-indent: 0;
+}
+ul#shipping_method div#pickup-location-field-for-0 span.select2{
+    width: 100%!important;
+}
+.woocommerce ul#shipping_method input#wc-local-pickup-plus-datepicker-0{
+    margin: 3px 0;
+    max-width: 100%;
+}
+
 /* Pickup location normnalizing */
 #pickup-location-field-for-0{
     margin-top: 20px;
