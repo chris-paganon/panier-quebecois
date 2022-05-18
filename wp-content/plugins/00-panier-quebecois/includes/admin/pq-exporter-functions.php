@@ -459,7 +459,7 @@ function myfct_orders_export($delivery_date_raw) {
 		}
 		
 		//Make delivery adress the pickup location if pickup was selected
-		$pickup_location_meta =  get_post_meta($order_id, 'Point de collecte', true);
+		$pickup_location_meta =  get_post_meta($order_id, 'pq_pickup_datetime', true);
 
 		if ( empty($pickup_location_meta) ) {
 			$delivery_address = $full_delivery_address;
@@ -467,11 +467,12 @@ function myfct_orders_export($delivery_date_raw) {
 
 			$special_delivery_number = 1;
 
-			foreach ( $pickup_location_addresses as $pickup_location_raw => $pickup_location_adress ) {
-				if ( $pickup_location_meta == $pickup_location_raw) {
-					$delivery_address = $pickup_location_adress;
-				}
-			}
+			$shipping_items = $order->get_items( 'shipping' );
+			$shipping_item = reset($shipping_items);
+			
+			$pickup_location_adress = $shipping_item->get_meta( '_pickup_location_address' );
+
+			$delivery_address = $pickup_location_adress['address_1'] . ', ' . $pickup_location_adress['city'] . ', ' . $pickup_location_adress['state'] . ', ' . $pickup_location_adress['postcode'] . ', ' . $pickup_location_adress['country'];
 		}
 
 		//Get delivery priority according to timeslots
