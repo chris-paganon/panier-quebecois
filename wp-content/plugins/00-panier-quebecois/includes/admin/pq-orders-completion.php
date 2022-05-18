@@ -59,7 +59,7 @@ class PQ_orders_completion {
   /* ----- Closing the orders if orddd is same day and pickup started in the past ----- */
   public static function pq_close_orders( $date, $is_delivery ) {
     $wordpress_timezone = new DateTimeZone( get_option( 'timezone_string' ) );
-    $now = new DateTime( '+ 2 days', $wordpress_timezone );
+    $now = new DateTime( '', $wordpress_timezone );
     $delivery_date = $now->format('Y-m-d');
 
     $query = array(
@@ -72,21 +72,21 @@ class PQ_orders_completion {
 
     foreach ( $orders as $order ) {
       $order_id = $order->get_id();
-      $pq_is_pickup = get_post_meta( $order_id, 'pq_is_pickup', true );
+      $pickup_datetime = get_post_meta( $order_id, 'pq_pickup_datetime', true );
 
       if ( $is_delivery && empty( $pq_is_pickup ) ) {
 
         $order->update_status( 'completed' );
 
-      } elseif ( !$is_delivery && !empty( $pq_is_pickup ) ) {
+      } elseif ( !$is_delivery && !empty( $pickup_datetime ) ) {
 
-        $now = current_time( 'timestamp', false );
-        $start_interval = $now - 3600;
-        $end_interval = $now + 30 * 60;
-
-        //Get shipping item meta _pickup_appointment_start and compare to start-end interval
+        $pickup_datetime_obj = new DateTime( $pickup_datetime, $wordpress_timezone );
+        $start_interval = new DateTime('- 1 hour', $wordpress_timezone);
+        $end_interval = new DateTime('+ 30 minutes', $wordpress_timezone);
         
-        //$order->update_status( 'completed' );
+        if ( $start_interval < $pickup_datetime_obj && $pickup_datetime_obj < $end_interval ) {
+          $order->update_status( 'completed' );
+        }        
       }
     }
   }
