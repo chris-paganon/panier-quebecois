@@ -103,6 +103,25 @@ function change_email_title_header_depending_of_product_id( $email_heading, $ord
   return $email_heading;
 }
 
+/**
+ * Remove delivery details from the plugins
+ */
+add_filter( 'wc_od_email_has_delivery_details', 'pq_remove_delivery_details_from_email', 10, 3 );
+
+function pq_remove_delivery_details_from_email($has_delivery, $email, $order) {
+  $has_delivery = false;
+  return $has_delivery;
+}
+
+add_action( 'plugins_loaded', 'pq_remove_pickup_details_from_email', 20 );
+
+function pq_remove_pickup_details_from_email() {
+  
+  $WC_Local_Pickup_Plus_Orders = wc_local_pickup_plus()->get_orders_instance();
+  remove_action( 'woocommerce_order_details_after_order_table_items', array( $WC_Local_Pickup_Plus_Orders, 'add_order_pickup_data'), 5 );
+  remove_action( 'woocommerce_email_after_order_table', array( $WC_Local_Pickup_Plus_Orders, 'add_order_pickup_data'), 5 );
+}
+
 // -------------- MAIN EMAIL TEXT (ABOVE TABLE) -------------- //
 
 add_action( 'woocommerce_email_before_order_table', 'myfct_order_email_custom_text', 5, 4 );
