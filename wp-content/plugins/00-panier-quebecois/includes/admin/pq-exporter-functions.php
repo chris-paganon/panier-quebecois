@@ -69,8 +69,8 @@ function myfct_is_relevant_product( $product, $to_weight_only = false ) {
   }
 
   if ( $to_weight_only && $is_product_to_count ) {
-    $is_to_weight = get_post_meta( $product_id, '_is_to_wheight', true );
-    if ( $is_to_weight == 1 ) {
+
+    if ( has_term( 715, 'pq_inventory_type', $product_id) ) {
       $is_product_to_count = true;
     } else {
       $is_product_to_count = false;
