@@ -68,6 +68,10 @@ div.pickup-location-field .pickup-location-field-label abbr{
 .entry-content p.custom_orddd_delivery_method_msg{
     margin: 20px auto 5px 3px;
 }
+ul.woocommerce-shipping-methods div#pickup-location-field-for-0>em,
+ul.woocommerce-shipping-methods li>p {
+    display: none;
+}
 
 /* Connect here for subscriptions */
 .entry-content .my_checkout_registration_form_div{
