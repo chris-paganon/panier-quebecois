@@ -75,8 +75,28 @@ add_action( 'woocommerce_checkout_update_order_meta', 'pq_add_pickup_date_meta',
 function pq_add_pickup_date_meta( $order_id, $data ) {
   if ( in_array('local_pickup_plus', $data['shipping_method']) ) {
     $pickup_date = reset($_POST['_shipping_method_pickup_date']);
+    $location_id = reset($_POST['_shipping_method_pickup_location_id']);
+
     update_post_meta($order_id, '_shipping_date', $pickup_date);
     update_post_meta($order_id, 'pq_is_pickup', 'yes');
+
+    $pickup_date_obj = new DateTime( $pickup_date );
+    $day = $pickup_date_obj->format('w');
+
+    $chosen_location = wc_local_pickup_plus_get_pickup_location( $location_id );
+    $schedule = $chosen_location->get_business_hours()->get_value();
+    $opening_hours = (array) $schedule[ (int) $day ];
+
+    $start_time_seconds = reset(array_keys($opening_hours));
+    $start_time_hours = $start_time_seconds / 60 / 60;
+    $start_time_hour = floor($start_time_hours);
+    $start_time_minutes = round( ($start_time_hours - $start_time_hour) * 60, 0 );
+    $start_time = $start_time_hour . ":" . $start_time_minutes;
+
+    $wordpress_timezone = new DateTimeZone( get_option( 'timezone_string' ) );
+    $pickup_datetime_obj = new DateTime( $pickup_date . ' ' . $start_time, $wordpress_timezone );
+
+    update_post_meta($order_id, 'pq_pickup_datetime', $pickup_datetime_obj->format('Y-m-d H:i'));
   }
 }
 
