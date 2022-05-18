@@ -87,16 +87,27 @@ function pq_add_pickup_date_meta( $order_id, $data ) {
     $opening_hours = (array) $schedule[ (int) $day ];
 
     $start_time_seconds = reset(array_keys($opening_hours));
-    $start_time_hours = $start_time_seconds / 60 / 60;
-    $start_time_hour = floor($start_time_hours);
-    $start_time_minutes = round( ($start_time_hours - $start_time_hour) * 60, 0 );
-    $start_time = $start_time_hour . ":" . $start_time_minutes;
+    $start_time = pq_convert_seconds_to_time( $start_time_seconds );
+
+    $end_time_seconds = reset($opening_hours);
+    $end_time = pq_convert_seconds_to_time( $end_time_seconds );
 
     $wordpress_timezone = new DateTimeZone( get_option( 'timezone_string' ) );
     $pickup_datetime_obj = new DateTime( $pickup_date . ' ' . $start_time, $wordpress_timezone );
+    $pickup_deadline_obj = new DateTime( $pickup_date . ' ' . $end_time, $wordpress_timezone );
 
     update_post_meta($order_id, 'pq_pickup_datetime', $pickup_datetime_obj->format('Y-m-d H:i'));
+    update_post_meta($order_id, 'pq_pickup_deadline', $pickup_deadline_obj->format('Y-m-d H:i'));
   }
+}
+
+function pq_convert_seconds_to_time( $time_in_seconds ) {
+  $time_in_hours = $time_in_seconds / 60 / 60;
+  $time_hour = floor($time_in_hours);
+  $time_minutes = round( ($time_in_hours - $time_hour) * 60, 0 );
+  $time = $time_hour . ":" . $time_minutes;
+
+  return $time;
 }
 
 //-------- Remove product added to cart notice -------- //
