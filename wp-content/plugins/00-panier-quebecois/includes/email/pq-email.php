@@ -22,6 +22,9 @@ add_filter( 'woocommerce_email_subject_customer_processing_order', 'bbloomer_cha
 
 function bbloomer_change_processing_email_subject( $subject, $order ) {
   $custom_language = get_post_meta( $order->get_id(), '_billing_language', true );
+  if ( empty( $custom_language ) ) {
+    $custom_language = 'francais';
+  }
 
   //Input text below for customers
   if ( $custom_language == 'francais' ) {
@@ -46,9 +49,12 @@ add_filter( 'woocommerce_subscriptions_email_subject_customer_completed_renewal_
 
 function bbloomer_change_completed_email_subject( $subject, $order ) {
   $custom_language = get_post_meta( $order->get_id(), '_billing_language', true );
-  $pickup_datetime = get_post_meta( $order_id, 'pq_pickup_datetime', true );
+  if ( empty( $custom_language ) ) {
+    $custom_language = 'francais';
+  }
 
   $is_pickup = false;
+  $pickup_datetime = get_post_meta( $order_id, 'pq_pickup_datetime', true );
   if ( !empty($pickup_datetime) ) {
     $is_pickup = true;
   }
@@ -84,6 +90,9 @@ add_filter( 'woocommerce_email_heading_customer_renewal_order', 'change_email_ti
 function change_email_title_header_depending_of_product_id( $email_heading, $order ) {
   //Get customer preferred language from billing form
   $custom_language = get_post_meta( $order->get_id(), '_billing_language', true );
+  if ( empty( $custom_language ) ) {
+    $custom_language = 'francais';
+  }
 
   //French version of emails
   if ( $custom_language == 'francais' ) {
