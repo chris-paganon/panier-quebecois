@@ -78,7 +78,6 @@ function pq_add_pickup_date_meta( $order_id, $data ) {
     $location_id = reset($_POST['_shipping_method_pickup_location_id']);
 
     update_post_meta($order_id, '_shipping_date', $pickup_date);
-    update_post_meta($order_id, 'pq_is_pickup', 'yes');
 
     $pickup_date_obj = new DateTime( $pickup_date );
     $day = $pickup_date_obj->format('w');
