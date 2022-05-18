@@ -398,19 +398,6 @@ function myfct_orders_export($delivery_date_raw) {
 		'Première commande',
 	));
 
-	//Pickup locations array
-	$pickup_location_addresses = array (
-		'Jean-Talon: Dépanneur Amitié, 421 rue Bélanger, Montréal, QC, H2S 1G3, Canada'               =>   '421 rue Bélanger, Montréal, QC H2S 1G3',
-		'Westmount: Evelyne Boutique, 5127 rue Sherbrooke O, Montréal, QC, H4A 1T3, Canada'           =>   '5127 rue Sherbrooke O, Montréal, QC, H4A 1T3, Canada',
-		'Villeray: Dépanneur Varin, 302 rue Faillon E, Montréal, QC, H2R 1K9, Canada'                 =>   '302 rue Faillon E, Montréal, QC, H2R 1K9, Canada',
-		'Plaza St-Hubert: Dépanneur De La Plaza, 7355 rue St Hubert, Montréal, QC, H2R 2N4, Canada'   =>   '7355 rue St Hubert, Montréal, QC, H2R 2N4, Canada',
-		'Laurier: Super Depanneur Bon-Air Enr, 4918 rue St Denis, Montréal, QC, H2J 2L6, Canada'      =>   '4918 rue St Denis, Montréal, QC, H2J 2L6, Canada',
-		'Plateau: Dépanneur Lily, 4348 rue Rivard, Montréal, QC, H2J 2M8, Canada'                     =>   '4348 rue Rivard, Montréal, QC, H2J 2M8, Canada',
-		'Verdun: Dépanneur Wu, 410 rue Caisse, Verdun, QC, H4G 2C7, Canada'                           =>   '410 rue Caisse, Verdun, QC, H4G 2C7, Canada',
-		'Marché Jean-Talon, Entrée principale, Avenue Henri-Julien'                                   =>   '7070 Avenue Henri Julien, Montreal, QC, H2S 3S3, Canada',
-		'Laval: Dépanneur Saint Hubert, 175 rue St Hubert, Laval, QC, H7G 2Y3, Canada'                =>   '175 rue St Hubert, Laval, QC, H7G 2Y3, Canada',
-	);
-
 	//Loop through orders
 	foreach ( $orders as $order ) {
 
