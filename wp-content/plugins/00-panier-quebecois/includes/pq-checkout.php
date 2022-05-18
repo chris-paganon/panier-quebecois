@@ -214,6 +214,18 @@ function bbloomer_change_continue_shopping() {
   return get_permalink( 6720 );
 }
 
+// -------- Hide shipping on the cart page ------- //
+add_filter( 'woocommerce_cart_ready_to_calc_shipping', 'pq_hide_cart_shipping', 10, 1 );
+
+function pq_hide_cart_shipping( $show_shipping ) {
+
+  if ( get_the_ID() == get_option( 'woocommerce_cart_page_id' ) ){
+    $show_shipping = false;
+  }
+  return $show_shipping;
+}
+
+
 // --------------------------- THANK YOU --------------------------- //
 
 /* ------ Add Net Promoter Score on thank you page ------ */
