@@ -475,17 +475,23 @@ function myfct_orders_export($delivery_date_raw) {
 		}
 
 		//Get delivery priority according to timeslots
-		$delivery_timeslot_string = get_post_meta($order_id, '_orddd_time_slot', true);
-		$delivery_start_hour = floatval( substr($delivery_timeslot_string, 0, 2) );
-		$delivery_start_minutes = floatval( substr($delivery_timeslot_string, 3, 2) ) / 60;
-		$delivery_start_time = $delivery_start_hour + $delivery_start_minutes;
+		$delivery_timeslot_array = get_post_meta($order_id, '_delivery_time_frame', true);
 
-		$cutoff_time_to_split = 16;
-
-		if ( $delivery_start_time < $cutoff_time_to_split ) {
+		if ( empty( $delivery_timeslot_array ) ) {
 			$delivery_priority = 1;
 		} else {
-			$delivery_priority = 2;
+			$delivery_timeslot_start_string = $delivery_timeslot_array['time_from'];
+			$delivery_start_hour = floatval( substr($delivery_timeslot_start_string, 0, 2) );
+			$delivery_start_minutes = floatval( substr($delivery_timeslot_start_string, 3, 2) ) / 60;
+			$delivery_start_time = $delivery_start_hour + $delivery_start_minutes;
+	
+			$cutoff_time_to_split = 16;
+	
+			if ( $delivery_start_time < $cutoff_time_to_split ) {
+				$delivery_priority = 1;
+			} else {
+				$delivery_priority = 2;
+			}
 		}
 
 		//Get a 1 if is first order
