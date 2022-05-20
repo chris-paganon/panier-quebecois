@@ -225,3 +225,23 @@ button.woo_order_tip_remove {
         display: none;
     }
 }
+
+@media (max-width:544px) {
+    .woocommerce-cart-form #btn_empty_cart {
+        margin-bottom: 5px;
+    }
+
+    .woocommerce-cart-form #btn_empty_cart,
+    .woocommerce-cart-form button[name="update_cart"] {
+        margin-left: 0 !important;
+    }
+}
+
+@media (min-width:545px) and (max-width: 860px) {
+    .woocommerce-cart-form .cart-actions,
+    .woocommerce-cart-form .coupon {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+    }
+}
