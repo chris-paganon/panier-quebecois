@@ -39,8 +39,11 @@ add_filter( 'wc_od_get_time_frames_choices', 'pq_default_delivery_time_frame', 1
 
 function pq_default_delivery_time_frame($choices, $time_frames, $context) {
 
-  $key_to_remove = array_search('Choose a time frame', $choices, true);
-  unset($choices[$key_to_remove]);
+  foreach ( $choices as $key => $choice ) {
+    if ( strpos($choice, 'Choose a time frame') !== false ) {
+      unset($choices[$key]);
+    }
+  }
   
   return $choices;
 }
