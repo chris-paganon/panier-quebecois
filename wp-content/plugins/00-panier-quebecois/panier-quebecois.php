@@ -144,7 +144,6 @@ class Panier_Quebecois {
     wp_enqueue_script( 'pq_anchor_switcher', PQ_JS_URL . 'pq-anchor-switcher.js', array( 'jquery' ), rand( 111, 9999 ), false );
     wp_enqueue_script( 'pq_shop_archives', PQ_JS_URL . 'pq-shop-archives.js', array( 'jquery' ), rand( 111, 9999 ), false );
     wp_enqueue_script( 'pq_delivery_countdown', PQ_JS_URL . 'pq-delivery-countdown.js', array( 'jquery' ), rand( 111, 9999 ), false );
-    wp_enqueue_script( 'pq_products_slider', PQ_JS_URL . 'pq-products-slider.js', array( 'jquery' ), rand( 111, 9999 ), false );
 
     // Register, Enqueue and localise ajax script for loading all products through ajax (on marketplace only)
     if ( get_the_ID() == 6720 ) {
@@ -152,6 +151,10 @@ class Panier_Quebecois {
       wp_localize_script( 'pq_get_all_products_js', 'pq_get_all_products_js_object', array(
         'ajax_url' => admin_url( 'admin-ajax.php' ),
       ) );
+    }
+
+    if ( get_the_ID() == get_option( 'woocommerce_checkout_page_id' ) ) {
+      wp_enqueue_script( 'pq_checkout_js', PQ_JS_URL . 'pq-checkout.js', array( 'jquery' ), rand( 111, 9999 ), true );
     }
 
     $next_delivery_deadline = PQ_delivery_days::pq_next_delivery_deadline();
@@ -162,6 +165,7 @@ class Panier_Quebecois {
     
     //Slick carousel
     if ( get_the_ID() == "" ) {
+      wp_enqueue_script( 'pq_products_slider', PQ_JS_URL . 'pq-products-slider.js', array( 'jquery' ), rand( 111, 9999 ), false );
       wp_enqueue_style( 'slick-css', untrailingslashit( get_template_directory_uri() ) . '/assets/src/library/css/slick.css', [], false, 'all' );
       wp_enqueue_style( 'slick-theme-css', untrailingslashit( get_template_directory_uri() ) . '/assets/src/library/css/slick-theme.css', ['slick-css'], false, 'all' );
       wp_enqueue_script( 'carousel-js', untrailingslashit( get_template_directory_uri() ) . '/assets/src/carousel/index.js', ['jquery', 'slick-js'], rand( 111, 9999 ), true );

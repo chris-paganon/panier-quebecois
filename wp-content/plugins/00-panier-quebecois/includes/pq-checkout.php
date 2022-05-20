@@ -29,8 +29,118 @@ add_action( 'woocommerce_review_order_before_shipping', 'myfct_custom_delivery_m
 
 function myfct_custom_delivery_method_msg() {
   if ( !myfct_return_true_if_has_category( 'entreprise' ) ) {
-    echo '<h5 class="custom_orddd_delivery_method_msg"t>Entrez votre adresse complète pour voir toutes les méthodes de livraison disponibles:</h5>';
+    echo '<h3 class="pq-delivery-selection-title">Date de livraison</h3>';
+    echo '<p class="custom_orddd_delivery_method_msg"t>Entrez votre adresse complète pour voir toutes les méthodes de livraison disponibles:</p>';
   }
+}
+
+// ------- Select first delivery time frame by default ------- //
+add_filter( 'wc_od_get_time_frames_choices', 'pq_default_delivery_time_frame', 10, 3 );
+
+function pq_default_delivery_time_frame($choices, $time_frames, $context) {
+
+  foreach ( $choices as $key => $choice ) {
+    if ( strpos($choice, 'Choose a time frame') !== false ) {
+      unset($choices[$key]);
+    }
+  }
+
+  return $choices;
+}
+
+// ------- Fix delivery days in translated calendar ------- //
+add_filter('wc_od_get_calendar_settings', 'pq_fix_translated_delivery_days', 10, 2);
+
+function pq_fix_translated_delivery_days($args, $context) {
+
+  $args['format'] = 'dd/mm/yyyy';
+  return $args;
+}
+
+// ------- Move delivery date selection ------- //
+add_filter( 'wc_od_checkout_location', 'pq_move_delivery_date_selection', 10, 2);
+
+function pq_move_delivery_date_selection($location, $key ) {
+
+  $location = array(
+    'hook'     => 'woocommerce_after_checkout_billing_form',
+    'priority' => 10,
+  );
+
+  return $location;
+}
+
+/**
+ * Pickup lead time shown at checkout fix
+ */
+add_filter('wc_local_pickup_plus_get_package_pickup_appointment_field_html', 'pq_fix_pickup_lead_time', 10, 3);
+
+function pq_fix_pickup_lead_time($field_html, $package_id, $package) {
+
+  $chosen_date = $package['pickup_date'];
+  $pickup_date_obj = new DateTime( $chosen_date );
+  $day = $pickup_date_obj->format('w');
+
+  $chosen_location = wc_local_pickup_plus_get_pickup_location( $package['pickup_location_id'] );
+  $schedule = $chosen_location->get_business_hours()->get_value();
+  $opening_hours = (array) $schedule[ (int) $day ];
+
+  $start_time_seconds = reset(array_keys($opening_hours));
+  $start_time = pq_convert_seconds_to_time( $start_time_seconds );
+
+  //Get the wrong time from the plugin
+  $chosen_datetime = ! empty( $chosen_date ) && is_string( $chosen_date ) ? new \DateTime( $chosen_date, $chosen_location->get_address()->get_timezone() ) : null;
+  $chosen_day    = ! empty( $chosen_datetime ) ? $chosen_datetime->format( 'w' ) : null;
+  $minimum_hours = ! empty( $chosen_datetime ) ? $chosen_location->get_appointments()->get_schedule_minimum_hours( $chosen_datetime ) : null;
+  $minimum_hours_time = pq_convert_seconds_to_time( $minimum_hours );
+
+  if ( $minimum_hours_time != $start_time ) {
+    $field_html = str_replace($minimum_hours_time, $start_time, $field_html);
+  }
+
+  return $field_html;
+}
+
+
+/**
+ * Add order meta with delivery date for pickups
+ */
+add_action( 'woocommerce_checkout_update_order_meta', 'pq_add_pickup_date_meta', 10, 2 );
+
+function pq_add_pickup_date_meta( $order_id, $data ) {
+  if ( in_array('local_pickup_plus', $data['shipping_method']) ) {
+    $pickup_date = reset($_POST['_shipping_method_pickup_date']);
+    $location_id = reset($_POST['_shipping_method_pickup_location_id']);
+
+    update_post_meta($order_id, '_shipping_date', $pickup_date);
+
+    $pickup_date_obj = new DateTime( $pickup_date );
+    $day = $pickup_date_obj->format('w');
+
+    $chosen_location = wc_local_pickup_plus_get_pickup_location( $location_id );
+    $schedule = $chosen_location->get_business_hours()->get_value();
+    $opening_hours = (array) $schedule[ (int) $day ];
+
+    $start_time_seconds = reset(array_keys($opening_hours));
+    $start_time = pq_convert_seconds_to_time( $start_time_seconds );
+
+    $end_time_seconds = reset($opening_hours);
+    $end_time = pq_convert_seconds_to_time( $end_time_seconds );
+
+    $wordpress_timezone = new DateTimeZone( get_option( 'timezone_string' ) );
+    $pickup_datetime_obj = new DateTime( $pickup_date . ' ' . $start_time, $wordpress_timezone );
+    $pickup_deadline_obj = new DateTime( $pickup_date . ' ' . $end_time, $wordpress_timezone );
+
+    update_post_meta($order_id, 'pq_pickup_datetime', $pickup_datetime_obj->format('Y-m-d H:i'));
+    update_post_meta($order_id, 'pq_pickup_deadline', $pickup_deadline_obj->format('Y-m-d H:i'));
+  }
+}
+
+function pq_convert_seconds_to_time( $time_in_seconds ) {
+  $time_format = wc_time_format();
+  $time = date_i18n( $time_format, $time_in_seconds );
+
+  return $time;
 }
 
 //-------- Remove product added to cart notice -------- //
@@ -148,16 +258,17 @@ function bbloomer_change_continue_shopping() {
   return get_permalink( 6720 );
 }
 
+// -------- Hide shipping on the cart page ------- //
+add_filter( 'woocommerce_cart_ready_to_calc_shipping', 'pq_hide_cart_shipping', 10, 1 );
 
-add_action( 'wp_loaded', 'custom_woocommerce_empty_cart_action', 20 );
-function custom_woocommerce_empty_cart_action() {
-	if ( isset( $_GET['empty_cart'] ) && 'yes' === esc_html( $_GET['empty_cart'] ) ) {
-		WC()->cart->empty_cart();
+function pq_hide_cart_shipping( $show_shipping ) {
 
-		$referer  = wp_get_referer() ? esc_url( remove_query_arg( 'empty_cart' ) ) : wc_get_cart_url();
-		wp_safe_redirect( $referer );
-	}
+  if ( get_the_ID() == get_option( 'woocommerce_cart_page_id' ) ){
+    $show_shipping = false;
+  }
+  return $show_shipping;
 }
+
 
 // --------------------------- THANK YOU --------------------------- //
 
