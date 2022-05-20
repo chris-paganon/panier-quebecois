@@ -24,7 +24,10 @@ jQuery(document).ready(function ($) {
     }
 
     $(document).on('click','#btn_empty_cart',function(e) {
-        var msg = $(this).data('msg');
+        var lang = $('html').attr('lang');
+        lang = lang.slice(0,2);
+
+        var msg = $(this).data('msg-'+lang);
         if(confirm(msg) == false) {
             e.preventDefault();
         }   
