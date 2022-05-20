@@ -68,6 +68,38 @@ function pq_move_delivery_date_selection($location, $key ) {
 }
 
 /**
+ * Pickup lead time shown at checkout fix
+ */
+add_filter('wc_local_pickup_plus_get_package_pickup_appointment_field_html', 'pq_fix_pickup_lead_time', 10, 3);
+
+function pq_fix_pickup_lead_time($field_html, $package_id, $package) {
+
+  $chosen_date = $package['pickup_date'];
+  $pickup_date_obj = new DateTime( $chosen_date );
+  $day = $pickup_date_obj->format('w');
+  
+  $chosen_location = wc_local_pickup_plus_get_pickup_location( $package['pickup_location_id'] );
+  $schedule = $chosen_location->get_business_hours()->get_value();
+  $opening_hours = (array) $schedule[ (int) $day ];
+
+  $start_time_seconds = reset(array_keys($opening_hours));
+  $start_time = pq_convert_seconds_to_time( $start_time_seconds );
+
+  //Get the wrong time from the plugin
+  $chosen_datetime = ! empty( $chosen_date ) && is_string( $chosen_date ) ? new \DateTime( $chosen_date, $chosen_location->get_address()->get_timezone() ) : null;
+  $chosen_day    = ! empty( $chosen_datetime ) ? $chosen_datetime->format( 'w' ) : null;
+  $minimum_hours = ! empty( $chosen_datetime ) ? $chosen_location->get_appointments()->get_schedule_minimum_hours( $chosen_datetime ) : null;
+  $minimum_hours_time = pq_convert_seconds_to_time( $minimum_hours );
+
+  if ( $minimum_hours_time != $start_time ) {
+    $field_html = str_replace($minimum_hours_time, $start_time, $field_html);
+  }
+
+  return $field_html;
+}
+
+
+/**
  * Add order meta with delivery date for pickups
  */
 add_action( 'woocommerce_checkout_update_order_meta', 'pq_add_pickup_date_meta', 10, 2 );
@@ -102,10 +134,8 @@ function pq_add_pickup_date_meta( $order_id, $data ) {
 }
 
 function pq_convert_seconds_to_time( $time_in_seconds ) {
-  $time_in_hours = $time_in_seconds / 60 / 60;
-  $time_hour = floor($time_in_hours);
-  $time_minutes = round( ($time_in_hours - $time_hour) * 60, 0 );
-  $time = $time_hour . ":" . $time_minutes;
+  $time_format = wc_time_format();
+  $time = date_i18n( $time_format, $time_in_seconds );
 
   return $time;
 }
