@@ -23,7 +23,7 @@ jQuery(document).ready(function ($) {
         }
     }
 
-    $('#btn_empty_cart').click(function(e) {
+    $('#btn_empty_cart').on('click',function(e) {
         var msg = $(this).data('msg');
         if(confirm(msg) == false) {
             e.preventDefault();
