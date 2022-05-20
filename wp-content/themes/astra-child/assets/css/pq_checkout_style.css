@@ -238,10 +238,8 @@ button.woo_order_tip_remove {
 }
 
 @media (min-width:545px) and (max-width: 860px) {
-    .woocommerce-cart-form .cart-actions,
-    .woocommerce-cart-form .coupon {
-        width: 100%;
-        display: flex;
-        justify-content: center;
+    .woocommerce-cart-form #btn_empty_cart {
+        border-width: 2px !important;
+        margin-bottom: 10px;
     }
 }
