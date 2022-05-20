@@ -22,6 +22,9 @@ add_filter( 'woocommerce_email_subject_customer_processing_order', 'bbloomer_cha
 
 function bbloomer_change_processing_email_subject( $subject, $order ) {
   $custom_language = get_post_meta( $order->get_id(), '_billing_language', true );
+  if ( empty( $custom_language ) ) {
+    $custom_language = 'francais';
+  }
 
   //Input text below for customers
   if ( $custom_language == 'francais' ) {
@@ -46,33 +49,37 @@ add_filter( 'woocommerce_subscriptions_email_subject_customer_completed_renewal_
 
 function bbloomer_change_completed_email_subject( $subject, $order ) {
   $custom_language = get_post_meta( $order->get_id(), '_billing_language', true );
+  if ( empty( $custom_language ) ) {
+    $custom_language = 'francais';
+  }
 
-  //Input text below
-  foreach ( $order->get_items( 'shipping' ) as $shipping_item ) {
-    $shipping_rate_id = $shipping_item->get_method_id();
-    $method_array = explode( ':', $shipping_rate_id );
-    $shipping_method_id = reset( $method_array );
+  $is_pickup = false;
+  $order_id = $order->get_id();
+  $pickup_datetime = get_post_meta( $order_id, 'pq_pickup_datetime', true );
+  if ( !empty($pickup_datetime) ) {
+    $is_pickup = true;
+  }
 
-    if ( $custom_language == 'francais' ) {
+  if ( $custom_language == 'francais' ) {
 
-      // For local pickup shipping method
-      if ( 'local_pickup' == $shipping_method_id ) {
-        $subject = 'Bonne nouvelle, votre panier a été livré en point de collecte!';
-        //For home delivery
-      } else {
-        $subject = 'Bonne nouvelle, votre panier a été livré!';
-      }
+    // For local pickup shipping method
+    if ( $is_pickup ) {
+      $subject = 'Bonne nouvelle, votre panier a été livré en point de collecte!';
+      //For home delivery
     } else {
+      $subject = 'Bonne nouvelle, votre panier a été livré!';
+    }
+  } else {
 
-      // For local pickup shipping method
-      if ( 'local_pickup' == $shipping_method_id ) {
-        $subject = 'Good news, your basket was delivered in its pickup location!';
-        //For home delivery
-      } else {
-        $subject = 'Good news, your basket was delivered';
-      }
+    // For local pickup shipping method
+    if ( $is_pickup ) {
+      $subject = 'Good news, your basket was delivered in its pickup location!';
+      //For home delivery
+    } else {
+      $subject = 'Good news, your basket was delivered';
     }
   }
+
   return $subject;
 }
 
@@ -84,6 +91,9 @@ add_filter( 'woocommerce_email_heading_customer_renewal_order', 'change_email_ti
 function change_email_title_header_depending_of_product_id( $email_heading, $order ) {
   //Get customer preferred language from billing form
   $custom_language = get_post_meta( $order->get_id(), '_billing_language', true );
+  if ( empty( $custom_language ) ) {
+    $custom_language = 'francais';
+  }
 
   //French version of emails
   if ( $custom_language == 'francais' ) {
@@ -94,6 +104,25 @@ function change_email_title_header_depending_of_product_id( $email_heading, $ord
   return $email_heading;
 }
 
+/**
+ * Remove delivery details from the plugins
+ */
+add_filter( 'wc_od_email_has_delivery_details', 'pq_remove_delivery_details_from_email', 10, 3 );
+
+function pq_remove_delivery_details_from_email($has_delivery, $email, $order) {
+  $has_delivery = false;
+  return $has_delivery;
+}
+
+add_action( 'plugins_loaded', 'pq_remove_pickup_details_from_email', 20 );
+
+function pq_remove_pickup_details_from_email() {
+  
+  $WC_Local_Pickup_Plus_Orders = wc_local_pickup_plus()->get_orders_instance();
+  remove_action( 'woocommerce_order_details_after_order_table_items', array( $WC_Local_Pickup_Plus_Orders, 'add_order_pickup_data'), 5 );
+  remove_action( 'woocommerce_email_after_order_table', array( $WC_Local_Pickup_Plus_Orders, 'add_order_pickup_data'), 5 );
+}
+
 // -------------- MAIN EMAIL TEXT (ABOVE TABLE) -------------- //
 
 add_action( 'woocommerce_email_before_order_table', 'myfct_order_email_custom_text', 5, 4 );
@@ -101,6 +130,7 @@ add_action( 'woocommerce_email_before_order_table', 'myfct_order_email_custom_te
 function myfct_order_email_custom_text( $order, $sent_to_admin, $plain_text, $email ) {
   $fmt_fr = new IntlDateFormatter( 'fr_FR', IntlDateFormatter::MEDIUM, IntlDateFormatter::NONE, NULL, IntlDateFormatter::GREGORIAN, 'EEEE dd MMMM y' );
   $fmt_en = new IntlDateFormatter( NULL, IntlDateFormatter::MEDIUM, IntlDateFormatter::NONE, NULL, IntlDateFormatter::GREGORIAN, 'EEEE MMMM dd, y' );
+  $wordpress_timezone = new DateTimeZone( get_option( 'timezone_string' ) );
 
   // ---- VARIABLES ---- //
   $order_id = $order->get_id();
@@ -108,22 +138,51 @@ function myfct_order_email_custom_text( $order, $sent_to_admin, $plain_text, $em
   if ( empty( $custom_language ) ) {
     $custom_language = 'francais';
   }
-  $delivery_timestamp = get_post_meta( $order_id, '_orddd_timestamp', true );
-  if ( empty( $delivery_timestamp ) ) {
+
+  $delivery_datetime = get_post_meta( $order_id, '_shipping_date', true );
+  if ( empty( $delivery_datetime ) ) {
     $delivery_timestamp = 0;
+  } else {
+    $delivery_datetime_obj = new DateTime( $delivery_datetime, $wordpress_timezone );
+    $delivery_timestamp = $delivery_datetime_obj->getTimestamp();
   }
-  $pickup_time = get_post_meta( $order_id, '_orddd_time_slot', true );
-  if ( empty( $pickup_time ) ) {
+
+  $is_pickup = false;
+  $pickup_datetime = get_post_meta( $order_id, 'pq_pickup_datetime', true );
+  $pickup_deadline = get_post_meta( $order_id, 'pq_pickup_deadline', true );
+  if ( empty( $pickup_datetime ) || empty( $pickup_deadline ) ) {
     $pickup_time = '';
+  } else {
+    $is_pickup = true;
+    $pickup_datetime_obj = new DateTime( $pickup_datetime, $wordpress_timezone );
+    $pickup_deadline_obj = new DateTime( $pickup_deadline, $wordpress_timezone );
+    $pickup_time = $pickup_datetime_obj->format('H:i') . ' - ' . $pickup_deadline_obj->format('H:i');
   }
-  $pickup_location = get_post_meta( $order_id, 'Point de collecte', true );
-  if ( empty( $pickup_location ) ) {
+
+  if ( empty( $pickup_datetime ) ) {
     $pickup_location = '';
+  } else {
+    $shipping_items = $order->get_items( 'shipping' );
+    $shipping_item = reset($shipping_items);
+			
+    $pickup_location_address = $shipping_item->get_meta( '_pickup_location_address' );
+    $pickup_location_name = $shipping_item->get_meta( '_pickup_location_name' );
+    
+    if ( empty( $pickup_location_name ) ) {
+      $pickup_location = '';
+    } else {
+      $pickup_location = $pickup_location_name . ', ' . $pickup_location_address['address_1'] . ', ' . $pickup_location_address['city'] . ', ' . $pickup_location_address['postcode'];
+    }
   }
 
-  $delivery_time_slot_fr = get_post_meta( $order_id, 'Horaires de livraison', true );
+  $delivery_time_slot_arr = get_post_meta( $order_id, '_delivery_time_frame', true );
+  if ( !empty($delivery_time_slot_arr) ) {
+    $delivery_time_slot_fr = $delivery_time_slot_arr['time_from'] . ' - ' . $delivery_time_slot_arr['time_to'];
+  } else {
+    $delivery_time_slot_fr = '';
+  }
+  
   $delivery_time_slot_en = $delivery_time_slot_fr;
-
   $nps_page_url = get_permalink( 17950 );
 
   // ---- EMAIL CONTENT ---- //
@@ -133,23 +192,15 @@ function myfct_order_email_custom_text( $order, $sent_to_admin, $plain_text, $em
   $contact_us_en = '<p>If you have any question about your order, don\'t hesitate to contact us at <strong>commandes@panierquebecois.ca or by calling us here: (514) 647-8843,</strong> it will be our pleasure to help you.</p>';
 
   //DELIVERY
-  if ( $delivery_timestamp !== 0 ) {
-    $processing_delivery_fr = '<p>
-        Votre commande sera déposée devant votre porte le <strong>' . $fmt_fr->format( $delivery_timestamp ) . '</strong> entre ' . $delivery_time_slot_fr . '. Notre livreur vous appellera et/ou sonnera à votre porte dès la livraison effectuée.
-        <br/><br/>
-        Si vous avez commandé des produits frais avec Panier Québécois la semaine passée, <strong>merci de préparer vos blocs réfrigérants et votre sac isotherme afin que notre livreur puisse les récupérer lors de son passage chez vous.</strong></p>';
-  } else {
-    $processing_delivery_fr = '<p>Votre commande a bien été reçus. Nous vous informerons par courriel des détails de votre livraison dans les semaines à venir.</p>';
-  }
+  $processing_delivery_fr = '<p>
+    Votre commande sera déposée devant votre porte le <strong>' . $fmt_fr->format( $delivery_timestamp ) . '</strong> entre ' . $delivery_time_slot_fr . '. Notre livreur vous appellera et/ou sonnera à votre porte dès la livraison effectuée.
+    <br/><br/>
+    Si vous avez commandé des produits frais avec Panier Québécois la semaine passée, <strong>merci de préparer vos blocs réfrigérants et votre sac isotherme afin que notre livreur puisse les récupérer lors de son passage chez vous.</strong></p>';
 
-  if ( $delivery_timestamp !== 0 ) {
-    $processing_delivery_en = '<p>
-			We will drop your order in front of your door on <strong>' . $fmt_en->format( $delivery_timestamp ) . '</strong> between ' . $delivery_time_slot_en . '. Our driver will call and/or ring your doorbell when they arrive.
-			<br/><br/>
-			If you have ordered cold products from Panier Québécois last week, <strong>please prepare your ice packs and isotherm bag so that our driver can pick it up during his delivery.</strong></p>';
-  } else {
-    $processing_delivery_en = '<p>We have received your order. We will inform you by email of the delivery details in the coming weeks.</p>';
-  }
+  $processing_delivery_en = '<p>
+    We will drop your order in front of your door on <strong>' . $fmt_en->format( $delivery_timestamp ) . '</strong> between ' . $delivery_time_slot_en . '. Our driver will call and/or ring your doorbell when they arrive.
+    <br/><br/>
+    If you have ordered cold products from Panier Québécois last week, <strong>please prepare your ice packs and isotherm bag so that our driver can pick it up during his delivery.</strong></p>';
 
   $completed_delivery_fr_intro = '<p>Bonne nouvelle, votre Panier Québécois a été livré! Si vous ne l\'avez pas déjà récupéré, notre livreur l\'a déposé devant votre porte.</p>';
 
@@ -282,22 +333,14 @@ function myfct_order_email_custom_text( $order, $sent_to_admin, $plain_text, $em
     //For all processing email notifications except entreprise
     if ( ( ( 'customer_processing_order' == $email->id ) && !myfct_return_true_if_has_category_from_order( $order, 'entreprise' ) ) ) {
       //For simple processing orders
-      foreach ( $order->get_items( 'shipping' ) as $shipping_item ) {
-        $shipping_rate_id = $shipping_item->get_method_id();
-        $method_array = explode( ':', $shipping_rate_id );
-        $shipping_method_id = reset( $method_array );
+      // For local pickup shipping method
+      if ( $is_pickup ) {
+        echo $processing_pickup_fr;
+      }
 
-        // For local pickup shipping method
-        if ( 'local_pickup' == $shipping_method_id ) {
-
-          echo $processing_pickup_fr;
-          break;
-        }
-
-        // For other shipping methods
-        else {
-          echo $processing_delivery_fr;
-        }
+      // For other shipping methods
+      else {
+        echo $processing_delivery_fr;
       }
 
       //add contact us
@@ -309,19 +352,12 @@ function myfct_order_email_custom_text( $order, $sent_to_admin, $plain_text, $em
     // For completed email notifications
     if ( 'customer_completed_order' == $email->id ) {
       //For simple completed orders (INTRO & MAIN)
-      foreach ( $order->get_items( 'shipping' ) as $shipping_item ) {
-        $shipping_rate_id = $shipping_item->get_method_id();
-        $method_array = explode( ':', $shipping_rate_id );
-        $shipping_method_id = reset( $method_array );
-
-        // For local pickup shipping method
-        if ( 'local_pickup' == $shipping_method_id ) {
-          echo $completed_pickup_fr_intro;
-          break;
-          // For other shipping methods
-        } else {
-          echo $completed_delivery_fr_intro . $completed_delivery_fr_main;
-        }
+      // For local pickup shipping method
+      if ( $is_pickup ) {
+        echo $completed_pickup_fr_intro;
+        // For other shipping methods
+      } else {
+        echo $completed_delivery_fr_intro . $completed_delivery_fr_main;
       }
     }
   }
@@ -353,22 +389,15 @@ function myfct_order_email_custom_text( $order, $sent_to_admin, $plain_text, $em
     //For all processing email notifications except entreprise
     if ( ( ( 'customer_processing_order' == $email->id ) && !myfct_return_true_if_has_category_from_order( $order, 'entreprise' ) ) ) {
       //Text for physical processing orders
-      foreach ( $order->get_items( 'shipping' ) as $shipping_item ) {
-        $shipping_rate_id = $shipping_item->get_method_id();
-        $method_array = explode( ':', $shipping_rate_id );
-        $shipping_method_id = reset( $method_array );
+      // For local pickup shipping method
+      if ( $is_pickup ) {
 
-        // For local pickup shipping method
-        if ( 'local_pickup' == $shipping_method_id ) {
+        echo $processing_pickup_en;
+      }
 
-          echo $processing_pickup_en;
-          break;
-        }
-
-        // For other shipping methods
-        else {
-          echo $processing_delivery_en;
-        }
+      // For other shipping methods
+      else {
+        echo $processing_delivery_en;
       }
 
       //add contact us
@@ -380,23 +409,15 @@ function myfct_order_email_custom_text( $order, $sent_to_admin, $plain_text, $em
     // For completed email notifications
     if ( 'customer_completed_order' == $email->id ) {
       //For simple completed orders (INTRO & MAIN)
-      foreach ( $order->get_items( 'shipping' ) as $shipping_item ) {
+      // For local pickup shipping method only
+      if ( $is_pickup ) {
 
-        $shipping_rate_id = $shipping_item->get_method_id();
-        $method_array = explode( ':', $shipping_rate_id );
-        $shipping_method_id = reset( $method_array );
+        echo $completed_pickup_en_intro;
+      }
 
-        // For local pickup shipping method only
-        if ( 'local_pickup' == $shipping_method_id ) {
-
-          echo $completed_pickup_en_intro;
-          break;
-        }
-
-        // For other shipping methods
-        else {
-          echo $completed_delivery_en_intro . $completed_delivery_en_main;
-        }
+      // For other shipping methods
+      else {
+        echo $completed_delivery_en_intro . $completed_delivery_en_main;
       }
     }
   }

@@ -69,8 +69,8 @@ function myfct_is_relevant_product( $product, $to_weight_only = false ) {
   }
 
   if ( $to_weight_only && $is_product_to_count ) {
-    $is_to_weight = get_post_meta( $product_id, '_is_to_wheight', true );
-    if ( $is_to_weight == 1 ) {
+
+    if ( has_term( 715, 'pq_inventory_type', $product_id) ) {
       $is_product_to_count = true;
     } else {
       $is_product_to_count = false;
@@ -85,11 +85,22 @@ function myfct_is_relevant_product( $product, $to_weight_only = false ) {
 add_filter( 'woocommerce_order_data_store_cpt_get_orders_query', 'handle_custom_query_var', 10, 2 );
 
 function handle_custom_query_var( $query, $query_vars ) {
-  if ( !empty( $query_vars[ '_orddd_timestamp' ] ) ) {
-    $query[ 'meta_query' ][] = array(
-      'key' => '_orddd_timestamp',
-      'value' => esc_attr( $query_vars[ '_orddd_timestamp' ] ),
-    );
+  if ( !empty( $query_vars[ '_shipping_date' ] ) ) {
+	  
+	$delivery_date_obj = new DateTime( esc_attr($query_vars[ '_shipping_date' ]) );
+	$delivery_timestamp = $delivery_date_obj->getTimestamp();
+
+    $query[ 'meta_query' ] = array(
+		'relation' => 'OR',
+		array(
+			'key' => '_orddd_timestamp',
+			'value' => $delivery_timestamp,
+		),
+		array(
+			'key' => '_shipping_date',
+			'value' => esc_attr( $query_vars[ '_shipping_date' ] ),
+		),
+	);
   }
 
   return $query;
@@ -112,7 +123,7 @@ function pq_get_order_created_date($import_after_order) {
 function myfct_get_relevant_orders( $delivery_date_raw, $import_after_order = "" ) {
 	$delivery_date_obj = new DateTime( $delivery_date_raw );
 	if ( empty($import_after_order) ) {
-		$export_start_date_obj = new DateTime( '- 6 weeks ' );
+		$export_start_date_obj = new DateTime( '- 30 weeks ' );
 		$export_start_date = $export_start_date_obj->format( 'y-m-d' );
 	} else {
 		$export_start_date = pq_get_order_created_date($import_after_order);
@@ -120,14 +131,14 @@ function myfct_get_relevant_orders( $delivery_date_raw, $import_after_order = ""
 	
 	$export_end_date_obj = new DateTime( 'tomorrow' );
 
-	$delivery_timestamp = $delivery_date_obj->getTimestamp();
+	$delivery_date = $delivery_date_obj->format('Y-m-d');
 	$export_end_date = $export_end_date_obj->format( 'y-m-d' );
 
 	$query = array(
 		'status' => 'wc-processing',
 		'limit' => -1,
 		'date_created' => $export_start_date . '...' . $export_end_date,
-		'_orddd_timestamp' => $delivery_timestamp,
+		'_shipping_date' => $delivery_date,
 	);
 
 	$orders = wc_get_orders( $query );
@@ -387,19 +398,6 @@ function myfct_orders_export($delivery_date_raw) {
 		'Première commande',
 	));
 
-	//Pickup locations array
-	$pickup_location_addresses = array (
-		'Jean-Talon: Dépanneur Amitié, 421 rue Bélanger, Montréal, QC, H2S 1G3, Canada'               =>   '421 rue Bélanger, Montréal, QC H2S 1G3',
-		'Westmount: Evelyne Boutique, 5127 rue Sherbrooke O, Montréal, QC, H4A 1T3, Canada'           =>   '5127 rue Sherbrooke O, Montréal, QC, H4A 1T3, Canada',
-		'Villeray: Dépanneur Varin, 302 rue Faillon E, Montréal, QC, H2R 1K9, Canada'                 =>   '302 rue Faillon E, Montréal, QC, H2R 1K9, Canada',
-		'Plaza St-Hubert: Dépanneur De La Plaza, 7355 rue St Hubert, Montréal, QC, H2R 2N4, Canada'   =>   '7355 rue St Hubert, Montréal, QC, H2R 2N4, Canada',
-		'Laurier: Super Depanneur Bon-Air Enr, 4918 rue St Denis, Montréal, QC, H2J 2L6, Canada'      =>   '4918 rue St Denis, Montréal, QC, H2J 2L6, Canada',
-		'Plateau: Dépanneur Lily, 4348 rue Rivard, Montréal, QC, H2J 2M8, Canada'                     =>   '4348 rue Rivard, Montréal, QC, H2J 2M8, Canada',
-		'Verdun: Dépanneur Wu, 410 rue Caisse, Verdun, QC, H4G 2C7, Canada'                           =>   '410 rue Caisse, Verdun, QC, H4G 2C7, Canada',
-		'Marché Jean-Talon, Entrée principale, Avenue Henri-Julien'                                   =>   '7070 Avenue Henri Julien, Montreal, QC, H2S 3S3, Canada',
-		'Laval: Dépanneur Saint Hubert, 175 rue St Hubert, Laval, QC, H7G 2Y3, Canada'                =>   '175 rue St Hubert, Laval, QC, H7G 2Y3, Canada',
-	);
-
 	//Loop through orders
 	foreach ( $orders as $order ) {
 
@@ -448,7 +446,7 @@ function myfct_orders_export($delivery_date_raw) {
 		}
 		
 		//Make delivery adress the pickup location if pickup was selected
-		$pickup_location_meta =  get_post_meta($order_id, 'Point de collecte', true);
+		$pickup_location_meta =  get_post_meta($order_id, 'pq_pickup_datetime', true);
 
 		if ( empty($pickup_location_meta) ) {
 			$delivery_address = $full_delivery_address;
@@ -456,25 +454,32 @@ function myfct_orders_export($delivery_date_raw) {
 
 			$special_delivery_number = 1;
 
-			foreach ( $pickup_location_addresses as $pickup_location_raw => $pickup_location_adress ) {
-				if ( $pickup_location_meta == $pickup_location_raw) {
-					$delivery_address = $pickup_location_adress;
-				}
-			}
+			$shipping_items = $order->get_items( 'shipping' );
+			$shipping_item = reset($shipping_items);
+			
+			$pickup_location_adress = $shipping_item->get_meta( '_pickup_location_address' );
+
+			$delivery_address = $pickup_location_adress['address_1'] . ', ' . $pickup_location_adress['city'] . ', ' . $pickup_location_adress['state'] . ', ' . $pickup_location_adress['postcode'] . ', ' . $pickup_location_adress['country'];
 		}
 
 		//Get delivery priority according to timeslots
-		$delivery_timeslot_string = get_post_meta($order_id, '_orddd_time_slot', true);
-		$delivery_start_hour = floatval( substr($delivery_timeslot_string, 0, 2) );
-		$delivery_start_minutes = floatval( substr($delivery_timeslot_string, 3, 2) ) / 60;
-		$delivery_start_time = $delivery_start_hour + $delivery_start_minutes;
+		$delivery_timeslot_array = get_post_meta($order_id, '_delivery_time_frame', true);
 
-		$cutoff_time_to_split = 16;
-
-		if ( $delivery_start_time < $cutoff_time_to_split ) {
+		if ( empty( $delivery_timeslot_array ) ) {
 			$delivery_priority = 1;
 		} else {
-			$delivery_priority = 2;
+			$delivery_timeslot_start_string = $delivery_timeslot_array['time_from'];
+			$delivery_start_hour = floatval( substr($delivery_timeslot_start_string, 0, 2) );
+			$delivery_start_minutes = floatval( substr($delivery_timeslot_start_string, 3, 2) ) / 60;
+			$delivery_start_time = $delivery_start_hour + $delivery_start_minutes;
+	
+			$cutoff_time_to_split = 16;
+	
+			if ( $delivery_start_time < $cutoff_time_to_split ) {
+				$delivery_priority = 1;
+			} else {
+				$delivery_priority = 2;
+			}
 		}
 
 		//Get a 1 if is first order
