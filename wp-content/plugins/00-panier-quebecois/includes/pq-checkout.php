@@ -151,7 +151,7 @@ function bbloomer_change_continue_shopping() {
 // -------- Add empty CArt button -------- //
 add_action( 'woocommerce_cart_coupon', 'custom_woocommerce_empty_cart_button' );
 function custom_woocommerce_empty_cart_button() {
-	echo '<a id="btn_empty_cart" data-msg="' . esc_attr( 'Are you sure you want to empty the cart?', 'woocommerce' ) . '" href="' . esc_url( add_query_arg( 'empty_cart', 'yes' ) ) . '" class="button" title="' . esc_attr( 'Empty Cart', 'woocommerce' ) . '">' . esc_html( 'Empty Cart', 'woocommerce' ) . '</a>';
+	echo '<a id="btn_empty_cart" data-msg-fr="' .  esc_attr('Etes vous sur de vouloir vider votre panier ?', 'panierquebecois' ) . '" data-msg-en="' .  esc_attr('Are you sure you want to empty the cart?', 'panierquebecois' ) . '" href="' . esc_url( add_query_arg( 'empty_cart', 'yes' ) ) . '" class="button" title="' . esc_attr(__( 'Vider le panier', 'panierquebecois' )) . '">' . esc_html(__( 'Vider le panier', 'panierquebecois' )) . '</a>';
 }
 
 add_action( 'wp_loaded', 'custom_woocommerce_empty_cart_action', 20 );
