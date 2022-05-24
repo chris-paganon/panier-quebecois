@@ -82,20 +82,22 @@ function pq_fix_pickup_lead_time($field_html, $package_id, $package) {
   $day = $pickup_date_obj->format('w');
 
   $chosen_location = wc_local_pickup_plus_get_pickup_location( $package['pickup_location_id'] );
-  $schedule = $chosen_location->get_business_hours()->get_value();
-  $opening_hours = (array) $schedule[ (int) $day ];
 
-  $start_time_seconds = reset(array_keys($opening_hours));
-  $start_time = pq_convert_seconds_to_time( $start_time_seconds );
-
-  //Get the wrong time from the plugin
-  $chosen_datetime = ! empty( $chosen_date ) && is_string( $chosen_date ) ? new \DateTime( $chosen_date, $chosen_location->get_address()->get_timezone() ) : null;
-  $chosen_day    = ! empty( $chosen_datetime ) ? $chosen_datetime->format( 'w' ) : null;
-  $minimum_hours = ! empty( $chosen_datetime ) ? $chosen_location->get_appointments()->get_schedule_minimum_hours( $chosen_datetime ) : null;
-  $minimum_hours_time = pq_convert_seconds_to_time( $minimum_hours );
-
-  if ( $minimum_hours_time != $start_time ) {
-    $field_html = str_replace($minimum_hours_time, $start_time, $field_html);
+  if (!empty($chosen_location)) {
+    $schedule = $chosen_location->get_business_hours()->get_value();
+    $opening_hours = (array) $schedule[ (int) $day ];
+  
+    $start_time_seconds = reset(array_keys($opening_hours));
+    $start_time = pq_convert_seconds_to_time( $start_time_seconds );
+  
+    //Get the wrong time from the plugin
+    $chosen_datetime = ! empty( $chosen_date ) && is_string( $chosen_date ) ? new \DateTime( $chosen_date, $chosen_location->get_address()->get_timezone() ) : null;
+    $minimum_hours = ! empty( $chosen_datetime ) ? $chosen_location->get_appointments()->get_schedule_minimum_hours( $chosen_datetime ) : null;
+    $minimum_hours_time = pq_convert_seconds_to_time( $minimum_hours );
+  
+    if ( $minimum_hours_time != $start_time ) {
+      $field_html = str_replace($minimum_hours_time, $start_time, $field_html);
+    }
   }
 
   return $field_html;
