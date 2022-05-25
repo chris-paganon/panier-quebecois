@@ -303,6 +303,7 @@ button.woo_order_tip_remove {
 @media (max-width:544px) {
     .woocommerce-cart-form #btn_empty_cart {
         margin-bottom: 5px;
+        border-width: 2px !important;
     }
 
     .woocommerce-cart-form #btn_empty_cart,
@@ -313,7 +314,6 @@ button.woo_order_tip_remove {
 
 @media (min-width:545px) and (max-width: 860px) {
     .woocommerce-cart-form #btn_empty_cart {
-        border-width: 2px !important;
         margin-bottom: 10px;
     }
 }
