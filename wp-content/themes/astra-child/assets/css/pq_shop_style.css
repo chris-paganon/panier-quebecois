@@ -831,3 +831,17 @@ div.wlfwc-add-to-wishlist {
     overflow: hidden;
     text-overflow: ellipsis;
 }
+
+/*ALT BUTTON STYLES*/
+.woocommerce .button.button-alt {
+    background-color: #ffffff;
+    color: #4b9e50;
+    border: 2px solid #4b9e50 !important;
+    text-align: center;
+}
+
+.woocommerce .button.button-alt:hover {
+    background-color: #4b9e50;
+    color: #ffffff;
+    border: 2px solid #4b9e50;
+}

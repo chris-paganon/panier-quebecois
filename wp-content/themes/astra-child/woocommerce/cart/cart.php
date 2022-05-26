@@ -121,10 +121,15 @@ do_action( 'woocommerce_before_cart' ); ?>
             <?php do_action( 'woocommerce_cart_coupon' ); ?>
           </div>
           <?php } ?>
-          <button type="submit" class="button" name="update_cart" value="<?php esc_attr_e( 'Update cart', 'woocommerce' ); ?>">
-            <?php esc_html_e( 'Update cart', 'woocommerce' ); ?>
-          </button>
-          <?php do_action( 'woocommerce_cart_actions' ); ?>
+            <div class="cart-actions">
+                <!--Empty cart button-->
+                <a id="btn_empty_cart" data-msg-fr="<?php echo esc_attr('Etes vous sur de vouloir vider votre panier ?', 'panierquebecois' ); ?>" data-msg-en="<?php echo esc_attr('Are you sure you want to empty the cart?', 'panierquebecois' ); ?>" href=" <?php echo esc_url( add_query_arg( 'empty_cart', 'yes' ) ); ?> " class="button button-alt" title="<?php echo esc_attr(__( 'Vider le panier', 'panierquebecois' )) ?>"><?php echo esc_html(__( 'Vider le panier', 'panierquebecois' )) ?></a>
+
+                <button type="submit" class="button" name="update_cart" value="<?php esc_attr_e( 'Update cart', 'woocommerce' ); ?>">
+		            <?php esc_html_e( 'Update cart', 'woocommerce' ); ?>
+                </button>
+	            <?php do_action( 'woocommerce_cart_actions' ); ?>
+            </div>
           <?php wp_nonce_field( 'woocommerce-cart', 'woocommerce-cart-nonce' ); ?>
         </td>
       </tr>

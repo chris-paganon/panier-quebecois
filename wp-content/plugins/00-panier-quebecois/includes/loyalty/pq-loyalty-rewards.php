@@ -149,7 +149,7 @@ class PQ_loyalty_rewards {
           $user_id,
           $reward,
           'Late reward after account creation or login',
-          $order_id,
+          $order_id
         );
       }
     }
