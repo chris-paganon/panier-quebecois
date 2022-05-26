@@ -22,4 +22,14 @@ jQuery(document).ready(function ($) {
             navbar.closest("header.elementor").css("padding-bottom", "0");
         }
     }
+
+    $(document).on('click','#btn_empty_cart',function(e) {
+        var lang = $('html').attr('lang');
+        lang = lang.slice(0,2);
+
+        var msg = $(this).data('msg-'+lang);
+        if(confirm(msg) == false) {
+            e.preventDefault();
+        }   
+    });
 });

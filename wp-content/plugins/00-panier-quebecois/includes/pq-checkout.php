@@ -44,7 +44,7 @@ function pq_default_delivery_time_frame($choices, $time_frames, $context) {
       unset($choices[$key]);
     }
   }
-  
+
   return $choices;
 }
 
@@ -80,7 +80,7 @@ function pq_fix_pickup_lead_time($field_html, $package_id, $package) {
   $chosen_date = $package['pickup_date'];
   $pickup_date_obj = new DateTime( $chosen_date );
   $day = $pickup_date_obj->format('w');
-  
+
   $chosen_location = wc_local_pickup_plus_get_pickup_location( $package['pickup_location_id'] );
 
   if (!empty($chosen_location)) {
@@ -271,6 +271,15 @@ function pq_hide_cart_shipping( $show_shipping ) {
   return $show_shipping;
 }
 
+add_action( 'wp_loaded', 'custom_woocommerce_empty_cart_action', 20 );
+function custom_woocommerce_empty_cart_action() {
+	if ( isset( $_GET['empty_cart'] ) && 'yes' === esc_html( $_GET['empty_cart'] ) ) {
+		WC()->cart->empty_cart();
+
+		$referer  = wp_get_referer() ? esc_url( remove_query_arg( 'empty_cart' ) ) : wc_get_cart_url();
+		wp_safe_redirect( $referer );
+	}
+}
 
 // --------------------------- THANK YOU --------------------------- //
 

@@ -462,6 +462,11 @@ function myfct_orders_export($delivery_date_raw) {
 			$delivery_address = $pickup_location_adress['address_1'] . ', ' . $pickup_location_adress['city'] . ', ' . $pickup_location_adress['state'] . ', ' . $pickup_location_adress['postcode'] . ', ' . $pickup_location_adress['country'];
 		}
 
+		//Special delivery number for B2B orders
+		if ( ! empty($order->get_billing_company()) ) {
+			$special_delivery_number = 3;
+		}
+
 		//Get delivery priority according to timeslots
 		$delivery_timeslot_array = get_post_meta($order_id, '_delivery_time_frame', true);
 

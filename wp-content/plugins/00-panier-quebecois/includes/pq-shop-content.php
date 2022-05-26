@@ -251,7 +251,7 @@ class PQ_shop_content {
   /**
    * Add Quebec icon over product thumbnail
    */
-  public static function pq_add_product_quebec_icon() {
+  public function pq_add_product_quebec_icon() {
     $product_id = get_the_ID();
     $country_origins = get_the_terms( $product_id, 'country_origin' );
 
