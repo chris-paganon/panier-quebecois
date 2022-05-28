@@ -42,14 +42,6 @@ class PQ_order_schedules {
         'is_delivery' => false,
       ),
       array(
-        'date' => 'Tuesday 9:30pm',
-        'is_delivery' => true,
-      ),
-      array(
-        'date' => 'Tuesday 3:30pm',
-        'is_delivery' => false,
-      ),
-      array(
         'date' => 'Wednesday 9:30pm',
         'is_delivery' => true,
       ),
@@ -58,27 +50,11 @@ class PQ_order_schedules {
         'is_delivery' => false,
       ),
       array(
-        'date' => 'Thursday 9:30pm',
-        'is_delivery' => true,
-      ),
-      array(
-        'date' => 'Thursday 3:30pm',
-        'is_delivery' => false,
-      ),
-      array(
         'date' => 'Friday 9:30pm',
         'is_delivery' => true,
       ),
       array(
         'date' => 'Friday 3:30pm',
-        'is_delivery' => false,
-      ),
-      array(
-        'date' => 'Saturday 9:30pm',
-        'is_delivery' => true,
-      ),
-      array(
-        'date' => 'Saturday 3:30pm',
         'is_delivery' => false,
       ),
       array(
