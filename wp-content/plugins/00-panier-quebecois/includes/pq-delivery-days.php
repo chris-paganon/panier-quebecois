@@ -11,11 +11,8 @@ class PQ_delivery_days {
 
     public static $delivery_days = array(
         'monday',
-        'tuesday',
         'wednesday',
-        'thursday',
         'friday',
-        'saturday',
         'sunday',
     );
     public static $deadline_hour = 23;
