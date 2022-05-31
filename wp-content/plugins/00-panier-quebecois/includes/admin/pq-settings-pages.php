@@ -57,8 +57,7 @@ function pq_settings_fields() {
     add_settings_field( 'pq_featured_products_title', 'Titre', 'pq_featured_products_title_field', 'pq_settings_sections', 'pq_featured_products_title_section' );
 
     add_settings_field( 'pq_featured_marchand_and_producer', 'Choix', 'pq_featured_marchand_and_producer_list_field', 'pq_settings_sections', 'pq_featured_marchand_and_producer_list_section' );
-    add_settings_field( 'pq_featured_test', 'TEST', 'pq_featured_test_field', 'pq_settings_sections', 'pq_featured_marchand_and_producer_list_section' );
-    
+
     register_setting( 'pq-settings-page', 'pq_featured_products_title');
     register_setting( 'pq-settings-page', 'pq_featured_marchand_and_producer' );
     register_setting( 'pq-settings-page', 'pq_featured_test' );
@@ -104,22 +103,4 @@ function pq_featured_marchand_and_producer_list_field() {
     endif;
     //wp_dropdown_categories( array( 'taxonomy' => ['product_tag', 'pq_producer'], 'hide_empty' => 0, 'name' => "pq_featured_marchand_and_producer", 'selected' => $term_obj[0]->term_id, 'orderby' => 'name', 'hierarchical' => 0, 'show_option_none' => 'Please select' ) );
 
-}
-
-function pq_featured_test_field() {
-    $selected = get_option( 'pq_featured_test' );
-    print_r($selected);
-
-
-    echo '<select name="pq_featured_test[]" id="pq_featured_test" class="postform"   multiple="multiple>';
-    echo '<option value="0">Please test</option>';
-    echo '<option value="1" >Test 1</option>';
-    echo '<option value="2" >Test 2</option>';
-    echo '<option value="3" >Test 3</option>';
-    echo '<option value="4" >Test 4</option>';
-    echo '<option value="5" >Test 5</option>';
-    echo '<option value="6" >Test 6</option>';
-    echo '<option value="7" >Test 7</option>';
-
-    echo '</select>';
 }
