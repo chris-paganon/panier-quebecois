@@ -100,9 +100,9 @@ function pq_count_suppliers_fct() {
 /**
  * Return seller of the week
  */
-add_shortcode( 'pq_seeler_week', 'pq_seeler_week_fct' );
+add_shortcode( 'pq_seller_week', 'pq_seller_week_fct' );
 
-function pq_seeler_week_fct() {
+function pq_seller_week_fct() {
     $sellerID = get_option( 'pq_featured_marchand_and_producer' );
     $seller = get_term( $sellerID );
     $seller_link = get_term_link( $seller );
@@ -148,8 +148,4 @@ function pq_seeler_week_fct() {
     wp_reset_postdata();
     echo '</div>';
     echo '</div>';
-
-    // echo $html;
-
-    return;
 }
