@@ -130,8 +130,10 @@ function pq_seller_week_fct() {
 
     echo '<div class="sellerweek_block">';
     echo '<div class="sellerweek_infos">';
-    if( $image_id ) { 
-        echo wp_get_attachment_image ( $image_id, 'thumbnail' );
+    if( $image_id ) {
+	    echo '<div class="sellerweek_infos--bg-image" style="background-image: url(\''.wp_get_attachment_image_url($image_id, 'medium_large').'\')">';
+	    echo wp_get_attachment_image ( $image_id, 'thumbnail' );
+	    echo '</div>';
     }
     echo '<p class="sellerweek_title">'.$seller->name.'</p>';
     echo '<a href="' . esc_url( $seller_link ) . '">' . esc_attr( 'Magaziner', 'woocommerce' ) . '</a>';

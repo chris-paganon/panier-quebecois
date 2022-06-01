@@ -842,12 +842,22 @@ div.wlfwc-add-to-wishlist {
   text-align: center;
   width: 50%;
   min-width: 150px;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 1em;
 }
 
 .sellerweek_block .sellerweek_infos img {
-  width: 100%;
-  border-radius: 5px;
-  margin-bottom: 22px;
+    width: 0;
+    height: 0;
+}
+.sellerweek_block .sellerweek_infos .sellerweek_infos--bg-image {
+    width: 100%;
+    border-radius: 5px;
+    margin-bottom: 22px;
+    background-size: cover;
+    background-position: center center;
+    flex-grow: 1;
 }
 
 .sellerweek_block .sellerweek_infos p.sellerweek_title {
@@ -866,9 +876,14 @@ div.wlfwc-add-to-wishlist {
   line-height: 30px;
   text-align: center;
   letter-spacing: -0.02em;
-  color: #F1EADD;
+  color: #ffffff;
   padding: 15px;
   display: block;
+}
+.sellerweek_block .sellerweek_infos a:hover {
+    color: #ffffff;
+    border-color: #54595f;
+    background-color: #54595f;
 }
 
 .sellerweek_block .sellerweek_products ul.products {
