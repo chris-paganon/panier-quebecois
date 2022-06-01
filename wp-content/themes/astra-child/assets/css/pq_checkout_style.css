@@ -151,6 +151,11 @@ p#orddd_time_slot_field {
     font-size: 20px;
 }
 
+/* Hide shipping message under products */
+.pickup-location-cart-item-field {
+    display: none;
+}
+
 /* Remove useless padding for stripe */
 .woocommerce-page.woocommerce-checkout #payment .payment_method_stripe div.form-row {
     padding: 0;
