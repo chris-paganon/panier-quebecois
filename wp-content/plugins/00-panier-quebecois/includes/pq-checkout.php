@@ -48,14 +48,6 @@ function pq_default_delivery_time_frame($choices, $time_frames, $context) {
   return $choices;
 }
 
-// ------- Fix delivery days in translated calendar ------- //
-add_filter('wc_od_get_calendar_settings', 'pq_fix_translated_delivery_days', 10, 2);
-
-function pq_fix_translated_delivery_days($args, $context) {
-
-  $args['format'] = 'dd/mm/yyyy';
-  return $args;
-}
 
 // ------- Move delivery date selection ------- //
 add_filter( 'wc_od_checkout_location', 'pq_move_delivery_date_selection', 10, 2);
