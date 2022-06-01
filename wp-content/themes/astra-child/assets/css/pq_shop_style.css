@@ -841,23 +841,23 @@ div.wlfwc-add-to-wishlist {
 .sellerweek_block .sellerweek_infos {
   text-align: center;
   width: 50%;
-  min-width: 150px;
-    display: flex;
-    flex-direction: column;
-    margin-bottom: 1em;
+  min-width: 160px;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1em;
 }
 
 .sellerweek_block .sellerweek_infos img {
-    width: 0;
-    height: 0;
+  width: 0;
+  height: 0;
 }
 .sellerweek_block .sellerweek_infos .sellerweek_infos--bg-image {
-    width: 100%;
-    border-radius: 5px;
-    margin-bottom: 22px;
-    background-size: cover;
-    background-position: center center;
-    flex-grow: 1;
+  width: 100%;
+  border-radius: 5px;
+  margin-bottom: 22px;
+  background-size: cover;
+  background-position: center center;
+  flex-grow: 1;
 }
 
 .sellerweek_block .sellerweek_infos p.sellerweek_title {
@@ -881,9 +881,9 @@ div.wlfwc-add-to-wishlist {
   display: block;
 }
 .sellerweek_block .sellerweek_infos a:hover {
-    color: #ffffff;
-    border-color: #54595f;
-    background-color: #54595f;
+  color: #ffffff;
+  border-color: #54595f;
+  background-color: #54595f;
 }
 
 .sellerweek_block .sellerweek_products ul.products {
@@ -895,12 +895,11 @@ div.wlfwc-add-to-wishlist {
 }
 
 .sellerweek_block .sellerweek_products ul.products li.product {
-  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
   border-radius: 8px;
   margin-right: 15px !important;
   margin-bottom: 0;
-  width: calc(100% / 3 - 30px);
   padding: 5px 5px 20px;
+  min-width: 140px;
 }
 
 .sellerweek_block .sellerweek_products ul.products li.product a.pq_shop_supplier, .sellerweek_block .sellerweek_products ul.products li.product .ast-woo-shop-product-description, .sellerweek_block .sellerweek_products ul.products li.product .frontend_quantity p {
@@ -937,6 +936,8 @@ div.wlfwc-add-to-wishlist {
 
   .sellerweek_block .sellerweek_products ul.products li.product {
     margin-right: 30px !important;
+    width: calc(100% / 3 - 30px);
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
   }
 
   .sellerweek_block .sellerweek_products ul.products li.product .ast-woo-shop-product-description, .sellerweek_block .sellerweek_products ul.products li.product .frontend_quantity p {
