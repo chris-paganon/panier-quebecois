@@ -162,7 +162,7 @@ div.awwm-product-loop div div.woocommerce.columns-6 ul.products li.product {
     color: #4b9e50;
     text-decoration: underline;
     font-weight: bold;
-  }
+}
 /* Titles */
 .awwm-product-loop div.parent-cat h3{
     color: #4b9e50;
@@ -833,65 +833,67 @@ div.wlfwc-add-to-wishlist {
 }
 
 .sellerweek_block {
-  display: flex;
-  column-gap: 1rem;
-  overflow-x: scroll;
+    display: flex;
+    column-gap: 1rem;
+    overflow-x: scroll;
 }
 
 .sellerweek_block .sellerweek_infos {
-  text-align: center;
-  width: 50%;
-  min-width: 160px;
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 1.5em;
+    text-align: center;
+    width: 50%;
+    min-width: 160px;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 1.5em;
 }
 
 .sellerweek_block .sellerweek_infos img {
-  width: 0;
-  height: 0;
+    width: 0;
+    height: 0;
 }
 .sellerweek_block .sellerweek_infos .sellerweek_infos--bg-image {
-  width: 100%;
-  border-radius: 5px;
-  margin-bottom: 22px;
-  background-size: cover;
-  background-position: center center;
-  flex-grow: 1;
+    width: 100%;
+    border-radius: 5px;
+    margin-bottom: 22px;
+    background-size: cover;
+    background-position: center center;
+    flex-grow: 1;
 }
 
 .sellerweek_block .sellerweek_infos p.sellerweek_title {
-  font-size: 22px;
-  line-height: 25px;
-  font-weight: 400;
-  color: #424242;
-  margin-bottom: 22px;
+    font-size: 22px;
+    line-height: 25px;
+    font-weight: 400;
+    color: #424242;
+    margin-bottom: 22px;
 }
 
 .sellerweek_block .sellerweek_infos a {
-  background: #4B9D4F;
-  border-radius: 5px;
-  font-weight: 700;
-  font-size: 18px;
-  line-height: 30px;
-  text-align: center;
-  letter-spacing: -0.02em;
-  color: #ffffff;
-  padding: 15px;
-  display: block;
+    background: #4B9D4F;
+    border-radius: 5px;
+    font-weight: 700;
+    font-size: 18px;
+    line-height: 30px;
+    text-align: center;
+    letter-spacing: -0.02em;
+    color: #ffffff;
+    padding: 15px;
+    display: block;
 }
 .sellerweek_block .sellerweek_infos a:hover {
-  color: #ffffff;
-  border-color: #54595f;
-  background-color: #54595f;
+    color: #ffffff;
+    border-color: #54595f;
+    background-color: #54595f;
 }
 
 .sellerweek_block .sellerweek_products ul.products {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: nowrap;
-  justify-content: flex-start;
-  align-items: flex-start;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    align-items: flex-start;
+    height: 100%;
+    padding-bottom: 15px;
 }
 
 .sellerweek_block .sellerweek_products ul.products li.product {
@@ -900,62 +902,63 @@ div.wlfwc-add-to-wishlist {
   margin-bottom: 0;
   padding: 5px 5px 20px;
   min-width: 140px;
+    height: 100%;
 }
 
 .sellerweek_block .sellerweek_products ul.products li.product a.pq_shop_supplier, .sellerweek_block .sellerweek_products ul.products li.product .ast-woo-shop-product-description, .sellerweek_block .sellerweek_products ul.products li.product .frontend_quantity p {
-  font-size: 13px;
+    font-size: 13px;
 }
 
 .sellerweek_block .sellerweek_products ul.products li.product h2.woocommerce-loop-product__title, .sellerweek_block .sellerweek_products ul.products li.product span.price {
-  font-size: 14px;
+    font-size: 14px;
 }
 
 .sellerweek_block .sellerweek_products ul.products li.product .quantity {
-  margin-right: 5px;
+    margin-right: 5px;
 }
 
 .sellerweek_block .sellerweek_products ul.products li.product .quantity input.qty {
-  width: 50px;
+    width: 50px;
 }
 
 @media (min-width: 768px) {
-  .sellerweek_block {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    column-gap: 2rem;
-    overflow-x: hidden;
-  }
+    .sellerweek_block {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        column-gap: 2rem;
+        overflow-x: hidden;
+    }
 
-  .sellerweek_block .sellerweek_products {
-    grid-column: span 3 / span 3;
-  }
+    .sellerweek_block .sellerweek_products {
+        grid-column: span 3 / span 3;
+    }
 
-  .sellerweek_block .sellerweek_infos {
-    grid-column: span 1 / span 1;
-    width: 25%;
-      margin-bottom: 1em;
-  }
+    .sellerweek_block .sellerweek_infos {
+        grid-column: span 1 / span 1;
+        width: 25%;
+        margin-bottom: 1em;
+    }
 
-  .sellerweek_block .sellerweek_products ul.products li.product {
-    margin-right: 30px !important;
-    width: calc(100% / 3 - 30px);
-    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
-  }
+    .sellerweek_block .sellerweek_products ul.products li.product {
+        margin-right: 30px !important;
+        width: calc(100% / 3 - 30px);
+        box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+    }
 
-  .sellerweek_block .sellerweek_products ul.products li.product .ast-woo-shop-product-description, .sellerweek_block .sellerweek_products ul.products li.product .frontend_quantity p {
-    font-size: 15px;
-  }
+    .sellerweek_block .sellerweek_products ul.products li.product .ast-woo-shop-product-description, .sellerweek_block .sellerweek_products ul.products li.product .frontend_quantity p {
+        font-size: 15px;
+    }
 
-  .sellerweek_block .sellerweek_products ul.products li.product a.pq_shop_supplier {
-    font-size: 14px;
-  }
+    .sellerweek_block .sellerweek_products ul.products li.product a.pq_shop_supplier {
+        font-size: 14px;
+    }
 
-  .sellerweek_block .sellerweek_products ul.products li.product h2.woocommerce-loop-product__title, .sellerweek_block .sellerweek_products ul.products li.product span.price {
-    font-size: 16px;
-  }
+    .sellerweek_block .sellerweek_products ul.products li.product h2.woocommerce-loop-product__title, .sellerweek_block .sellerweek_products ul.products li.product span.price {
+        font-size: 16px;
+    }
 
-  .sellerweek_block .sellerweek_products ul.products li.product .quantity input.qty {
-    width: 60px;
-  }
+    .sellerweek_block .sellerweek_products ul.products li.product .quantity input.qty {
+        width: 60px;
+    }
 }
 
 
