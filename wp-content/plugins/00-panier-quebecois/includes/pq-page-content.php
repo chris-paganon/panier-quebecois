@@ -108,13 +108,43 @@ function pq_seller_week_fct() {
     $seller_link = get_term_link( $seller );
     $image_id = get_term_meta ( $sellerID, 'image_id', true );
 
-    $tax_query = array(
-        array(
-            'taxonomy' => 'pq_collections',
-            'field' => 'slug',
-            'terms' => 'marchand-de-la-semaine',
-        ),
-    );
+//    $tax_query = array(
+//        array(
+//            'taxonomy' => 'pq_collections',
+//            'field' => 'slug',
+//            'terms' => 'marchand-de-la-semaine',
+//        ),
+//    );
+
+	$tax_query = array(
+		'relation' => 'OR',
+		array(
+			'relation' => 'AND',
+			array(
+				'taxonomy' => 'pq_collections',
+				'field' => 'slug',
+				'terms' => 'marchand-de-la-semaine',
+			),
+			array(
+				'taxonomy' => 'product_tag',
+				'field' => 'term_id',
+				'terms' => $sellerID,
+			),
+		),
+		array(
+			'relation' => 'AND',
+			array(
+				'taxonomy' => 'pq_collections',
+				'field' => 'slug',
+				'terms' => 'marchand-de-la-semaine',
+			),
+			array(
+				'taxonomy' => 'pq_producer',
+				'field' => 'term_id',
+				'terms' => $sellerID,
+			),
+		)
+	);
 
     $products_query_arg = array(
         'tax_query' => $tax_query,
@@ -127,6 +157,10 @@ function pq_seller_week_fct() {
     );
 
     $products_query = new WP_Query( $products_query_arg );
+
+    if(!$products_query->post_count){
+    	return false;
+    }
 
     echo '<div class="sellerweek_block">';
     echo '<div class="sellerweek_infos">';
