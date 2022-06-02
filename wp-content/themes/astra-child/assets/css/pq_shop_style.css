@@ -844,7 +844,7 @@ div.wlfwc-add-to-wishlist {
   min-width: 160px;
   display: flex;
   flex-direction: column;
-  margin-bottom: 1em;
+  margin-bottom: 1.5em;
 }
 
 .sellerweek_block .sellerweek_infos img {
@@ -932,6 +932,7 @@ div.wlfwc-add-to-wishlist {
   .sellerweek_block .sellerweek_infos {
     grid-column: span 1 / span 1;
     width: 25%;
+      margin-bottom: 1em;
   }
 
   .sellerweek_block .sellerweek_products ul.products li.product {
