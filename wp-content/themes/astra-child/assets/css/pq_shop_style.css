@@ -936,7 +936,7 @@ div.wlfwc-add-to-wishlist {
     }
 
     .sellerweek_block .sellerweek_products {
-      width: auto;
+      width: 75%;
       grid-column: span 3 / span 3;
     }
 
