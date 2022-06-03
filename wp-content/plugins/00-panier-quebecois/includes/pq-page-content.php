@@ -162,8 +162,9 @@ function pq_seller_week_fct() {
     	return false;
     }
 
-    echo '<div class="sellerweek_block">';
-    echo '<div class="sellerweek_infos">';
+    echo '<div class="sellerweek_block woocommerce">';
+    echo '<ul class="products columns-4">';
+    echo '<li class="sellerweek_infos">';
     if( $image_id ) {
 	    echo '<div class="sellerweek_infos--bg-image" style="background-image: url(\''.wp_get_attachment_image_url($image_id, 'medium_large').'\')">';
 	    echo wp_get_attachment_image ( $image_id, 'thumbnail' );
@@ -171,17 +172,18 @@ function pq_seller_week_fct() {
     }
     echo '<p class="sellerweek_title">'.$seller->name.'</p>';
     echo '<a href="' . esc_url( $seller_link ) . '">' . esc_attr( 'Magaziner', 'woocommerce' ) . '</a>';
-    echo '</div>';
-    echo '<div class="sellerweek_products woocommerce columns-3">';
+    echo '</li>';
+//    echo '<div class="sellerweek_products woocommerce columns-3">';
     if ( $products_query->have_posts() ) {
-        woocommerce_product_loop_start();
+//        woocommerce_product_loop_start();
         while ( $products_query->have_posts() ) {
             $products_query->the_post();
             wc_get_template_part( 'content', 'product' );
         }
-        woocommerce_product_loop_end();
+//        woocommerce_product_loop_end();
     }
     wp_reset_postdata();
-    echo '</div>';
+//    echo '</div>';
+    echo '</ul>';
     echo '</div>';
 }
