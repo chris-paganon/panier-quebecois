@@ -171,7 +171,7 @@ function pq_seller_week_fct() {
 	    echo '</div>';
     }
     echo '<p class="sellerweek_title">'.$seller->name.'</p>';
-    echo '<a href="' . esc_url( $seller_link ) . '">' . esc_attr( 'Magaziner', 'woocommerce' ) . '</a>';
+    echo '<a href="' . esc_url( $seller_link ) . '">' . esc_attr( 'Magasiner', 'woocommerce' ) . '</a>';
     echo '</li>';
 //    echo '<div class="sellerweek_products woocommerce columns-3">';
     if ( $products_query->have_posts() ) {
