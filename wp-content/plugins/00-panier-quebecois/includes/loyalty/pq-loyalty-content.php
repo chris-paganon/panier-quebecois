@@ -89,11 +89,9 @@ class PQ_loyalty_content {
 
     <div class="my-mycred-wrapper">
       <h3 class="my-mycred-header"> <?php echo PQ_loyalty_helper::get_image(); ?> Programme de fidélité</h3>
-      <p class="my-mycred-paragraph"><span class="my-mycred-bold">Après 5 commandes</span> passées sur notre site, vous accéderez à notre système de <span class="my-mycred-bold">remise en argent de 2%</span> que vous pourrez utiliser quand vous le souhaitez. Il n’y a ni de date d’expiration ni de minimum avant de pouvoir en bénéficier.</p>
+      <p class="my-mycred-paragraph"><span class="my-mycred-bold">Après 5 commandes</span> passées sur notre site, vous accéderez à notre système de <span class="my-mycred-bold">remise en argent de 1%</span> que vous pourrez utiliser quand vous le souhaitez. Il n’y a ni de date d’expiration ni de minimum avant de pouvoir en bénéficier.</p>
       <h4 class="my-mycred-subheader">Votre rabais accumulé est de:</h4>
       <div class="mycred-my-balance-wrapper"><div><?php echo wc_price($balance); ?></div></div>
-      <p class="my-mycred-paragraph pq-loyalty-note"><span class="my-mycred-bold">À noter:</span><br/>
-      Dans le but de simplifier notre programme de fidélité, nous avons décidé de passer à un système de remise en argent, notre ancien système étant basé sur des points. Pour tout ceux qui utilisaient notre ancien système, vous serez automatiquement inscrits à notre nouveau programme de fidélité. Vos points existants seront convertis directement en dollars de remise. Par exemple si vous aviez 100 points vous obtiendrez 2 dollars de rabais et ainsi de suite.</p>
     </div>
     <div class="my-mycred-wrapper" id="referral">
       <h3 class="my-mycred-header"> <?php echo esc_html__('Référez un ami et recevez $10 chacun'); ?> </h3>
@@ -115,7 +113,7 @@ class PQ_loyalty_content {
   public static function pq_add_loyalty_text_before_registration() {
 
     if ( get_permalink( get_option( 'woocommerce_myaccount_page_id' ) ) == get_permalink( get_the_ID() ) ) {
-      echo '<p>Créez un compte et recevez 2% de remise en argent à partir de votre 5ème commande.</p>';
+      echo '<p>Créez un compte et recevez 1% de remise en argent à partir de votre 5ème commande.</p>';
     }
   }
 
