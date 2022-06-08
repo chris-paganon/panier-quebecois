@@ -94,12 +94,12 @@ class PQ_loyalty_content {
       <div class="mycred-my-balance-wrapper"><div><?php echo wc_price($balance); ?></div></div>
     </div>
     <div class="my-mycred-wrapper" id="referral">
-      <h3 class="my-mycred-header"> <?php echo esc_html__('Référez un ami et recevez $10 chacun'); ?> </h3>
+      <h3 class="my-mycred-header"> <?php echo esc_html__('Référez un ami et recevez $20 chacun'); ?> </h3>
       <h4 class="my-mycred-subheader"><?php echo esc_html__('Envoyez le lien suivant à vos amis:'); ?></h4>
       <p><?php echo home_url() . '?pqc=' . $username; ?></p>
       <h4 class="my-mycred-subheader"><?php echo esc_html__('Comment ça marche?'); ?></h4>
-      <p class="my-mycred-paragraph"> <span class="my-mycred-bold"><?php echo esc_html__('Recevez $10'); ?></span> <?php echo esc_html__('pour chaque ami référé! Ils bénéficieront aussi de $10 de rabais sur leur premier achat!'); ?> </p>
-      <p class="my-mycred-paragraph"> <?php echo esc_html__('Quand vos amis passeront commande après avoir ouvert le lien ci-dessus, votre bonus s\'ajoutera'); ?><span class="my-mycred-bold"> <?php echo esc_html__('automatiquement sur votre compte.'); ?></span><?php echo esc_html__(' La promotion de $10 s’appliquera aussi directement lors de leur commande.'); ?> </p>
+      <p class="my-mycred-paragraph"> <span class="my-mycred-bold"><?php echo esc_html__('Recevez $20'); ?></span> <?php echo esc_html__('pour chaque ami référé! Ils bénéficieront aussi de $20 de rabais sur leur premier achat!'); ?> </p>
+      <p class="my-mycred-paragraph"> <?php echo esc_html__('Quand vos amis passeront commande après avoir ouvert le lien ci-dessus, votre bonus s\'ajoutera'); ?><span class="my-mycred-bold"> <?php echo esc_html__('automatiquement sur votre compte.'); ?></span><?php echo esc_html__(' La promotion de $20 s’appliquera aussi directement lors de leur commande.'); ?> </p>
       <p class="my-mycred-paragraph pq-referral-conditions"> <?php echo esc_html__('Offre valable pour la première commande d\'un nouveau client.'); ?> </p>
     </div><?php
   }
@@ -113,7 +113,7 @@ class PQ_loyalty_content {
   public static function pq_add_loyalty_text_before_registration() {
 
     if ( get_permalink( get_option( 'woocommerce_myaccount_page_id' ) ) == get_permalink( get_the_ID() ) ) {
-      echo '<p>Créez un compte et recevez 1% de remise en argent à partir de votre 5ème commande.</p>';
+      echo '<p>Créez un compte et recevez des remises en argent à partir de votre 5ème commande.</p>';
     }
   }
 
