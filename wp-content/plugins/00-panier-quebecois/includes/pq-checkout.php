@@ -194,7 +194,7 @@ add_action( 'woocommerce_before_cart', 'wc_minimum_order_amount' );
 
 function wc_minimum_order_amount() {
   // Set this variable to specify a minimum order value
-  $minimum = 30;
+  $minimum = 50;
 
   if ( WC()->cart->subtotal < $minimum ) {
 
