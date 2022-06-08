@@ -239,7 +239,7 @@ add_action( 'woocommerce_before_cart', 'myfct_cart_notification' );
 function myfct_cart_notification() {
   ?>
 <div id='cart-notification-wrapper'><span id='cart-notification'>
-  <h4> Livraison gratuite à partir de $100 </h4>
+  <h4> Livraison gratuite à partir de $150 </h4>
   </span></div>
 <?php
 }
