@@ -44,7 +44,7 @@ class PQ_loyalty_rewards {
 
   /* ----- Function to get reward from order id ------ */
   public static function pq_get_reward_from_order( $order ) {
-    $multiplier = 0.02;
+    $multiplier = 0.01;
     $total = $order->get_total();
     $reward = round( $total * $multiplier, 2 );
 
