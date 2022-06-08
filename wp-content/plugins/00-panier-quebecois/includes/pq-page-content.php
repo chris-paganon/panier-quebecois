@@ -95,3 +95,95 @@ function pq_count_suppliers_fct() {
 
     return $suppliers_count;
 }
+
+
+/**
+ * Return seller of the week
+ */
+add_shortcode( 'pq_seller_week', 'pq_seller_week_fct' );
+
+function pq_seller_week_fct() {
+    $sellerID = get_option( 'pq_featured_marchand_and_producer' );
+    $seller = get_term( $sellerID );
+    $seller_link = get_term_link( $seller );
+    $image_id = get_term_meta ( $sellerID, 'image_id', true );
+
+//    $tax_query = array(
+//        array(
+//            'taxonomy' => 'pq_collections',
+//            'field' => 'slug',
+//            'terms' => 'marchand-de-la-semaine',
+//        ),
+//    );
+
+	$tax_query = array(
+		'relation' => 'OR',
+		array(
+			'relation' => 'AND',
+			array(
+				'taxonomy' => 'pq_collections',
+				'field' => 'slug',
+				'terms' => 'marchand-de-la-semaine',
+			),
+			array(
+				'taxonomy' => 'product_tag',
+				'field' => 'term_id',
+				'terms' => $sellerID,
+			),
+		),
+		array(
+			'relation' => 'AND',
+			array(
+				'taxonomy' => 'pq_collections',
+				'field' => 'slug',
+				'terms' => 'marchand-de-la-semaine',
+			),
+			array(
+				'taxonomy' => 'pq_producer',
+				'field' => 'term_id',
+				'terms' => $sellerID,
+			),
+		)
+	);
+
+    $products_query_arg = array(
+        'tax_query' => $tax_query,
+        'meta_query'    => array( array(
+            'key'     => '_stock_status',
+            'value'   => 'instock',
+        )),
+        'post_type' => 'product',
+        'posts_per_page' => '3',
+    );
+
+    $products_query = new WP_Query( $products_query_arg );
+
+    if(!$products_query->post_count){
+    	return false;
+    }
+
+    echo '<div class="sellerweek_block woocommerce">';
+    echo '<ul class="products columns-4">';
+    echo '<li class="sellerweek_infos">';
+    if( $image_id ) {
+	    echo '<div class="sellerweek_infos--bg-image" style="background-image: url(\''.wp_get_attachment_image_url($image_id, 'medium_large').'\')">';
+	    echo wp_get_attachment_image ( $image_id, 'thumbnail' );
+	    echo '</div>';
+    }
+    echo '<p class="sellerweek_title">'.$seller->name.'</p>';
+    echo '<a href="' . esc_url( $seller_link ) . '">' . esc_attr( 'Magasiner', 'woocommerce' ) . '</a>';
+    echo '</li>';
+//    echo '<div class="sellerweek_products woocommerce columns-3">';
+    if ( $products_query->have_posts() ) {
+//        woocommerce_product_loop_start();
+        while ( $products_query->have_posts() ) {
+            $products_query->the_post();
+            wc_get_template_part( 'content', 'product' );
+        }
+//        woocommerce_product_loop_end();
+    }
+    wp_reset_postdata();
+//    echo '</div>';
+    echo '</ul>';
+    echo '</div>';
+}
