@@ -125,7 +125,7 @@ class PQ_loyalty_referral {
     // Check if buyer was also referrer and if first purchase of referree
     if ( !$has_bought && $referrer_user_id ) {
       $mycred = mycred();
-      $referral_bonus = 10;
+      $referral_bonus = 20;
 
       //Give points to referrer
       $mycred->add_creds(
@@ -177,7 +177,7 @@ class PQ_loyalty_referral {
         $coupon->set_code( $coupon_code );
         $coupon->set_discount_type( 'fixed_cart' );
         $coupon->set_individual_use( true );
-        $coupon->set_amount( 10 );
+        $coupon->set_amount( 20 );
         $coupon->set_usage_limit( 1 );
         $coupon->save();
 
