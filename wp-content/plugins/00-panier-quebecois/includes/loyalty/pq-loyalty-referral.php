@@ -181,8 +181,11 @@ class PQ_loyalty_referral {
         $coupon->set_usage_limit( 1 );
         $coupon->save();
 
+        $coupon_id = $coupon->get_id();
+        update_post_meta( $coupon_id, '_wjecf_allow_enqueue', 'no' );
+
         //Add coupon to cart
-        WC()->cart->add_discount( sanitize_text_field( $coupon_code ) );
+        WC()->cart->apply_coupon( sanitize_text_field( $coupon_code ) );
       }
     }
   }
