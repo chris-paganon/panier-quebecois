@@ -593,6 +593,7 @@ function pq_export_products() {
 		'Taux de marge (%)',
 		'Rabais marchand (%)',
 		'Écart marchand/PQ (%)',
+		'Inactif?',
 	));
 
 	$excel_row_no = 2;
@@ -619,6 +620,7 @@ function pq_export_products() {
 		$product_price = $product->get_regular_price();
 		$product_stock_quantity = $product->get_stock_quantity();
 		$product_packing_priority = get_post_meta($product_id, '_packing_priority', true);
+		$product_inactive = get_post_meta($product_id, '_pq_inactive', true);
 
 		$product_margin = ( $product_price - $product_purchasing_price ) / $product_purchasing_price;
 		$product_margin_formula = '=(I'.$excel_row_no.'-G'.$excel_row_no.')/G'.$excel_row_no;
@@ -665,6 +667,7 @@ function pq_export_products() {
 					$product_margin_formula,
 					$seller_discount_formula,
 					$seller_pq_diff_formula,
+					$product_inactive,
 				));
 		
 				$csv = array_merge($csv, $product_line);
@@ -687,6 +690,7 @@ function pq_export_products() {
 				$product_margin_formula,
 				$seller_discount_formula,
 				$seller_pq_diff_formula,
+				$product_inactive,
 			));
 	
 			$csv = array_merge($csv, $product_line);

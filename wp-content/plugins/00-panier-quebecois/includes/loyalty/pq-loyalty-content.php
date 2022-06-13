@@ -96,7 +96,7 @@ class PQ_loyalty_content {
     <div class="my-mycred-wrapper" id="referral">
       <h3 class="my-mycred-header"> <?php echo esc_html__('Référez un ami et recevez $20 chacun'); ?> </h3>
       <h4 class="my-mycred-subheader"><?php echo esc_html__('Envoyez le lien suivant à vos amis:'); ?></h4>
-      <p><?php echo home_url() . '?pqc=' . $username; ?></p>
+      <p><?php echo home_url() . '?pqc=' . $user_id; ?></p>
       <h4 class="my-mycred-subheader"><?php echo esc_html__('Comment ça marche?'); ?></h4>
       <p class="my-mycred-paragraph"> <span class="my-mycred-bold"><?php echo esc_html__('Recevez $20'); ?></span> <?php echo esc_html__('pour chaque ami référé! Ils bénéficieront aussi de $20 de rabais sur leur premier achat!'); ?> </p>
       <p class="my-mycred-paragraph"> <?php echo esc_html__('Quand vos amis passeront commande après avoir ouvert le lien ci-dessus, votre bonus s\'ajoutera'); ?><span class="my-mycred-bold"> <?php echo esc_html__('automatiquement sur votre compte.'); ?></span><?php echo esc_html__(' La promotion de $20 s’appliquera aussi directement lors de leur commande.'); ?> </p>
