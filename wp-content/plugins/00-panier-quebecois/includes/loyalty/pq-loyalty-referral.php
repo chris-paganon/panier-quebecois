@@ -75,7 +75,7 @@ class PQ_loyalty_referral {
   /* ----- Check if referrer user ID is also referree ID and if it exists ------ */
   public static function pq_get_valid_referrer_user_id( $mycred_referral_cookie_value ) {
     // Get referrer user ID
-    $referrer_user = get_user_by( 'login', $mycred_referral_cookie_value );
+    $referrer_user = get_user_by( 'id', $mycred_referral_cookie_value );
     if ( isset( $referrer_user ) ) {
       $referrer_user_id = $referrer_user->ID;
     } else {
@@ -101,11 +101,11 @@ class PQ_loyalty_referral {
   public static function pq_set_referral_cookie() {
     if ( !isset( $_GET[ 'pqc' ] ) || empty( $_GET[ 'pqc' ] ) || isset( $_COOKIE[ 'pq_referral' ] ) ) return;
 
-    $referrer_username = $_GET[ 'pqc' ];
-    $referrer_user_id = PQ_loyalty_referral::pq_get_valid_referrer_user_id( $referrer_username );
+    $referrer_id_from_link = $_GET[ 'pqc' ];
+    $referrer_user_id = PQ_loyalty_referral::pq_get_valid_referrer_user_id( $referrer_id_from_link );
 
     if ( $referrer_user_id ) {
-      setcookie( 'pq_referral', $referrer_username, time() + 3600 * 24 * 30, COOKIEPATH, COOKIE_DOMAIN );
+      setcookie( 'pq_referral', $referrer_id_from_link, time() + 3600 * 24 * 30, COOKIEPATH, COOKIE_DOMAIN );
     }
   }
 
