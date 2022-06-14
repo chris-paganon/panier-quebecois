@@ -269,3 +269,20 @@ function pq_send_order_count_after_registration( $user_id ) {
     $properties = pq_get_orders_count_properties($user_id, $email);
     pq_send_identify_to_klaviyo($properties);
 }
+
+/**
+ * Add user id on registration
+ */
+add_action( 'user_register', 'pq_send_user_id', 20, 1 );
+
+function pq_send_user_id( $user_id ) {
+    $user = get_user_by( 'id', $user_id );
+    $email = $user->user_email;
+
+    $properties = array( 
+        'email' => $email,
+        'pq_user_id' => $user_id,
+    );
+
+    pq_send_identify_to_klaviyo($properties);
+}
