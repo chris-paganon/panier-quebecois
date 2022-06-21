@@ -46,27 +46,15 @@ class PQ_order_schedules {
         'is_delivery' => false,
       ),
       array(
-        'date' => 'Wednesday 9:30pm',
+        'date' => 'Thursday 9:30pm',
         'is_delivery' => true,
       ),
       array(
-        'date' => 'Wednesday 1:30pm',
+        'date' => 'Thursday 1:30pm',
         'is_delivery' => false,
       ),
       array(
-        'date' => 'Wednesday 3:30pm',
-        'is_delivery' => false,
-      ),
-      array(
-        'date' => 'Friday 9:30pm',
-        'is_delivery' => true,
-      ),
-      array(
-        'date' => 'Friday 1:30pm',
-        'is_delivery' => false,
-      ),
-      array(
-        'date' => 'Friday 3:30pm',
+        'date' => 'Thursday 3:30pm',
         'is_delivery' => false,
       ),
     );
