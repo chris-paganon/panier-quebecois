@@ -57,6 +57,18 @@ class PQ_order_schedules {
         'date' => 'Thursday 3:30pm',
         'is_delivery' => false,
       ),
+      array(
+        'date' => 'Sunday 9:30pm',
+        'is_delivery' => true,
+      ),
+      array(
+        'date' => 'Sunday 1:30pm',
+        'is_delivery' => false,
+      ),
+      array(
+        'date' => 'Sunday 3:30pm',
+        'is_delivery' => false,
+      ),
     );
 
     return $schedules_args;
