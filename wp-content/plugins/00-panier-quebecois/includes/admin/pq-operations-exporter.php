@@ -339,20 +339,56 @@ function pq_export_excel($spreadsheet) {
  */
 function pq_export_labels() {
 
-  $url = 'https://api.track-pod.com/Order/Number/58798';
+  $timezone = new DateTimeZone( get_option( 'timezone_string' ) );
+  //$default_date_obj = new DateTime( 'today', $timezone );
+  $default_date_obj = new DateTime( 'June 10th 2022', $timezone );
+  $default_date = $default_date_obj->format( 'Y-m-d' );
+  $orders = myfct_get_relevant_orders( $default_date );
 
-  $response = wp_remote_get( $url, array(
-    'method' => 'GET',
-    'httpversion' => '1.0',
-    'headers' => array(
-      'Content-Type' => 'application/json',
-      'X-API-KEY' => '534f2b64-1171-40a2-9942-b4a6c2c8e61b',
-    ),
-  ));
+  $pdf_array = array();
 
-  $trackpod_data = json_decode($response['body']);
+  foreach ( $orders as $order ) {
+    $order_id = $order->get_id();
+    $url = 'https://api.track-pod.com/Order/Number/' . $order_id;
+  
+    $response = wp_remote_get( $url, array(
+      'method' => 'GET',
+      'httpversion' => '1.0',
+      'headers' => array(
+        'Content-Type' => 'application/json',
+        'X-API-KEY' => '534f2b64-1171-40a2-9942-b4a6c2c8e61b',
+      ),
+    ));
+  
+    $trackpod_data = json_decode($response['body']);
+  
+    $route_no = $trackpod_data->RouteNumber;
+    $order_sequence = $trackpod_data->SeqNumber;
+    $route_no_full = $route_no . '--' . $order_sequence;
 
-  $route_no = $trackpod_data->RouteNumber;
+    if ( ! empty($order->get_shipping_address_2()) ) { //If there is apt number
+			$full_delivery_address = $order->get_shipping_address_1() . ', ' . $order->get_shipping_address_2() . ', ' . $order->get_shipping_city() . ', ' . $order->get_shipping_postcode() . ', ' . $order->get_shipping_country();
+		} else { //Without apt number
+			$full_delivery_address = $order->get_shipping_address_1() . ', ' . $order->get_shipping_city() . ', ' . $order->get_shipping_postcode() . ', ' . $order->get_shipping_country();
+		}
+
+		$client_name = $order->get_formatted_shipping_full_name();
+		$phone = $order->get_billing_phone();
+		$delivery_note = sanitize_text_field( $order->get_customer_note() );
+
+    $order_array = array( array( 'delivery_info' => array(
+      'route_no_full' => $route_no_full,
+      'order_id' => '#' . $order_id,
+      'client_name' => $client_name,
+      'phone' => $phone,
+      'full_delivery_address' => $full_delivery_address,
+      'delivery_note' => $delivery_note,
+    )));
+
+    $pdf_array = array_merge($pdf_array, $order_array);
+  }
+
+  print_r($pdf_array);
 
   require_once PQ_VENDOR_DIR . '/fpdf184/fpdf.php';
 
@@ -360,9 +396,35 @@ function pq_export_labels() {
     ob_end_clean();
   }
   $pdf = new FPDF();
-  $pdf->AddPage();
-  $pdf->SetFont('Arial', 'B', 18);
-  $pdf->Cell(60, 20, $route_no);
+  $pdf->SetFont('Arial', 'B', 12);
+
+  $margin = 10;
+  $pdf->SetMargins($margin, $margin);
+  $page_width = $pdf->GetPageWidth() - 2 * $margin;
+
+  $delivery_info_cell_width = $page_width / 3;
+  $delivery_info_cell_height = 5;
+  $delivery_info_columns = 3;
+
+  foreach ($pdf_array as $order_array) {
+    $delivery_info = $order_array['delivery_info'];
+    $pdf->AddPage();
+    foreach ($delivery_info as $delivery_info_type => $delivery_info_line) {
+      if ( ! empty($delivery_info_line)) {
+        $y = $pdf->GetY();
+        for ( $i = 1; $i <= $delivery_info_columns; $i++ ) {
+          if ($i == $delivery_info_columns) {
+            $new_line = 1;
+          } else {
+            $new_line = 0;
+          }
+          $pdf->SetXY( ($i - 1) * $delivery_info_cell_width + $margin, $y);
+          $pdf->MultiCell($delivery_info_cell_width, $delivery_info_cell_height, $delivery_info_line, 0, 'C');
+        }
+      }
+    }
+  }
+
   $pdf->Output();
-  ob_end_clean();  
+  ob_end_clean();
 }
