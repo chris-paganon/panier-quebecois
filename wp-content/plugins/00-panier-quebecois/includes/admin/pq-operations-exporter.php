@@ -418,11 +418,15 @@ function pq_export_labels() {
 
 				$product_packing_priority = get_post_meta($product_id, '_packing_priority', true);
 
-        if ( $product_lot_quantity == 1 ) $product_lot_quantity = '';
+        if ( $product_lot_quantity == 1 ) {
+          $product_lot_quantity = '';
+        } else {
+          $product_lot_quantity = $product_lot_quantity . ' ';
+        }
         $product_string = $item_quantity . 'x ' . $product_lot_quantity . $product_short_name;
 
         $product_line = array( array( 
-          'product_string' => $product_string,
+          'product_string' => utf8_decode($product_string),
           'packing_priority' => $product_packing_priority,
         ));
 
@@ -442,26 +446,27 @@ function pq_export_labels() {
       'phone' => utf8_decode($phone),
       'full_delivery_address' => utf8_decode($delivery_address),
       'delivery_note' => utf8_decode($delivery_note),
-      'product_lines' => utf8_decode($product_lines),
+      'product_lines' => $product_lines,
     ));
-    
+
     $pdf_array = array_merge($pdf_array, $order_array);
   }
 
   $columns = array_column($pdf_array, 'route_no_full');
   array_multisort($columns, SORT_ASC, SORT_STRING, $pdf_array);
-
-  require_once PQ_VENDOR_DIR . '/fpdf184/fpdf.php';
-
+  
   while (ob_get_level()) {
     ob_end_clean();
   }
-  $pdf = new FPDF();
+  require_once 'pq-fpdf-functions.php';
+  $pdf = new PQ_FPDF();
   $pdf->SetFont('Arial', 'B', 12);
 
   $margin = 10;
+  $pdf->margin = $margin;
   $pdf->SetMargins($margin, $margin);
   $page_width = $pdf->GetPageWidth() - 2 * $margin;
+  $page_height = $pdf->GetPageHeight() - 2 * $margin;
 
   $delivery_info_cell_width = $page_width / 3;
   $delivery_info_cell_height = 5;
@@ -483,6 +488,19 @@ function pq_export_labels() {
         }
       }
     }
+
+    $product_info_cell_width = $page_width / 3;
+    $pdf->col_width = $product_info_cell_width;
+    $product_info_cell_height = 6;
+    
+    $pdf->SetFont('Arial', 'B', 12);
+    $pdf->Ln();
+    $top_products_y = $pdf->GetY();
+    $pdf->y0 = $top_products_y;
+    foreach ( $order_array['product_lines'] as $product_info ) {
+      $pdf->MultiCell($product_info_cell_width, $product_info_cell_height, $product_info['product_string'], 0, 'C');
+    }
+    $pdf->SetCol(0);
   }
 
   $pdf->Output();
