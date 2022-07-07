@@ -17,6 +17,10 @@ function pq_operations_exporter_button_fct() {
         pq_export_operations_lists();
     }
 
+    if ( isset( $_POST[ 'labels_export_form' ] ) && check_admin_referer( 'labels_export_clicked' ) ) {
+        pq_export_labels();
+    }
+
     $timezone = new DateTimeZone( get_option( 'timezone_string' ) );
     $today_date_obj = new DateTime( 'today', $timezone );
     $today_date = $today_date_obj->format( 'Y-m-d' );
@@ -35,6 +39,15 @@ function pq_operations_exporter_button_fct() {
       
       <input type="hidden" value="true" name="operations_export_form" />
       <input type="submit" value="Exporter les listes">
+    </form>
+
+    </br>
+
+    <form action="" method="post">
+      <?php wp_nonce_field('labels_export_clicked'); ?>
+      
+      <input type="hidden" value="true" name="labels_export_form" />
+      <input type="submit" value="Exporter les étiquettes">
     </form>
     <?php
   }
@@ -319,4 +332,37 @@ function pq_export_excel($spreadsheet) {
   }
   $writer->save('php://output');
   exit;
+}
+
+/**
+ * Export the labels for daily operations
+ */
+function pq_export_labels() {
+
+  $url = 'https://api.track-pod.com/Order/Number/58798';
+
+  $response = wp_remote_get( $url, array(
+    'method' => 'GET',
+    'httpversion' => '1.0',
+    'headers' => array(
+      'Content-Type' => 'application/json',
+      'X-API-KEY' => '534f2b64-1171-40a2-9942-b4a6c2c8e61b',
+    ),
+  ));
+
+  $trackpod_data = json_decode($response['body']);
+
+  $route_no = $trackpod_data->RouteNumber;
+
+  require_once PQ_VENDOR_DIR . '/fpdf184/fpdf.php';
+
+  while (ob_get_level()) {
+    ob_end_clean();
+  }
+  $pdf = new FPDF();
+  $pdf->AddPage();
+  $pdf->SetFont('Arial', 'B', 18);
+  $pdf->Cell(60, 20, $route_no);
+  $pdf->Output();
+  ob_end_clean();  
 }
