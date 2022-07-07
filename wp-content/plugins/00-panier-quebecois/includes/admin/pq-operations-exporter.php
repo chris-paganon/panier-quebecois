@@ -387,19 +387,69 @@ function pq_export_labels() {
 		$phone = $order->get_billing_phone();
 		$delivery_note = sanitize_text_field( $order->get_customer_note() );
 
-    $order_array = array( array( 'delivery_info' => array(
+    //Get order items
+    $product_lines = array();
+    foreach( $order->get_items() as $item_id => $item ) {
+			$product_id = $item->get_product_id();
+			$product = wc_get_product( $product_id );
+
+			//Get only products to add to export
+			if ( myfct_is_relevant_product($product) ) {
+								
+				//Get item info
+				$item_quantity_before_refund = $item->get_quantity();
+				$item_quantity_refunded = $order->get_qty_refunded_for_item( $item_id );
+				$item_quantity = $item_quantity_before_refund + $item_quantity_refunded;
+
+				if ( $item->get_variation_id() !== 0 ) {
+					$variation_id = $item->get_variation_id();
+					$product_short_name = get_post_meta($variation_id, '_short_name', true);
+					$product_lot_quantity = get_post_meta($variation_id, '_lot_quantity', true);
+					$product_weight = get_post_meta( $variation_id, '_pq_weight', true );
+					$product_unit = get_post_meta( $variation_id, '_lot_unit', true );
+					$product_weight_with_unit = $product_weight . $product_unit;
+				} else {
+					$product_short_name = get_post_meta($product_id, '_short_name', true);
+					$product_lot_quantity = get_post_meta($product_id, '_lot_quantity', true);
+					$product_weight = get_post_meta( $product_id, '_pq_weight', true );
+					$product_unit = get_post_meta( $product_id, '_lot_unit', true );
+					$product_weight_with_unit = $product_weight . $product_unit;
+				}
+
+				$product_packing_priority = get_post_meta($product_id, '_packing_priority', true);
+
+        if ( $product_lot_quantity == 1 ) $product_lot_quantity = '';
+        $product_string = $item_quantity . 'x ' . $product_lot_quantity . $product_short_name;
+
+        $product_line = array( array( 
+          'product_string' => $product_string,
+          'packing_priority' => $product_packing_priority,
+        ));
+
+        $product_lines = array_merge($product_lines, $product_line);
+      }
+    }
+
+    $columns = array_column($product_lines, 'product_string');
+    array_multisort($columns, SORT_ASC, SORT_STRING, $product_lines);
+    $columns = array_column($product_lines, 'packing_priority');
+    array_multisort($columns, SORT_ASC, SORT_STRING, $product_lines);
+
+    $order_array = array( array( 
       'route_no_full' => $route_no_full,
       'order_id' => '#' . $order_id,
-      'client_name' => $client_name,
-      'phone' => $phone,
-      'full_delivery_address' => $delivery_address,
-      'delivery_note' => $delivery_note,
-    )));
-
+      'client_name' => utf8_decode($client_name),
+      'phone' => utf8_decode($phone),
+      'full_delivery_address' => utf8_decode($delivery_address),
+      'delivery_note' => utf8_decode($delivery_note),
+      'product_lines' => utf8_decode($product_lines),
+    ));
+    
     $pdf_array = array_merge($pdf_array, $order_array);
   }
 
-  print_r($pdf_array);
+  $columns = array_column($pdf_array, 'route_no_full');
+  array_multisort($columns, SORT_ASC, SORT_STRING, $pdf_array);
 
   require_once PQ_VENDOR_DIR . '/fpdf184/fpdf.php';
 
@@ -418,10 +468,9 @@ function pq_export_labels() {
   $delivery_info_columns = 3;
 
   foreach ($pdf_array as $order_array) {
-    $delivery_info = $order_array['delivery_info'];
     $pdf->AddPage();
-    foreach ($delivery_info as $delivery_info_type => $delivery_info_line) {
-      if ( ! empty($delivery_info_line)) {
+    foreach ($order_array as $info_type => $item_line) {
+      if ( ! empty($item_line) && $info_type != 'product_lines') {
         $y = $pdf->GetY();
         for ( $i = 1; $i <= $delivery_info_columns; $i++ ) {
           if ($i == $delivery_info_columns) {
@@ -430,7 +479,7 @@ function pq_export_labels() {
             $new_line = 0;
           }
           $pdf->SetXY( ($i - 1) * $delivery_info_cell_width + $margin, $y);
-          $pdf->MultiCell($delivery_info_cell_width, $delivery_info_cell_height, $delivery_info_line, 0, 'C');
+          $pdf->MultiCell($delivery_info_cell_width, $delivery_info_cell_height, $item_line, 0, 'C');
         }
       }
     }
