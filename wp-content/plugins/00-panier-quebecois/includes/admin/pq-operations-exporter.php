@@ -372,6 +372,17 @@ function pq_export_labels() {
 			$full_delivery_address = $order->get_shipping_address_1() . ', ' . $order->get_shipping_city() . ', ' . $order->get_shipping_postcode() . ', ' . $order->get_shipping_country();
 		}
 
+    $pickup_location_meta =  get_post_meta($order_id, 'pq_pickup_datetime', true);
+		if ( empty($pickup_location_meta) ) {
+			$delivery_address = $full_delivery_address;
+		} else {
+			$shipping_items = $order->get_items( 'shipping' );
+			$shipping_item = reset($shipping_items);
+			
+			$pickup_location_adress = $shipping_item->get_meta( '_pickup_location_address' );
+			$delivery_address = $pickup_location_adress['address_1'] . ', ' . $pickup_location_adress['city'] . ', ' . $pickup_location_adress['state'] . ', ' . $pickup_location_adress['postcode'] . ', ' . $pickup_location_adress['country'];
+		}
+
 		$client_name = $order->get_formatted_shipping_full_name();
 		$phone = $order->get_billing_phone();
 		$delivery_note = sanitize_text_field( $order->get_customer_note() );
@@ -381,7 +392,7 @@ function pq_export_labels() {
       'order_id' => '#' . $order_id,
       'client_name' => $client_name,
       'phone' => $phone,
-      'full_delivery_address' => $full_delivery_address,
+      'full_delivery_address' => $delivery_address,
       'delivery_note' => $delivery_note,
     )));
 
