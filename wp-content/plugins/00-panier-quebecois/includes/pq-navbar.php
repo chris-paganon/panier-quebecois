@@ -10,37 +10,47 @@ if ( !defined( 'ABSPATH' ) ) {
 add_filter( 'wp_get_nav_menu_items', 'pq_display_categories_in_navbar', 10, 3 );
 
 function pq_display_categories_in_navbar( $items, $menu, $args ){
-    error_log('items:');
-    error_log(print_r($items, true));
-    error_log('menu:');
-    error_log(print_r($menu, true));
-    error_log('args:');
-    error_log(print_r($args, true));
-
+    
     $menu_id = $menu->term_id;
-
+    
     if ( $menu_id == 227 || $menu_id == 515 ) {
 
+        if ( $menu_id == 515 ) {
+            $parent_menu_item_id = 38102; //Le marché
+        } elseif ( $menu_id == 227 ) {
+            $parent_menu_item_id = 10820; //Le marché 
+        }
+
         $ctr = ($items[sizeof($items)-1]->ID)+1;
-        
-        foreach ($items as $index => $i) {
-            if ("product_cat" !== $i->object) {
-                continue;
-            }
-            $menu_parent = $i->ID;
-            $terms = get_terms( array('taxonomy' => 'product_cat', 'parent'  => $i->object_id ) );
-            foreach ($terms as $term) {
-                $new_item = pq_custom_nav_menu_item( $term->name, get_term_link($term), $ctr, $menu_parent );
-                $items[] = $new_item;
-                $new_id = $new_item->ID;
-                $ctr++;
-                $terms_child = get_terms( array('taxonomy' => 'product_cat', 'parent'  => $term->term_id ) );
-                if(!empty($terms_child)) {
-                    foreach ($terms_child as $term_child) {
-                        $new_child = pq_custom_nav_menu_item( $term_child->name, get_term_link($term_child), $ctr, $new_id );
-                        $items[] = $new_child;
-                        $ctr++;
-                    }
+            
+        $args = array(
+            'taxonomy' => 'product_cat',
+            'hide_empty' => true,
+            'parent' => 153,
+            'exclude' => array( 237 ),
+        );
+        $parent_product_cats = get_terms( $args );
+
+        foreach ( $parent_product_cats as $parent_product_cat ) {
+
+            $new_item = pq_custom_nav_menu_item( $parent_product_cat->name, get_term_link($parent_product_cat), $ctr, $parent_menu_item_id );
+            $items[] = $new_item;
+            $new_id = $new_item->ID;
+            $ctr++;
+
+            $child_args = array(
+                'taxonomy' => 'product_cat',
+                'hide_empty' => true,
+                'parent' => $parent_product_cat->term_id,
+            );
+            $child_product_cats = get_terms( $child_args );
+
+            if(!empty($child_product_cats)) {
+                foreach ($child_product_cats as $child_product_cat) {
+
+                    $new_child = pq_custom_nav_menu_item( $child_product_cat->name, get_term_link($child_product_cat), $ctr, $new_id );
+                    $items[] = $new_child;
+                    $ctr++;
                 }
             }
         }
