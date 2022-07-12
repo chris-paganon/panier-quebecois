@@ -364,7 +364,7 @@ function pq_export_labels() {
   
     $route_no = $trackpod_data->RouteNumber;
     $order_sequence = $trackpod_data->SeqNumber;
-    $route_no_full = $route_no . '--' . $order_sequence;
+    $route_no_full = $route_no . '--' . sprintf("%02d", $order_sequence);
 
     if ( ! empty($order->get_shipping_address_2()) ) { //If there is apt number
 			$full_delivery_address = $order->get_shipping_address_1() . ', ' . $order->get_shipping_address_2() . ', ' . $order->get_shipping_city() . ', ' . $order->get_shipping_postcode() . ', ' . $order->get_shipping_country();
@@ -437,7 +437,7 @@ function pq_export_labels() {
     $columns = array_column($product_lines, 'product_string');
     array_multisort($columns, SORT_ASC, SORT_STRING, $product_lines);
     $columns = array_column($product_lines, 'packing_priority');
-    array_multisort($columns, SORT_ASC, SORT_STRING, $product_lines);
+    array_multisort($columns, SORT_ASC, SORT_NUMERIC, $product_lines);
 
     $order_array = array( array( 
       'route_no_full' => $route_no_full,
@@ -484,6 +484,8 @@ function pq_export_labels() {
             $new_line = 0;
           }
           $pdf->SetXY( ($i - 1) * $delivery_info_cell_width + $margin, $y);
+
+          if ( $info_type == 'delivery_note' ) $pdf->SetFont('Arial', 'B', 10);
           $pdf->MultiCell($delivery_info_cell_width, $delivery_info_cell_height, $item_line, 0, 'C');
         }
       }
