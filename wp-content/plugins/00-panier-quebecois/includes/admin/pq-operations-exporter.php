@@ -366,6 +366,8 @@ function pq_export_labels() {
     $order_sequence = $trackpod_data->SeqNumber;
     $route_no_full = $route_no . '--' . sprintf("%02d", $order_sequence);
 
+    $order_meta = array();
+
     if ( ! empty($order->get_shipping_address_2()) ) { //If there is apt number
 			$full_delivery_address = $order->get_shipping_address_1() . ', ' . $order->get_shipping_address_2() . ', ' . $order->get_shipping_city() . ', ' . $order->get_shipping_postcode() . ', ' . $order->get_shipping_country();
 		} else { //Without apt number
@@ -375,20 +377,39 @@ function pq_export_labels() {
     $pickup_location_meta =  get_post_meta($order_id, 'pq_pickup_datetime', true);
 		if ( empty($pickup_location_meta) ) {
 			$delivery_address = $full_delivery_address;
+      if ( empty($order->get_billing_company()) ) {
+        $order_meta['delivery_type'] = 'delivery';
+      } else {
+        $order_meta['delivery_type'] = 'business';
+      }
 		} else {
 			$shipping_items = $order->get_items( 'shipping' );
 			$shipping_item = reset($shipping_items);
 			
 			$pickup_location_adress = $shipping_item->get_meta( '_pickup_location_address' );
 			$delivery_address = $pickup_location_adress['address_1'] . ', ' . $pickup_location_adress['city'] . ', ' . $pickup_location_adress['state'] . ', ' . $pickup_location_adress['postcode'] . ', ' . $pickup_location_adress['country'];
+
+      $order_meta['delivery_type'] = 'pickup';
 		}
 
 		$client_name = $order->get_formatted_shipping_full_name();
 		$phone = $order->get_billing_phone();
 		$delivery_note = sanitize_text_field( $order->get_customer_note() );
 
+		$order_date = $order->get_date_created();
+    $email = $order->get_billing_email();
+		$is_first_order = pq_is_first_order($email, $order_date);
+
+    if ($is_first_order) {
+      $order_meta['is_first_order'] = true;
+    } else {
+      $order_meta['is_first_order'] = false;
+    }
+
     //Get order items
     $product_lines = array();
+    $order_meta['has_special_product'] = false;
+
     foreach( $order->get_items() as $item_id => $item ) {
 			$product_id = $item->get_product_id();
 			$product = wc_get_product( $product_id );
@@ -400,6 +421,11 @@ function pq_export_labels() {
 				$item_quantity_before_refund = $item->get_quantity();
 				$item_quantity_refunded = $order->get_qty_refunded_for_item( $item_id );
 				$item_quantity = $item_quantity_before_refund + $item_quantity_refunded;
+
+        $is_special_item = get_post_meta($product_id, '_pq_special_delivery', true);
+        if ( ! empty($is_special_item) ) {
+          $order_meta['has_special_product'] = true;
+        }
 
 				if ( $item->get_variation_id() !== 0 ) {
 					$variation_id = $item->get_variation_id();
@@ -446,6 +472,7 @@ function pq_export_labels() {
       'phone' => utf8_decode($phone),
       'full_delivery_address' => utf8_decode($delivery_address),
       'delivery_note' => utf8_decode($delivery_note),
+      'order_meta' => $order_meta,
       'product_lines' => $product_lines,
     ));
 
@@ -468,9 +495,13 @@ function pq_export_labels() {
   $page_width = $pdf->GetPageWidth() - 2 * $margin;
   $page_height = $pdf->GetPageHeight() - 2 * $margin;
 
-  $pdf->SetStyle('main', 'Arial', 'N', 12, '0, 0, 0', 0);
-  $pdf->SetStyle('large', 'Arial', 'B', 14, '0, 0, 0', 0);
-  $pdf->SetStyle('note', 'Arial', 'N', 10, '0, 0, 0', 0);
+  $pdf->SetStyle('main', 'Arial', 'N', 12, '', 0);
+  $pdf->SetStyle('large', 'Arial', 'B', 14, '', 0);
+  $pdf->SetStyle('note', 'Arial', 'N', 10, '', 0);
+  
+  $pdf->SetStyle('black', '', '', 0, '0, 0, 0', 0);
+  $pdf->SetStyle('red', '', '', 0, '255, 51, 51', 0);
+  $pdf->SetStyle('purple', '', '', 0, '127, 0, 255', 0);
 
   $delivery_info_cell_width = $page_width / 3;
   $delivery_info_cell_height = 4;
@@ -481,8 +512,22 @@ function pq_export_labels() {
     $y_top_label = $pdf->GetY();
     $top_label_html = '';
 
+    switch ($order_array['order_meta']['delivery_type']) {
+      case 'pickup' :
+        $label_color = 'red';
+        break;
+      case 'business' :
+        $label_color = 'purple';
+        break;
+      default :
+        $label_color = 'main';
+    }
+
+    $top_label_html .= '<' . $label_color . '>';
+
     foreach ($order_array as $info_type => $item_line) {
-      if ( ! empty($item_line) && $info_type != 'product_lines') {
+
+      if ( ! empty($item_line) && $info_type != 'product_lines' && $info_type != 'order_meta') {
 
         switch ( $info_type ) {
           case 'route_no_full' :
@@ -500,6 +545,7 @@ function pq_export_labels() {
         $top_label_html .= '<' . $tag . '>' . $item_line . '</' . $tag . '>';
       }
     }
+    $top_label_html .= '</' . $label_color . '>';
 
     for ( $i = 1; $i <= $delivery_info_columns; $i++ ) {
       $pdf->SetXY( ($i - 1) * $delivery_info_cell_width + $margin, $y_top_label);
@@ -511,9 +557,12 @@ function pq_export_labels() {
     $product_info_cell_height = 7;
     
     $pdf->SetY( $pdf->GetY() + 10 );
+    $pdf->SetX( $margin );
 
     $pdf->SetFont('Arial', 'B', 18);
-    $pdf->Cell( 0, 10, $order_array['route_no_full'], 0, 2, 'C' );
+    $pdf->Cell( $page_width, 10, $order_array['route_no_full'], 0, 2, 'C' );
+    $pdf->SetFont('Arial', '', 10);
+    $pdf->Cell( $page_width, 10, print_r($order_array['order_meta'], true), 0, 2, 'C' );
 
     $top_products_y = $pdf->GetY();
     $pdf->y0 = $top_products_y;
