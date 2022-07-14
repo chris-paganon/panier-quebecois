@@ -498,7 +498,8 @@ function pq_export_labels() {
   $pdf->SetStyle('main', 'Arial', 'N', 12, '', 0);
   $pdf->SetStyle('large', 'Arial', 'B', 14, '', 0);
   $pdf->SetStyle('note', 'Arial', 'N', 10, '', 0);
-  
+  $pdf->SetStyle('top_icon', 'Arial', 'B', 20, '');
+
   $pdf->SetStyle('black', '', '', 0, '0, 0, 0', 0);
   $pdf->SetStyle('red', '', '', 0, '255, 51, 51', 0);
   $pdf->SetStyle('purple', '', '', 0, '127, 0, 255', 0);
@@ -512,6 +513,13 @@ function pq_export_labels() {
     $y_top_label = $pdf->GetY();
     $top_label_html = '';
 
+    $top_label_icons_html = '';
+    if ( $order_array['order_meta']['has_special_product'] )
+        $top_label_icons_html .= '<top_icon>(!)</top_icon>';
+
+    if ( $order_array['order_meta']['is_first_order'] )
+      $top_label_icons_html .= '<top_icon>(1st)</top_icon>';
+
     switch ($order_array['order_meta']['delivery_type']) {
       case 'pickup' :
         $label_color = 'red';
@@ -520,7 +528,7 @@ function pq_export_labels() {
         $label_color = 'purple';
         break;
       default :
-        $label_color = 'main';
+        $label_color = 'black';
     }
 
     $top_label_html .= '<' . $label_color . '>';
@@ -548,7 +556,13 @@ function pq_export_labels() {
     $top_label_html .= '</' . $label_color . '>';
 
     for ( $i = 1; $i <= $delivery_info_columns; $i++ ) {
-      $pdf->SetXY( ($i - 1) * $delivery_info_cell_width + $margin, $y_top_label);
+      $x = ($i - 1) * $delivery_info_cell_width + $margin;
+      $pdf->SetXY( $x, $y_top_label);
+      
+      if ( !empty($top_label_icons_html) )
+        $pdf->WriteTag($delivery_info_cell_width, 16, $top_label_icons_html, 0, 'C');
+
+      $pdf->SetXY( $x, $pdf->GetY() );
       $pdf->WriteTag($delivery_info_cell_width, $delivery_info_cell_height, $top_label_html, 0, 'C');
     }
 
@@ -561,8 +575,6 @@ function pq_export_labels() {
 
     $pdf->SetFont('Arial', 'B', 18);
     $pdf->Cell( $page_width, 10, $order_array['route_no_full'], 0, 2, 'C' );
-    $pdf->SetFont('Arial', '', 10);
-    $pdf->Cell( $page_width, 10, print_r($order_array['order_meta'], true), 0, 2, 'C' );
 
     $top_products_y = $pdf->GetY();
     $pdf->y0 = $top_products_y;
