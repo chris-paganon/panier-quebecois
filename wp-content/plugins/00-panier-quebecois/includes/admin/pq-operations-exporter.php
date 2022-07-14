@@ -480,6 +480,15 @@ function pq_export_labels() {
 
   $columns = array_column($pdf_array, 'route_no_full');
   array_multisort($columns, SORT_ASC, SORT_STRING, $pdf_array);
+
+  foreach ( $pdf_array as $key => $order_array ) {
+    if ( $key > 0 ) {
+      if ($order_array['route_no_full'] == $pdf_array[$key - 1]['route_no_full'] ) {
+        $pdf_array[$key - 1]['route_no_full'] .= ' A';
+        $pdf_array[$key]['route_no_full'] .= ' B';
+      }
+    }
+  }
   
   while (ob_get_level()) {
     ob_end_clean();
