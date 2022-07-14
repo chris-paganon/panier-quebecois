@@ -468,9 +468,9 @@ function pq_export_labels() {
   $page_width = $pdf->GetPageWidth() - 2 * $margin;
   $page_height = $pdf->GetPageHeight() - 2 * $margin;
 
-  $pdf->SetStyle('main', 'Arial', 'B', 12, '0, 0, 0', 1);
-  $pdf->SetStyle('note', 'Arial', 'N', 10, '0, 0, 0', 1);
-  $pdf->SetStyle('product', 'Arial', 'N', 12, '0, 0, 0', 1);
+  $pdf->SetStyle('main', 'Arial', 'N', 12, '0, 0, 0', 0);
+  $pdf->SetStyle('large', 'Arial', 'B', 14, '0, 0, 0', 0);
+  $pdf->SetStyle('note', 'Arial', 'N', 10, '0, 0, 0', 0);
 
   $delivery_info_cell_width = $page_width / 3;
   $delivery_info_cell_height = 4;
@@ -484,9 +484,17 @@ function pq_export_labels() {
     foreach ($order_array as $info_type => $item_line) {
       if ( ! empty($item_line) && $info_type != 'product_lines') {
 
-        if ( $info_type == 'delivery_note' ) {
-          $tag = 'note';
-        } else {
+        switch ( $info_type ) {
+          case 'route_no_full' :
+            $tag = 'large';
+            break;
+          case 'order_id' :
+            $tag = 'large';
+            break;
+          case 'delivery_note' :
+            $tag = 'note';
+            break;
+          default:
           $tag = 'main';
         }
         $top_label_html .= '<' . $tag . '>' . $item_line . '</' . $tag . '>';
@@ -503,12 +511,16 @@ function pq_export_labels() {
     $product_info_cell_height = 7;
     
     $pdf->SetY( $pdf->GetY() + 10 );
+
+    $pdf->SetFont('Arial', 'B', 18);
+    $pdf->Cell( 0, 10, $order_array['route_no_full'], 0, 2, 'C' );
+
     $top_products_y = $pdf->GetY();
     $pdf->y0 = $top_products_y;
     $pdf->SetCol(0);
 
     foreach ( $order_array['product_lines'] as $product_info ) {
-      $product_line_html = '<product>' . $product_info['product_string'] . '</product>';
+      $product_line_html = '<main>' . $product_info['product_string'] . '</main>';
       $pdf->SetX($pdf->col_left_x);
       $pdf->WriteTag($product_info_cell_width, $product_info_cell_height, $product_line_html, 0, 'L');
     }
