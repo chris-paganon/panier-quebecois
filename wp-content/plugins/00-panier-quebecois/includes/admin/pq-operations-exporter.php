@@ -468,35 +468,40 @@ function pq_export_labels() {
   $page_width = $pdf->GetPageWidth() - 2 * $margin;
   $page_height = $pdf->GetPageHeight() - 2 * $margin;
 
-  $delivery_info_cell_width = $page_width / 3;
-  $delivery_info_cell_height = 5;
-  $delivery_info_columns = 3;
+  $pdf->SetStyle('main', 'Arial', 'B', 12, '0, 0, 0', 1);
+  $pdf->SetStyle('note', 'Arial', 'N', 10, '0, 0, 0', 1);
 
+  $delivery_info_cell_width = $page_width / 3;
+  $delivery_info_cell_height = 4;
+  $delivery_info_columns = 3;
+  
   foreach ($pdf_array as $order_array) {
     $pdf->AddPage();
+    $y_top_label = $pdf->GetY();
+    $top_label_html = '';
+
     foreach ($order_array as $info_type => $item_line) {
       if ( ! empty($item_line) && $info_type != 'product_lines') {
-        $y = $pdf->GetY();
-        for ( $i = 1; $i <= $delivery_info_columns; $i++ ) {
-          if ($i == $delivery_info_columns) {
-            $new_line = 1;
-          } else {
-            $new_line = 0;
-          }
-          $pdf->SetXY( ($i - 1) * $delivery_info_cell_width + $margin, $y);
 
-          if ( $info_type == 'delivery_note' ) $pdf->SetFont('Arial', 'B', 10);
-          $pdf->MultiCell($delivery_info_cell_width, $delivery_info_cell_height, $item_line, 0, 'C');
+        if ( $info_type == 'delivery_note' ) {
+          $tag = 'note';
+        } else {
+          $tag = 'main';
         }
+        $top_label_html .= '<' . $tag . '>' . $item_line . '</' . $tag . '>';
       }
+    }
+
+    for ( $i = 1; $i <= $delivery_info_columns; $i++ ) {
+      $pdf->SetXY( ($i - 1) * $delivery_info_cell_width + $margin, $y_top_label);
+      $pdf->WriteTag($delivery_info_cell_width, $delivery_info_cell_height, $top_label_html, 0, 'C');
     }
 
     $product_info_cell_width = $page_width / 3;
     $pdf->col_width = $product_info_cell_width;
     $product_info_cell_height = 6;
     
-    $pdf->SetFont('Arial', 'B', 12);
-    $pdf->Ln();
+    $pdf->SetY( $pdf->GetY() + 10 );
     $top_products_y = $pdf->GetY();
     $pdf->y0 = $top_products_y;
     foreach ( $order_array['product_lines'] as $product_info ) {

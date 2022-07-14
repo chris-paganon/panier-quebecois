@@ -1,8 +1,8 @@
 <?php
 
-require_once PQ_VENDOR_DIR . '/fpdf184/fpdf.php';
+require_once PQ_VENDOR_DIR . '/fpdf184/WriteTag.php';
 
-class PQ_FPDF extends FPDF {
+class PQ_FPDF extends PDF_WriteTag {
 
     public $col = 0;
     public $y0;
