@@ -340,8 +340,7 @@ function pq_export_excel($spreadsheet) {
 function pq_export_labels() {
 
   $timezone = new DateTimeZone( get_option( 'timezone_string' ) );
-  //$default_date_obj = new DateTime( 'today', $timezone );
-  $default_date_obj = new DateTime( 'June 1st 2022', $timezone );
+  $default_date_obj = new DateTime( 'today', $timezone );
   $default_date = $default_date_obj->format( 'Y-m-d' );
   $orders = myfct_get_relevant_orders( $default_date );
 
