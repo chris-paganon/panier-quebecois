@@ -612,10 +612,10 @@ function pq_export_labels() {
         $product_lot_quantity_color = 'black';
       }
 
-      if ( strpos($product_info['product_short_name'], 'BIO') !== false ) {
-        $product_short_name_color = 'green';
-      } elseif ( $product_info['packing_priority'] >= 20 ) {
+      if ( $product_info['packing_priority'] >= 20 ) {
         $product_short_name_color = 'blue';
+      } elseif ( strpos($product_info['product_short_name'], 'BIO') !== false ) {
+        $product_short_name_color = 'green';
       } else {
         $product_short_name_color = 'black';
       } 
