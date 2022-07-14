@@ -470,6 +470,7 @@ function pq_export_labels() {
 
   $pdf->SetStyle('main', 'Arial', 'B', 12, '0, 0, 0', 1);
   $pdf->SetStyle('note', 'Arial', 'N', 10, '0, 0, 0', 1);
+  $pdf->SetStyle('product', 'Arial', 'N', 12, '0, 0, 0', 1);
 
   $delivery_info_cell_width = $page_width / 3;
   $delivery_info_cell_height = 4;
@@ -499,17 +500,19 @@ function pq_export_labels() {
 
     $product_info_cell_width = $page_width / 3;
     $pdf->col_width = $product_info_cell_width;
-    $product_info_cell_height = 6;
+    $product_info_cell_height = 7;
     
     $pdf->SetY( $pdf->GetY() + 10 );
     $top_products_y = $pdf->GetY();
     $pdf->y0 = $top_products_y;
-    foreach ( $order_array['product_lines'] as $product_info ) {
-      $pdf->MultiCell($product_info_cell_width, $product_info_cell_height, $product_info['product_string'], 0, 'C');
-    }
     $pdf->SetCol(0);
+
+    foreach ( $order_array['product_lines'] as $product_info ) {
+      $product_line_html = '<product>' . $product_info['product_string'] . '</product>';
+      $pdf->SetX($pdf->col_left_x);
+      $pdf->WriteTag($product_info_cell_width, $product_info_cell_height, $product_line_html, 0, 'L');
+    }
   }
 
   $pdf->Output();
-  ob_end_clean();
 }
