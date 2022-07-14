@@ -341,7 +341,7 @@ function pq_export_labels() {
 
   $timezone = new DateTimeZone( get_option( 'timezone_string' ) );
   //$default_date_obj = new DateTime( 'today', $timezone );
-  $default_date_obj = new DateTime( 'June 10th 2022', $timezone );
+  $default_date_obj = new DateTime( 'June 1st 2022', $timezone );
   $default_date = $default_date_obj->format( 'Y-m-d' );
   $orders = myfct_get_relevant_orders( $default_date );
 
@@ -446,13 +446,12 @@ function pq_export_labels() {
 
         if ( $product_lot_quantity == 1 ) {
           $product_lot_quantity = '';
-        } else {
-          $product_lot_quantity = $product_lot_quantity . ' ';
         }
-        $product_string = $item_quantity . 'x ' . $product_lot_quantity . $product_short_name;
 
         $product_line = array( array( 
-          'product_string' => utf8_decode($product_string),
+          'product_short_name' => utf8_decode($product_short_name),
+          'item_quantity' => $item_quantity,
+          'product_lot_quantity' => $product_lot_quantity,
           'packing_priority' => $product_packing_priority,
         ));
 
@@ -460,7 +459,7 @@ function pq_export_labels() {
       }
     }
 
-    $columns = array_column($product_lines, 'product_string');
+    $columns = array_column($product_lines, 'product_short_name');
     array_multisort($columns, SORT_ASC, SORT_STRING, $product_lines);
     $columns = array_column($product_lines, 'packing_priority');
     array_multisort($columns, SORT_ASC, SORT_NUMERIC, $product_lines);
@@ -500,9 +499,11 @@ function pq_export_labels() {
   $pdf->SetStyle('note', 'Arial', 'N', 10, '', 0);
   $pdf->SetStyle('top_icon', 'Arial', 'B', 20, '');
 
-  $pdf->SetStyle('black', '', '', 0, '0, 0, 0', 0);
-  $pdf->SetStyle('red', '', '', 0, '255, 51, 51', 0);
-  $pdf->SetStyle('purple', '', '', 0, '127, 0, 255', 0);
+  $pdf->SetStyle('black', '', '', 0, '0, 0, 0');
+  $pdf->SetStyle('red', '', '', 0, '255, 51, 51');
+  $pdf->SetStyle('blue', '', '', 0, '0, 0, 204');
+  $pdf->SetStyle('green', '', '', 0, '0, 153, 0');
+  $pdf->SetStyle('purple', '', '', 0, '127, 0, 255');
 
   $delivery_info_cell_width = $page_width / 3;
   $delivery_info_cell_height = 4;
@@ -570,7 +571,6 @@ function pq_export_labels() {
     $pdf->col_width = $product_info_cell_width;
     $product_info_cell_height = 7;
     
-    $pdf->SetY( $pdf->GetY() + 10 );
     $pdf->SetX( $margin );
 
     $pdf->SetFont('Arial', 'B', 18);
@@ -581,7 +581,36 @@ function pq_export_labels() {
     $pdf->SetCol(0);
 
     foreach ( $order_array['product_lines'] as $product_info ) {
-      $product_line_html = '<main>' . $product_info['product_string'] . '</main>';
+
+      if ( $product_info['item_quantity'] !== 1 ) {
+        $item_quantity_color = 'red';
+      } else {
+        $item_quantity_color = 'black';
+      }
+
+      if ( ! empty($product_info['product_lot_quantity']) ) {
+        $product_lot_quantity_color = 'red';
+      } else {
+        $product_lot_quantity_color = 'black';
+      }
+
+      if ( strpos($product_info['product_short_name'], 'BIO') !== false ) {
+        $product_short_name_color = 'green';
+      } elseif ( $product_info['packing_priority'] >= 20 ) {
+        $product_short_name_color = 'blue';
+      } else {
+        $product_short_name_color = 'black';
+      } 
+
+      $product_line_html = '';
+      $product_line_html .= '<main>'; 
+      $product_line_html .= '<' . $item_quantity_color . '>' . $product_info['item_quantity'] . 'x </' . $item_quantity_color . '>';
+
+      if ( ! empty($product_info['product_lot_quantity']) )
+        $product_line_html .= '<' . $product_lot_quantity_color . '>' . $product_info['product_lot_quantity'] . ' </' . $product_lot_quantity_color . '>';
+
+      $product_line_html .= '<' . $product_short_name_color . '>' . $product_info['product_short_name'] . '</' . $product_short_name_color . '>';
+      $product_line_html .= '</main>';
       $pdf->SetX($pdf->col_left_x);
       $pdf->WriteTag($product_info_cell_width, $product_info_cell_height, $product_line_html, 0, 'L');
     }
