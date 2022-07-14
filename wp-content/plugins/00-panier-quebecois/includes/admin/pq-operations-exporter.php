@@ -491,6 +491,8 @@ function pq_export_labels() {
   $margin = 10;
   $pdf->margin = $margin;
   $pdf->SetMargins($margin, $margin);
+  $padding = 2;
+  $pdf->padding = $padding;
   $page_width = $pdf->GetPageWidth() - 2 * $margin;
   $page_height = $pdf->GetPageHeight() - 2 * $margin;
 
@@ -505,7 +507,7 @@ function pq_export_labels() {
   $pdf->SetStyle('green', '', '', 0, '0, 153, 0');
   $pdf->SetStyle('purple', '', '', 0, '127, 0, 255');
 
-  $delivery_info_cell_width = $page_width / 3;
+  $delivery_info_cell_width = $page_width / 3 - 2 * $padding;
   $delivery_info_cell_height = 4;
   $delivery_info_columns = 3;
   
@@ -557,7 +559,7 @@ function pq_export_labels() {
     $top_label_html .= '</' . $label_color . '>';
 
     for ( $i = 1; $i <= $delivery_info_columns; $i++ ) {
-      $x = ($i - 1) * $delivery_info_cell_width + $margin;
+      $x = ($i - 1) * ($delivery_info_cell_width + $padding) + $margin;
       $pdf->SetXY( $x, $y_top_label);
       
       if ( !empty($top_label_icons_html) )
@@ -567,11 +569,13 @@ function pq_export_labels() {
       $pdf->WriteTag($delivery_info_cell_width, $delivery_info_cell_height, $top_label_html, 0, 'C');
     }
 
-    $product_info_cell_width = $page_width / 3;
+    $product_info_cell_width = $page_width / 3 - 2 * $padding;
     $pdf->col_width = $product_info_cell_width;
     $product_info_cell_height = 7;
     
     $pdf->SetX( $margin );
+    $horizontal_line_y = $pdf->GetY();
+    $pdf->Line(0, $horizontal_line_y, $pdf->GetPageWidth(), $horizontal_line_y);
 
     $pdf->SetFont('Arial', 'B', 18);
     $pdf->Cell( $page_width, 10, $order_array['route_no_full'], 0, 2, 'C' );
@@ -581,6 +585,11 @@ function pq_export_labels() {
     $pdf->SetCol(0);
 
     foreach ( $order_array['product_lines'] as $product_info ) {
+
+      if ( $pdf->col > 0 && $pdf->col !== $previous_col ) {
+        $pdf->Line($pdf->col_left_x - $padding / 2, $horizontal_line_y, $pdf->col_left_x - $padding / 2, $pdf->GetPageHeight());
+      }
+      $previous_col = $pdf->col;
 
       if ( $product_info['item_quantity'] !== 1 ) {
         $item_quantity_color = 'red';

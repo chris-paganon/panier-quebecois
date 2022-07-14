@@ -9,11 +9,12 @@ class PQ_FPDF extends PDF_WriteTag {
     public $y0;
     public $col_width;
     public $margin;
+    public $padding;
 
     function SetCol($col) {
         // Set position at a given column
         $this->col = $col;
-        $x = $this->margin + $col * $this->col_width;
+        $x = $this->margin + $col * ($this->col_width + $this->padding);
         $this->col_left_x = $x;
         $this->Xini = $x; //Set X for WriteTag extension
         $this->SetLeftMargin($x);
