@@ -498,7 +498,7 @@ function pq_export_labels() {
 
   $margin = 10;
   $pdf->margin = $margin;
-  $pdf->SetMargins($margin, $margin);
+  $pdf->SetMargins($margin, 25);
   $padding = 2;
   $pdf->padding = $padding;
   $page_width = $pdf->GetPageWidth() - 2 * $margin;
