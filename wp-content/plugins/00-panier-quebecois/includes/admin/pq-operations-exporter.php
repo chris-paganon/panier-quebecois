@@ -340,7 +340,7 @@ function pq_export_excel($spreadsheet) {
 function pq_export_labels() {
 
   $timezone = new DateTimeZone( get_option( 'timezone_string' ) );
-  $default_date_obj = new DateTime( 'June 10th 2022', $timezone );
+  $default_date_obj = new DateTime( 'June 1st 2022', $timezone );
   $default_date = $default_date_obj->format( 'Y-m-d' );
   $orders = myfct_get_relevant_orders( $default_date );
 
@@ -515,14 +515,7 @@ function pq_get_pdf_array( $orders ) {
   $columns = array_column($pdf_array, 'route_no_full');
   array_multisort($columns, SORT_ASC, SORT_STRING, $pdf_array);
 
-  foreach ( $pdf_array as $key => $order_array ) {
-    if ( $key > 0 ) {
-      if ($order_array['route_no_full'] == $pdf_array[$key - 1]['route_no_full'] ) {
-        $pdf_array[$key - 1]['route_no_full'] .= ' A';
-        $pdf_array[$key]['route_no_full'] .= ' B';
-      }
-    }
-  }
+  $pdf_array = pq_fix_same_address_sequence($pdf_array);
 
   return $pdf_array;
 }
@@ -686,4 +679,29 @@ function pq_get_product_lines_array( $order ) {
   array_multisort($columns, SORT_ASC, SORT_NUMERIC, $product_lines);
 
   return $product_lines;
+}
+
+
+/**
+ * Add letters sequence to route numbers sequence if several orders at same address
+ */
+function pq_fix_same_address_sequence( $pdf_array ) {
+  $alphabet = range('A', 'Z');
+  $i = 0;
+  $previous_route_no = '';
+
+  foreach ( $pdf_array as $key => $order_array ) {
+    if ( $order_array['route_no_full'] == $previous_route_no ) {
+      $pdf_array[$key - 1]['route_no_full'] .= ' ' . $alphabet[$i];
+      $i++;
+    } elseif ( $order_array['route_no_full'] !== $previous_route_no && $i !== 0 ) {
+      $pdf_array[$key - 1]['route_no_full'] .= ' ' . $alphabet[$i];
+      $i = 0;
+    } else {
+      $i = 0;
+    }
+    $previous_route_no = $order_array['route_no_full'];
+  }
+
+  return $pdf_array;
 }
