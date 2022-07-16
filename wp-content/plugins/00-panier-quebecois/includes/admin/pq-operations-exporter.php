@@ -340,157 +340,13 @@ function pq_export_excel($spreadsheet) {
 function pq_export_labels() {
 
   $timezone = new DateTimeZone( get_option( 'timezone_string' ) );
-  $default_date_obj = new DateTime( 'June 1st 2022', $timezone );
+  $default_date_obj = new DateTime( 'June 10th 2022', $timezone );
   $default_date = $default_date_obj->format( 'Y-m-d' );
   $orders = myfct_get_relevant_orders( $default_date );
 
   $pdf_array = pq_get_pdf_array($orders);
   
-  while (ob_get_level()) {
-    ob_end_clean();
-  }
-  require_once 'pq-fpdf-functions.php';
-  $pdf = new PQ_FPDF();
-  $pdf->SetFont('Arial', 'B', 12);
-
-  $margin = 10;
-  $pdf->margin = $margin;
-  $pdf->SetMargins($margin, 25);
-  $padding = 2;
-  $pdf->padding = $padding;
-  $page_width = $pdf->GetPageWidth() - 2 * $margin;
-  $page_height = $pdf->GetPageHeight() - 2 * $margin;
-
-  $pdf->SetStyle('main', 'Arial', 'N', 12, '', 0);
-  $pdf->SetStyle('large', 'Arial', 'B', 14, '', 0);
-  $pdf->SetStyle('note', 'Arial', 'N', 10, '', 0);
-  $pdf->SetStyle('top_icon', 'Arial', 'B', 20, '');
-
-  $pdf->SetStyle('black', '', '', 0, '0, 0, 0');
-  $pdf->SetStyle('red', '', '', 0, '255, 51, 51');
-  $pdf->SetStyle('blue', '', '', 0, '0, 0, 204');
-  $pdf->SetStyle('green', '', '', 0, '0, 153, 0');
-  $pdf->SetStyle('purple', '', '', 0, '127, 0, 255');
-
-  $delivery_info_cell_width = $page_width / 3 - 2 * $padding;
-  $delivery_info_cell_height = 4;
-  $delivery_info_columns = 3;
-  
-  foreach ($pdf_array as $order_array) {
-    $pdf->AddPage();
-    $y_top_label = $pdf->GetY();
-    $top_label_html = '';
-
-    $top_label_icons_html = '';
-    if ( $order_array['order_meta']['has_special_product'] )
-        $top_label_icons_html .= '<top_icon>(!)</top_icon>';
-
-    if ( $order_array['order_meta']['is_first_order'] )
-      $top_label_icons_html .= '<top_icon>(1st)</top_icon>';
-
-    switch ($order_array['order_meta']['delivery_type']) {
-      case 'pickup' :
-        $label_color = 'red';
-        break;
-      case 'business' :
-        $label_color = 'purple';
-        break;
-      default :
-        $label_color = 'black';
-    }
-
-    $top_label_html .= '<' . $label_color . '>';
-
-    foreach ($order_array as $info_type => $item_line) {
-
-      if ( ! empty($item_line) && $info_type != 'product_lines' && $info_type != 'order_meta') {
-
-        switch ( $info_type ) {
-          case 'route_no_full' :
-            $tag = 'large';
-            break;
-          case 'order_id' :
-            $tag = 'large';
-            break;
-          case 'delivery_note' :
-            $tag = 'note';
-            break;
-          default:
-          $tag = 'main';
-        }
-        $top_label_html .= '<' . $tag . '>' . $item_line . '</' . $tag . '>';
-      }
-    }
-    $top_label_html .= '</' . $label_color . '>';
-
-    for ( $i = 1; $i <= $delivery_info_columns; $i++ ) {
-      $x = ($i - 1) * ($delivery_info_cell_width + $padding) + $margin;
-      $pdf->SetXY( $x, $y_top_label);
-      
-      if ( !empty($top_label_icons_html) )
-        $pdf->WriteTag($delivery_info_cell_width, 16, $top_label_icons_html, 0, 'C');
-
-      $pdf->SetXY( $x, $pdf->GetY() );
-      $pdf->WriteTag($delivery_info_cell_width, $delivery_info_cell_height, $top_label_html, 0, 'C');
-    }
-
-    $product_info_cell_width = $page_width / 3 - 2 * $padding;
-    $pdf->col_width = $product_info_cell_width;
-    $product_info_cell_height = 7;
-    
-    $pdf->SetX( $margin );
-    $horizontal_line_y = $pdf->GetY();
-    $pdf->Line(0, $horizontal_line_y, $pdf->GetPageWidth(), $horizontal_line_y);
-
-    $pdf->SetFont('Arial', 'B', 18);
-    $pdf->Cell( $page_width, 10, $order_array['route_no_full'], 0, 2, 'C' );
-
-    $top_products_y = $pdf->GetY();
-    $pdf->y0 = $top_products_y;
-    $pdf->SetCol(0);
-
-    foreach ( $order_array['product_lines'] as $product_info ) {
-
-      if ( $pdf->col > 0 && $pdf->col !== $previous_col ) {
-        $pdf->Line($pdf->col_left_x - $padding / 2, $horizontal_line_y, $pdf->col_left_x - $padding / 2, $pdf->GetPageHeight());
-      }
-      $previous_col = $pdf->col;
-
-      if ( $product_info['item_quantity'] !== 1 ) {
-        $item_quantity_color = 'red';
-      } else {
-        $item_quantity_color = 'black';
-      }
-
-      if ( ! empty($product_info['product_lot_quantity']) ) {
-        $product_lot_quantity_color = 'red';
-      } else {
-        $product_lot_quantity_color = 'black';
-      }
-
-      if ( $product_info['packing_priority'] >= 20 ) {
-        $product_short_name_color = 'blue';
-      } elseif ( strpos($product_info['product_short_name'], 'BIO') !== false ) {
-        $product_short_name_color = 'green';
-      } else {
-        $product_short_name_color = 'black';
-      } 
-
-      $product_line_html = '';
-      $product_line_html .= '<main>'; 
-      $product_line_html .= '<' . $item_quantity_color . '>' . $product_info['item_quantity'] . 'x </' . $item_quantity_color . '>';
-
-      if ( ! empty($product_info['product_lot_quantity']) )
-        $product_line_html .= '<' . $product_lot_quantity_color . '>' . $product_info['product_lot_quantity'] . ' </' . $product_lot_quantity_color . '>';
-
-      $product_line_html .= '<' . $product_short_name_color . '>' . $product_info['product_short_name'] . '</' . $product_short_name_color . '>';
-      $product_line_html .= '</main>';
-      $pdf->SetX($pdf->col_left_x);
-      $pdf->WriteTag($product_info_cell_width, $product_info_cell_height, $product_line_html, 0, 'L');
-    }
-  }
-
-  $pdf->Output();
+  pq_print_labels_pdf($pdf_array);
 }
 
 
@@ -704,4 +560,173 @@ function pq_fix_same_address_sequence( $pdf_array ) {
   }
 
   return $pdf_array;
+}
+
+
+/**
+ * Print the main labels
+ */
+function pq_print_labels_pdf( $pdf_array ) {
+
+  while (ob_get_level()) {
+    ob_end_clean();
+  }
+  require_once 'pq-fpdf-functions.php';
+  $pdf = new PQ_FPDF();
+  $pdf->SetFont('Arial', 'B', 12);
+
+  $margin = 10;
+  $pdf->margin = $margin;
+  $pdf->SetMargins($margin, 25);
+  $padding = 2;
+  $pdf->padding = $padding;
+  $pdf->page_width = $pdf->GetPageWidth() - 2 * $margin;
+
+  $pdf->SetStyle('main', 'Arial', 'N', 12, '', 0);
+  $pdf->SetStyle('large', 'Arial', 'B', 14, '', 0);
+  $pdf->SetStyle('note', 'Arial', 'N', 10, '', 0);
+  $pdf->SetStyle('top_icon', 'Arial', 'B', 20, '');
+
+  $pdf->SetStyle('black', '', '', 0, '0, 0, 0');
+  $pdf->SetStyle('red', '', '', 0, '255, 51, 51');
+  $pdf->SetStyle('blue', '', '', 0, '0, 0, 204');
+  $pdf->SetStyle('green', '', '', 0, '0, 153, 0');
+  $pdf->SetStyle('purple', '', '', 0, '127, 0, 255');
+  
+  foreach ($pdf_array as $order_array) {
+    pq_print_top_labels($pdf, $order_array);
+    pq_print_products_list($pdf, $order_array);
+  }
+
+  $pdf->Output();
+}
+
+
+/**
+ * Print top part of main labels
+ */
+function pq_print_top_labels($pdf, $order_array) {
+
+  $pdf->AddPage();
+  $y_top_label = $pdf->GetY();
+  $top_label_html = '';
+
+  $delivery_info_cell_width = $pdf->page_width / 3 - 2 * $pdf->padding;
+  $delivery_info_cell_height = 4;
+  $delivery_info_columns = 3;
+  
+  $top_label_icons_html = '';
+  if ( $order_array['order_meta']['has_special_product'] )
+      $top_label_icons_html .= '<top_icon>(!)</top_icon>';
+
+  if ( $order_array['order_meta']['is_first_order'] )
+    $top_label_icons_html .= '<top_icon>(1st)</top_icon>';
+
+  switch ($order_array['order_meta']['delivery_type']) {
+    case 'pickup' :
+      $label_color = 'red';
+      break;
+    case 'business' :
+      $label_color = 'purple';
+      break;
+    default :
+      $label_color = 'black';
+  }
+
+  $top_label_html .= '<' . $label_color . '>';
+
+  foreach ($order_array as $info_type => $item_line) {
+
+    if ( ! empty($item_line) && $info_type != 'product_lines' && $info_type != 'order_meta') {
+
+      switch ( $info_type ) {
+        case 'route_no_full' :
+          $tag = 'large';
+          break;
+        case 'order_id' :
+          $tag = 'large';
+          break;
+        case 'delivery_note' :
+          $tag = 'note';
+          break;
+        default:
+        $tag = 'main';
+      }
+      $top_label_html .= '<' . $tag . '>' . $item_line . '</' . $tag . '>';
+    }
+  }
+  $top_label_html .= '</' . $label_color . '>';
+
+  for ( $i = 1; $i <= $delivery_info_columns; $i++ ) {
+    $x = ($i - 1) * ($delivery_info_cell_width + $pdf->padding) + $pdf->margin;
+    $pdf->SetXY( $x, $y_top_label);
+    
+    if ( !empty($top_label_icons_html) )
+      $pdf->WriteTag($delivery_info_cell_width, 16, $top_label_icons_html, 0, 'C');
+
+    $pdf->SetXY( $x, $pdf->GetY() );
+    $pdf->WriteTag($delivery_info_cell_width, $delivery_info_cell_height, $top_label_html, 0, 'C');
+  }
+}
+
+
+/**
+ * Print products list
+ */
+function pq_print_products_list($pdf, $order_array) {
+
+  $product_info_cell_width = $pdf->page_width / 3 - 2 * $pdf->padding;
+  $pdf->col_width = $product_info_cell_width;
+  $product_info_cell_height = 7;
+  
+  $pdf->SetX( $pdf->margin );
+  $horizontal_line_y = $pdf->GetY();
+  $pdf->Line(0, $horizontal_line_y, $pdf->GetPageWidth(), $horizontal_line_y);
+
+  $pdf->SetFont('Arial', 'B', 18);
+  $pdf->Cell( $pdf->page_width, 10, $order_array['route_no_full'], 0, 2, 'C' );
+
+  $top_products_y = $pdf->GetY();
+  $pdf->y0 = $top_products_y;
+  $pdf->SetCol(0);
+
+  foreach ( $order_array['product_lines'] as $product_info ) {
+
+    if ( $pdf->col > 0 && $pdf->col !== $previous_col ) {
+      $pdf->Line($pdf->col_left_x - $pdf->padding / 2, $horizontal_line_y, $pdf->col_left_x - $pdf->padding / 2, $pdf->GetPageHeight());
+    }
+    $previous_col = $pdf->col;
+
+    if ( $product_info['item_quantity'] !== 1 ) {
+      $item_quantity_color = 'red';
+    } else {
+      $item_quantity_color = 'black';
+    }
+
+    if ( ! empty($product_info['product_lot_quantity']) ) {
+      $product_lot_quantity_color = 'red';
+    } else {
+      $product_lot_quantity_color = 'black';
+    }
+
+    if ( $product_info['packing_priority'] >= 20 ) {
+      $product_short_name_color = 'blue';
+    } elseif ( strpos($product_info['product_short_name'], 'BIO') !== false ) {
+      $product_short_name_color = 'green';
+    } else {
+      $product_short_name_color = 'black';
+    } 
+
+    $product_line_html = '';
+    $product_line_html .= '<main>'; 
+    $product_line_html .= '<' . $item_quantity_color . '>' . $product_info['item_quantity'] . 'x </' . $item_quantity_color . '>';
+
+    if ( ! empty($product_info['product_lot_quantity']) )
+      $product_line_html .= '<' . $product_lot_quantity_color . '>' . $product_info['product_lot_quantity'] . ' </' . $product_lot_quantity_color . '>';
+
+    $product_line_html .= '<' . $product_short_name_color . '>' . $product_info['product_short_name'] . '</' . $product_short_name_color . '>';
+    $product_line_html .= '</main>';
+    $pdf->SetX($pdf->col_left_x);
+    $pdf->WriteTag($product_info_cell_width, $product_info_cell_height, $product_line_html, 0, 'L');
+  }
 }

@@ -10,6 +10,7 @@ class PQ_FPDF extends PDF_WriteTag {
     public $col_width;
     public $margin;
     public $padding;
+    public $page_width;
 
     function SetCol($col) {
         // Set position at a given column
