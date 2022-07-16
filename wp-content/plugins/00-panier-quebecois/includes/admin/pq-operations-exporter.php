@@ -340,154 +340,11 @@ function pq_export_excel($spreadsheet) {
 function pq_export_labels() {
 
   $timezone = new DateTimeZone( get_option( 'timezone_string' ) );
-  $default_date_obj = new DateTime( 'today', $timezone );
+  $default_date_obj = new DateTime( 'June 10th 2022', $timezone );
   $default_date = $default_date_obj->format( 'Y-m-d' );
   $orders = myfct_get_relevant_orders( $default_date );
 
-  $pdf_array = array();
-
-  foreach ( $orders as $order ) {
-    $order_id = $order->get_id();
-    $url = 'https://api.track-pod.com/Order/Number/' . $order_id;
-  
-    $response = wp_remote_get( $url, array(
-      'method' => 'GET',
-      'httpversion' => '1.0',
-      'headers' => array(
-        'Content-Type' => 'application/json',
-        'X-API-KEY' => '534f2b64-1171-40a2-9942-b4a6c2c8e61b',
-      ),
-    ));
-  
-    $trackpod_data = json_decode($response['body']);
-  
-    $route_no = $trackpod_data->RouteNumber;
-    $order_sequence = $trackpod_data->SeqNumber;
-    $route_no_full = $route_no . '--' . sprintf("%02d", $order_sequence);
-
-    $order_meta = array();
-
-    if ( ! empty($order->get_shipping_address_2()) ) { //If there is apt number
-			$full_delivery_address = $order->get_shipping_address_1() . ', ' . $order->get_shipping_address_2() . ', ' . $order->get_shipping_city() . ', ' . $order->get_shipping_postcode() . ', ' . $order->get_shipping_country();
-		} else { //Without apt number
-			$full_delivery_address = $order->get_shipping_address_1() . ', ' . $order->get_shipping_city() . ', ' . $order->get_shipping_postcode() . ', ' . $order->get_shipping_country();
-		}
-
-    $pickup_location_meta =  get_post_meta($order_id, 'pq_pickup_datetime', true);
-		if ( empty($pickup_location_meta) ) {
-			$delivery_address = $full_delivery_address;
-      if ( empty($order->get_billing_company()) ) {
-        $order_meta['delivery_type'] = 'delivery';
-      } else {
-        $order_meta['delivery_type'] = 'business';
-      }
-		} else {
-			$shipping_items = $order->get_items( 'shipping' );
-			$shipping_item = reset($shipping_items);
-			
-			$pickup_location_adress = $shipping_item->get_meta( '_pickup_location_address' );
-			$delivery_address = $pickup_location_adress['address_1'] . ', ' . $pickup_location_adress['city'] . ', ' . $pickup_location_adress['state'] . ', ' . $pickup_location_adress['postcode'] . ', ' . $pickup_location_adress['country'];
-
-      $order_meta['delivery_type'] = 'pickup';
-		}
-
-		$client_name = $order->get_formatted_shipping_full_name();
-		$phone = $order->get_billing_phone();
-		$delivery_note = sanitize_text_field( $order->get_customer_note() );
-
-		$order_date = $order->get_date_created();
-    $email = $order->get_billing_email();
-		$is_first_order = pq_is_first_order($email, $order_date);
-
-    if ($is_first_order) {
-      $order_meta['is_first_order'] = true;
-    } else {
-      $order_meta['is_first_order'] = false;
-    }
-
-    //Get order items
-    $product_lines = array();
-    $order_meta['has_special_product'] = false;
-
-    foreach( $order->get_items() as $item_id => $item ) {
-			$product_id = $item->get_product_id();
-			$product = wc_get_product( $product_id );
-
-			//Get only products to add to export
-			if ( myfct_is_relevant_product($product) ) {
-								
-				//Get item info
-				$item_quantity_before_refund = $item->get_quantity();
-				$item_quantity_refunded = $order->get_qty_refunded_for_item( $item_id );
-				$item_quantity = $item_quantity_before_refund + $item_quantity_refunded;
-
-        $is_special_item = get_post_meta($product_id, '_pq_special_delivery', true);
-        if ( ! empty($is_special_item) ) {
-          $order_meta['has_special_product'] = true;
-        }
-
-				if ( $item->get_variation_id() !== 0 ) {
-					$variation_id = $item->get_variation_id();
-					$product_short_name = get_post_meta($variation_id, '_short_name', true);
-					$product_lot_quantity = get_post_meta($variation_id, '_lot_quantity', true);
-					$product_weight = get_post_meta( $variation_id, '_pq_weight', true );
-					$product_unit = get_post_meta( $variation_id, '_lot_unit', true );
-					$product_weight_with_unit = $product_weight . $product_unit;
-				} else {
-					$product_short_name = get_post_meta($product_id, '_short_name', true);
-					$product_lot_quantity = get_post_meta($product_id, '_lot_quantity', true);
-					$product_weight = get_post_meta( $product_id, '_pq_weight', true );
-					$product_unit = get_post_meta( $product_id, '_lot_unit', true );
-					$product_weight_with_unit = $product_weight . $product_unit;
-				}
-
-				$product_packing_priority = get_post_meta($product_id, '_packing_priority', true);
-
-        if ( $product_lot_quantity == 1 ) {
-          $product_lot_quantity = '';
-        }
-
-        $product_line = array( array( 
-          'product_short_name' => utf8_decode($product_short_name),
-          'item_quantity' => $item_quantity,
-          'product_lot_quantity' => $product_lot_quantity,
-          'packing_priority' => $product_packing_priority,
-        ));
-
-        $product_lines = array_merge($product_lines, $product_line);
-      }
-    }
-
-    $columns = array_column($product_lines, 'product_short_name');
-    array_multisort($columns, SORT_ASC, SORT_STRING, $product_lines);
-    $columns = array_column($product_lines, 'packing_priority');
-    array_multisort($columns, SORT_ASC, SORT_NUMERIC, $product_lines);
-
-    $order_array = array( array( 
-      'route_no_full' => $route_no_full,
-      'order_id' => '#' . $order_id,
-      'client_name' => utf8_decode($client_name),
-      'phone' => utf8_decode($phone),
-      'full_delivery_address' => utf8_decode($delivery_address),
-      'delivery_note' => utf8_decode($delivery_note),
-      'order_meta' => $order_meta,
-      'product_lines' => $product_lines,
-    ));
-
-    $pdf_array = array_merge($pdf_array, $order_array);
-  }
-
-  $columns = array_column($pdf_array, 'route_no_full');
-  array_multisort($columns, SORT_ASC, SORT_STRING, $pdf_array);
-
-  foreach ( $pdf_array as $key => $order_array ) {
-    if ( $key > 0 ) {
-      if ($order_array['route_no_full'] == $pdf_array[$key - 1]['route_no_full'] ) {
-        $pdf_array[$key - 1]['route_no_full'] .= ' A';
-        $pdf_array[$key]['route_no_full'] .= ' B';
-      }
-    }
-  }
+  $pdf_array = pq_get_pdf_array($orders);
   
   while (ob_get_level()) {
     ob_end_clean();
@@ -634,4 +491,199 @@ function pq_export_labels() {
   }
 
   $pdf->Output();
+}
+
+
+/**
+ * Get array to build labels PDF
+ */
+function pq_get_pdf_array( $orders ) {
+  $pdf_array = array();
+
+  foreach ( $orders as $order ) {
+    $order_id = $order->get_id();
+    
+    $order_array = pq_get_orders_info_array( $order );
+
+    $order_array['product_lines'] = pq_get_product_lines_array( $order );
+
+    $orders_array = array( $order_array );
+
+    $pdf_array = array_merge($pdf_array, $orders_array);
+  }
+
+  $columns = array_column($pdf_array, 'route_no_full');
+  array_multisort($columns, SORT_ASC, SORT_STRING, $pdf_array);
+
+  foreach ( $pdf_array as $key => $order_array ) {
+    if ( $key > 0 ) {
+      if ($order_array['route_no_full'] == $pdf_array[$key - 1]['route_no_full'] ) {
+        $pdf_array[$key - 1]['route_no_full'] .= ' A';
+        $pdf_array[$key]['route_no_full'] .= ' B';
+      }
+    }
+  }
+
+  return $pdf_array;
+}
+
+
+/**
+ * Get route numbers with sequence from TrackPOD
+ */
+function pq_get_route_no( $order_id ) {
+  $url = 'https://api.track-pod.com/Order/Number/' . $order_id;
+  
+  $response = wp_remote_get( $url, array(
+    'method' => 'GET',
+    'httpversion' => '1.0',
+    'headers' => array(
+      'Content-Type' => 'application/json',
+      'X-API-KEY' => '534f2b64-1171-40a2-9942-b4a6c2c8e61b',
+    ),
+  ));
+
+  $trackpod_data = json_decode($response['body']);
+
+  $route_no = $trackpod_data->RouteNumber;
+  $order_sequence = $trackpod_data->SeqNumber;
+  $route_no_full = $route_no . '--' . sprintf("%02d", $order_sequence);
+
+  return $route_no_full;
+}
+
+
+/**
+ * Get all orders info for labels
+ */
+function pq_get_orders_info_array( $order ) {
+
+  $order_id = $order->get_id();
+  $order_meta = array();
+
+  $route_no_full = pq_get_route_no( $order_id );
+
+  if ( ! empty($order->get_shipping_address_2()) ) { //If there is apt number
+    $full_delivery_address = $order->get_shipping_address_1() . ', ' . $order->get_shipping_address_2() . ', ' . $order->get_shipping_city() . ', ' . $order->get_shipping_postcode() . ', ' . $order->get_shipping_country();
+  } else { //Without apt number
+    $full_delivery_address = $order->get_shipping_address_1() . ', ' . $order->get_shipping_city() . ', ' . $order->get_shipping_postcode() . ', ' . $order->get_shipping_country();
+  }
+
+  $pickup_location_meta =  get_post_meta($order_id, 'pq_pickup_datetime', true);
+  if ( empty($pickup_location_meta) ) {
+    $delivery_address = $full_delivery_address;
+    if ( empty($order->get_billing_company()) ) {
+      $order_meta['delivery_type'] = 'delivery';
+    } else {
+      $order_meta['delivery_type'] = 'business';
+    }
+  } else {
+    $shipping_items = $order->get_items( 'shipping' );
+    $shipping_item = reset($shipping_items);
+    
+    $pickup_location_adress = $shipping_item->get_meta( '_pickup_location_address' );
+    $delivery_address = $pickup_location_adress['address_1'] . ', ' . $pickup_location_adress['city'] . ', ' . $pickup_location_adress['state'] . ', ' . $pickup_location_adress['postcode'] . ', ' . $pickup_location_adress['country'];
+
+    $order_meta['delivery_type'] = 'pickup';
+  }
+
+  $client_name = $order->get_formatted_shipping_full_name();
+  $phone = $order->get_billing_phone();
+  $delivery_note = sanitize_text_field( $order->get_customer_note() );
+
+  $order_date = $order->get_date_created();
+  $email = $order->get_billing_email();
+  $is_first_order = pq_is_first_order($email, $order_date);
+
+  if ($is_first_order) {
+    $order_meta['is_first_order'] = true;
+  } else {
+    $order_meta['is_first_order'] = false;
+  }
+
+  $order_meta['has_special_product'] = false;
+  foreach( $order->get_items() as $item_id => $item ) {
+    $product_id = $item->get_product_id();
+    $product = wc_get_product( $product_id );
+
+    //Get only products to add to export
+    if ( myfct_is_relevant_product($product) ) {
+      $is_special_item = get_post_meta($product_id, '_pq_special_delivery', true);
+      if ( ! empty($is_special_item) ) {
+        $order_meta['has_special_product'] = true;
+      }
+    }
+  }
+
+  $order_array = array(
+    'route_no_full' => $route_no_full,
+    'order_id' => '#' . $order_id,
+    'client_name' => utf8_decode($client_name),
+    'phone' => utf8_decode($phone),
+    'full_delivery_address' => utf8_decode($delivery_address),
+    'delivery_note' => utf8_decode($delivery_note),
+    'order_meta' => $order_meta,
+  );
+
+  return $order_array;
+}
+
+
+/**
+ * Get list of products in an array for each order
+ */
+function pq_get_product_lines_array( $order ) {
+
+  $product_lines = array();
+
+  foreach( $order->get_items() as $item_id => $item ) {
+    $product_id = $item->get_product_id();
+    $product = wc_get_product( $product_id );
+
+    //Get only products to add to export
+    if ( myfct_is_relevant_product($product) ) {
+              
+      //Get item info
+      $item_quantity_before_refund = $item->get_quantity();
+      $item_quantity_refunded = $order->get_qty_refunded_for_item( $item_id );
+      $item_quantity = $item_quantity_before_refund + $item_quantity_refunded;
+
+      if ( $item->get_variation_id() !== 0 ) {
+        $variation_id = $item->get_variation_id();
+        $product_short_name = get_post_meta($variation_id, '_short_name', true);
+        $product_lot_quantity = get_post_meta($variation_id, '_lot_quantity', true);
+        $product_weight = get_post_meta( $variation_id, '_pq_weight', true );
+        $product_unit = get_post_meta( $variation_id, '_lot_unit', true );
+        $product_weight_with_unit = $product_weight . $product_unit;
+      } else {
+        $product_short_name = get_post_meta($product_id, '_short_name', true);
+        $product_lot_quantity = get_post_meta($product_id, '_lot_quantity', true);
+        $product_weight = get_post_meta( $product_id, '_pq_weight', true );
+        $product_unit = get_post_meta( $product_id, '_lot_unit', true );
+        $product_weight_with_unit = $product_weight . $product_unit;
+      }
+
+      $product_packing_priority = get_post_meta($product_id, '_packing_priority', true);
+
+      if ( $product_lot_quantity == 1 ) {
+        $product_lot_quantity = '';
+      }
+
+      $product_line = array( array( 
+        'product_short_name' => utf8_decode($product_short_name),
+        'item_quantity' => $item_quantity,
+        'product_lot_quantity' => $product_lot_quantity,
+        'packing_priority' => $product_packing_priority,
+      ));
+
+      $product_lines = array_merge($product_lines, $product_line);
+    }
+  }
+
+  $columns = array_column($product_lines, 'product_short_name');
+  array_multisort($columns, SORT_ASC, SORT_STRING, $product_lines);
+  $columns = array_column($product_lines, 'packing_priority');
+  array_multisort($columns, SORT_ASC, SORT_NUMERIC, $product_lines);
+
+  return $product_lines;
 }
