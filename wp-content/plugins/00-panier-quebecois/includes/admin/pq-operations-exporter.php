@@ -21,6 +21,10 @@ function pq_operations_exporter_button_fct() {
         pq_export_labels();
     }
 
+    if ( isset( $_POST[ 'cold_labels_export_form' ] ) && check_admin_referer( 'cold_labels_export_clicked' ) ) {
+        pq_export_cold_labels();
+    }
+
     $timezone = new DateTimeZone( get_option( 'timezone_string' ) );
     $today_date_obj = new DateTime( 'today', $timezone );
     $today_date = $today_date_obj->format( 'Y-m-d' );
@@ -48,6 +52,15 @@ function pq_operations_exporter_button_fct() {
       
       <input type="hidden" value="true" name="labels_export_form" />
       <input type="submit" value="Exporter les étiquettes">
+    </form>
+
+    </br>
+
+    <form action="" method="post">
+      <?php wp_nonce_field('cold_labels_export_clicked'); ?>
+      
+      <input type="hidden" value="true" name="cold_labels_export_form" />
+      <input type="submit" value="Exporter les étiquettes de froid">
     </form>
     <?php
   }
@@ -339,14 +352,35 @@ function pq_export_excel($spreadsheet) {
  */
 function pq_export_labels() {
 
+  $orders = pq_get_relevant_orders_today();
+  $pdf_array = pq_get_pdf_array($orders);
+  
+  pq_print_labels_pdf($pdf_array);
+}
+
+
+/**
+ * Export cold labels for daily operations
+ */
+function pq_export_cold_labels() {
+
+  $orders = pq_get_relevant_orders_today();
+  $pdf_array = pq_get_pdf_array($orders);
+  
+  pq_print_labels_pdf($pdf_array);
+}
+
+
+/**
+ * Get relevant orders for today delivery
+ */
+function pq_get_relevant_orders_today() {
   $timezone = new DateTimeZone( get_option( 'timezone_string' ) );
   $default_date_obj = new DateTime( 'June 10th 2022', $timezone );
   $default_date = $default_date_obj->format( 'Y-m-d' );
   $orders = myfct_get_relevant_orders( $default_date );
 
-  $pdf_array = pq_get_pdf_array($orders);
-  
-  pq_print_labels_pdf($pdf_array);
+  return $orders;
 }
 
 
