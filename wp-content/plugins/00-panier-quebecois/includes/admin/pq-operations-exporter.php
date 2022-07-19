@@ -376,7 +376,7 @@ function pq_export_cold_labels() {
  */
 function pq_get_relevant_orders_today() {
   $timezone = new DateTimeZone( get_option( 'timezone_string' ) );
-  $default_date_obj = new DateTime( 'June 1st 2022', $timezone );
+  $default_date_obj = new DateTime( 'today', $timezone );
   $default_date = $default_date_obj->format( 'Y-m-d' );
   $orders = myfct_get_relevant_orders( $default_date );
 
@@ -604,6 +604,8 @@ function pq_print_labels_pdf( $pdf_array ) {
 
   $pdf = pq_set_new_labels_pdf();
 
+  $pdf->max_col = 3;
+
   $pdf->SetStyle('main', 'Arial', 'N', 12, '', 0);
   $pdf->SetStyle('large', 'Arial', 'B', 14, '', 0);
   $pdf->SetStyle('note', 'Arial', 'N', 10, '', 0);
@@ -655,7 +657,7 @@ function pq_print_top_labels($pdf, $order_array) {
   $y_top_label = $pdf->GetY();
   $top_label_html = '';
 
-  $delivery_info_cell_width = $pdf->page_width / 3 - 2 * $pdf->padding;
+  $delivery_info_cell_width = $pdf->page_width / $pdf->max_col - ($pdf->max_col - 1) * $pdf->padding;
   $delivery_info_cell_height = 4;
   $delivery_info_columns = 3;
   
@@ -719,9 +721,13 @@ function pq_print_top_labels($pdf, $order_array) {
  */
 function pq_print_products_list($pdf, $order_array, $is_cold_labels = false) {
 
-  $product_info_cell_width = $pdf->page_width / 3 - 2 * $pdf->padding;
+  $product_info_cell_width = $pdf->page_width / $pdf->max_col - ($pdf->max_col - 1) * $pdf->padding;
   $pdf->col_width = $product_info_cell_width;
-  $product_info_cell_height = 7;
+  if ($is_cold_labels) {
+    $product_info_cell_height = 10;
+  } else {
+    $product_info_cell_height = 7;
+  }
   
   $pdf->SetX( $pdf->margin );
   $horizontal_line_y = $pdf->GetY();
@@ -741,7 +747,7 @@ function pq_print_products_list($pdf, $order_array, $is_cold_labels = false) {
     if ( $is_cold_labels && $product_info['packing_priority'] < 20 ) continue;
 
     if ( $pdf->col > 0 && $pdf->col !== $previous_col ) {
-      $pdf->Line($pdf->col_left_x - $pdf->padding / 2, $horizontal_line_y, $pdf->col_left_x - $pdf->padding / 2, $pdf->GetPageHeight());
+      $pdf->Line($pdf->col_left_x - $pdf->padding / ($pdf->max_col - 1), $horizontal_line_y, $pdf->col_left_x - $pdf->padding / ($pdf->max_col - 1), $pdf->GetPageHeight());
     }
     $previous_col = $pdf->col;
 
@@ -787,7 +793,9 @@ function pq_print_cold_labels_pdf( $pdf_array ) {
 
   $pdf = pq_set_new_labels_pdf();
 
-  $pdf->SetStyle('main', 'Arial', 'N', 12, '', 0);
+  $pdf->max_col = 2;
+
+  $pdf->SetStyle('main', 'Arial', 'B', 18, '', 0);
   $pdf->SetStyle('large', 'Arial', 'B', 14, '', 0);
   $pdf->SetStyle('note', 'Arial', 'N', 10, '', 0);
   $pdf->SetStyle('top_icon', 'Arial', 'B', 20, '');

@@ -6,6 +6,7 @@ class PQ_FPDF extends PDF_WriteTag {
 
     public $col = 0;
     public $col_left_x;
+    public $max_col;
     public $y0;
     public $col_width;
     public $margin;
@@ -24,7 +25,7 @@ class PQ_FPDF extends PDF_WriteTag {
 
     function AcceptPageBreak() {
         // Method accepting or not automatic page break
-        if($this->col<2)
+        if($this->col < ($this->max_col - 1))
         {
             // Go to next column
             $this->SetCol($this->col+1);
