@@ -367,7 +367,7 @@ function pq_export_cold_labels() {
   $orders = pq_get_relevant_orders_today();
   $pdf_array = pq_get_pdf_array($orders);
   
-  pq_print_labels_pdf($pdf_array);
+  pq_print_cold_labels_pdf($pdf_array);
 }
 
 
@@ -376,7 +376,7 @@ function pq_export_cold_labels() {
  */
 function pq_get_relevant_orders_today() {
   $timezone = new DateTimeZone( get_option( 'timezone_string' ) );
-  $default_date_obj = new DateTime( 'June 10th 2022', $timezone );
+  $default_date_obj = new DateTime( 'June 1st 2022', $timezone );
   $default_date = $default_date_obj->format( 'Y-m-d' );
   $orders = myfct_get_relevant_orders( $default_date );
 
@@ -602,19 +602,7 @@ function pq_fix_same_address_sequence( $pdf_array ) {
  */
 function pq_print_labels_pdf( $pdf_array ) {
 
-  while (ob_get_level()) {
-    ob_end_clean();
-  }
-  require_once 'pq-fpdf-functions.php';
-  $pdf = new PQ_FPDF();
-  $pdf->SetFont('Arial', 'B', 12);
-
-  $margin = 10;
-  $pdf->margin = $margin;
-  $pdf->SetMargins($margin, 25);
-  $padding = 2;
-  $pdf->padding = $padding;
-  $pdf->page_width = $pdf->GetPageWidth() - 2 * $margin;
+  $pdf = pq_set_new_labels_pdf();
 
   $pdf->SetStyle('main', 'Arial', 'N', 12, '', 0);
   $pdf->SetStyle('large', 'Arial', 'B', 14, '', 0);
@@ -633,6 +621,28 @@ function pq_print_labels_pdf( $pdf_array ) {
   }
 
   $pdf->Output();
+}
+
+
+/**
+ * Set new PDF object and page style
+ */
+function pq_set_new_labels_pdf() {
+  while (ob_get_level()) {
+    ob_end_clean();
+  }
+  require_once 'pq-fpdf-functions.php';
+  $pdf = new PQ_FPDF();
+  $pdf->SetFont('Arial', 'B', 12);
+
+  $margin = 10;
+  $pdf->margin = $margin;
+  $pdf->SetMargins($margin, 25);
+  $padding = 2;
+  $pdf->padding = $padding;
+  $pdf->page_width = $pdf->GetPageWidth() - 2 * $margin;
+
+  return $pdf;
 }
 
 
@@ -707,7 +717,7 @@ function pq_print_top_labels($pdf, $order_array) {
 /**
  * Print products list
  */
-function pq_print_products_list($pdf, $order_array) {
+function pq_print_products_list($pdf, $order_array, $is_cold_labels = false) {
 
   $product_info_cell_width = $pdf->page_width / 3 - 2 * $pdf->padding;
   $pdf->col_width = $product_info_cell_width;
@@ -718,13 +728,17 @@ function pq_print_products_list($pdf, $order_array) {
   $pdf->Line(0, $horizontal_line_y, $pdf->GetPageWidth(), $horizontal_line_y);
 
   $pdf->SetFont('Arial', 'B', 18);
-  $pdf->Cell( $pdf->page_width, 10, $order_array['route_no_full'], 0, 2, 'C' );
+  if ( ! $is_cold_labels ) {
+    $pdf->Cell( $pdf->page_width, 10, $order_array['route_no_full'], 0, 2, 'C' );
+  }
 
   $top_products_y = $pdf->GetY();
   $pdf->y0 = $top_products_y;
   $pdf->SetCol(0);
 
   foreach ( $order_array['product_lines'] as $product_info ) {
+
+    if ( $is_cold_labels && $product_info['packing_priority'] < 20 ) continue;
 
     if ( $pdf->col > 0 && $pdf->col !== $previous_col ) {
       $pdf->Line($pdf->col_left_x - $pdf->padding / 2, $horizontal_line_y, $pdf->col_left_x - $pdf->padding / 2, $pdf->GetPageHeight());
@@ -743,7 +757,7 @@ function pq_print_products_list($pdf, $order_array) {
       $product_lot_quantity_color = 'black';
     }
 
-    if ( $product_info['packing_priority'] >= 20 ) {
+    if ( $product_info['packing_priority'] >= 20 && ! $is_cold_labels ) {
       $product_short_name_color = 'blue';
     } elseif ( strpos($product_info['product_short_name'], 'BIO') !== false ) {
       $product_short_name_color = 'green';
@@ -763,4 +777,46 @@ function pq_print_products_list($pdf, $order_array) {
     $pdf->SetX($pdf->col_left_x);
     $pdf->WriteTag($product_info_cell_width, $product_info_cell_height, $product_line_html, 0, 'L');
   }
+}
+
+
+/**
+ * Print the cold labels
+ */
+function pq_print_cold_labels_pdf( $pdf_array ) {
+
+  $pdf = pq_set_new_labels_pdf();
+
+  $pdf->SetStyle('main', 'Arial', 'N', 12, '', 0);
+  $pdf->SetStyle('large', 'Arial', 'B', 14, '', 0);
+  $pdf->SetStyle('note', 'Arial', 'N', 10, '', 0);
+  $pdf->SetStyle('top_icon', 'Arial', 'B', 20, '');
+
+  $pdf->SetStyle('black', '', '', 0, '0, 0, 0');
+  $pdf->SetStyle('red', '', '', 0, '255, 51, 51');
+  $pdf->SetStyle('blue', '', '', 0, '0, 0, 204');
+  $pdf->SetStyle('green', '', '', 0, '0, 153, 0');
+  $pdf->SetStyle('purple', '', '', 0, '127, 0, 255');
+  
+  foreach ($pdf_array as $order_array) {
+    pq_print_cold_labels_header($pdf, $order_array);
+    pq_print_products_list($pdf, $order_array, true);
+  }
+
+  $pdf->Output();
+}
+
+
+/**
+ * Print the cold labels header
+ */
+function pq_print_cold_labels_header($pdf, $order_array) {
+  $pdf->AddPage();
+  $pdf->SetTextColor(255);
+  $pdf->SetFont('Arial', 'B', 18);
+  $pdf->Cell( $pdf->page_width, 10, $order_array['route_no_full'], 0, 2, 'C' );
+  $pdf->Cell( $pdf->page_width, 10, $order_array['order_id'], 0, 2, 'C' );
+  $pdf->SetFont('Arial', '', 12);
+  $pdf->Cell( $pdf->page_width, 8, $order_array['client_name'], 0, 2, 'C' );
+  $pdf->MultiCell( $pdf->page_width, 8, $order_array['delivery_note'], 0, 'C' );
 }
