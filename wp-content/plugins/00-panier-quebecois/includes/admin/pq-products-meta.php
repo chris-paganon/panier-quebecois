@@ -65,13 +65,8 @@ class PQ_products_meta {
 		//Save custom descriptions
 		add_action( 'woocommerce_admin_process_product_object', array($this, 'pq_save_custom_meta_boxes'), 10, 1 );
 
+		//Add image meta to sellers and producers
 		add_action( 'admin_enqueue_scripts', array($this, 'load_media_image_marchand_and_producer') );
-
-		add_action( 'product_tag_add_form_fields', array($this, 'add_marchand_and_producer_image'), 10, 2);
-		add_action( 'pq_producer_add_form_fields', array($this, 'add_marchand_and_producer_image'), 10, 2);
-
-		add_action( 'created_product_tag', array($this, 'save_marchand_and_producer_image'), 10, 2 );
-		add_action( 'created_pq_producer', array($this, 'save_marchand_and_producer_image'), 10, 2 );
 
 		add_action( 'product_tag_edit_form_fields', array($this, 'update_marchand_and_producer_image'), 10, 2 );
 		add_action( 'pq_producer_edit_form_fields', array($this, 'update_marchand_and_producer_image'), 10, 2 );
@@ -786,25 +781,7 @@ class PQ_products_meta {
 			}
 		}
 	}
-	
 
-	function add_marchand_and_producer_image ( $taxonomy ) {
-		?>
-			<div class="form-field term-group">
-		
-				<label for="image_id"><?php _e('Image', 'taxt-domain'); ?></label>
-				<input type="hidden" id="image_id" name="image_id" class="custom_media_url" value="">
-		
-				<div id="image_wrapper"></div>
-		
-				<p>
-					<input type="button" class="button button-secondary taxonomy_media_button" id="taxonomy_media_button" name="taxonomy_media_button" value="<?php _e( 'Add Image', 'taxt-domain' ); ?>">
-					<input type="button" class="button button-secondary taxonomy_media_remove" id="taxonomy_media_remove" name="taxonomy_media_remove" value="<?php _e( 'Remove Image', 'taxt-domain' ); ?>">
-				</p>
-		
-			</div>
-		<?php
-	}
 
 	function load_media_image_marchand_and_producer() {
 		$screen = get_current_screen();
@@ -817,13 +794,6 @@ class PQ_products_meta {
 		
 	}
 
-	
-	function save_marchand_and_producer_image ( $term_id, $tt_id ) {
-		if( isset( $_POST['image_id'] ) && '' !== $_POST['image_id'] ){
-			$image = $_POST['image_id'];
-			add_term_meta( $term_id, 'image_id', $image, true );
-		}
-	}
 
 	function update_marchand_and_producer_image ( $term, $taxonomy ) { ?>
 		<tr class="form-field term-group-wrap">
