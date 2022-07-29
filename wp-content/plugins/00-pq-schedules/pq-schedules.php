@@ -356,3 +356,54 @@ function pq_clean_inactive_products() {
     update_post_meta($product_id, '_pq_inactive', 0);
   }
 }
+
+
+/**
+ * Send emails to sellers on delivery days
+ */
+
+/**
+ * Activate CRON jobs to send emails
+ */
+register_activation_hook( __FILE__, 'pq_send_seller_emails_schedule' );
+
+function pq_send_seller_emails_schedule() {
+  $delivery_days = PQ_delivery_days::$delivery_days;
+
+  $default_timezone = date_default_timezone_get();
+  date_default_timezone_set( get_option( 'timezone_string' ) );
+
+  foreach ( $delivery_days as $delivery_day ) {
+    if ( !wp_next_scheduled( 'pqhook_send_seller_emails_' . $delivery_day ) ) {
+      wp_schedule_event( strtotime( $delivery_day . ' 6am' ), 'weekly', 'pqhook_send_seller_emails_' . $delivery_day );
+    }
+  }
+  
+  date_default_timezone_set( $default_timezone );
+}
+
+
+/**
+ * Deactivate CRON jobs to send emails
+ */
+register_deactivation_hook( __FILE__, 'pq_clean_send_seller_emails_schedule' );
+
+function pq_clean_send_seller_emails_schedule() {
+  $delivery_days = PQ_delivery_days::$delivery_days;
+  foreach ( $delivery_days as $delivery_day ) {
+    wp_clear_scheduled_hook( 'pqhook_send_seller_emails_' . $delivery_day );
+  }
+}
+
+
+/**
+ * Send emails to sellers with order details at the beginning of each delivery day
+ */
+add_action ('init', 'pq_hook_function_to_pqhook_send_seller_emails');
+
+function pq_hook_function_to_pqhook_send_seller_emails() {
+  $delivery_days = PQ_delivery_days::$delivery_days;
+  foreach ( $delivery_days as $delivery_day ) {
+    add_action( 'pqhook_send_seller_emails_' . $delivery_day, 'pq_send_seller_emails' );
+  }
+}
