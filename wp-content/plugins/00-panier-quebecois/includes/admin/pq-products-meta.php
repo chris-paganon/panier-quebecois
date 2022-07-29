@@ -80,6 +80,11 @@ class PQ_products_meta {
 		add_action( 'manage_product_tag_custom_column', array($this, 'display_marchand_and_producer_image_column_value') , 10, 3);
 		add_action( 'manage_pq_producer_custom_column', array($this, 'display_marchand_and_producer_image_column_value') , 10, 3);
 
+		//Add seller email meta
+		add_action( 'product_tag_edit_form_fields', array($this, 'pq_update_seller_email'), 10, 2 );
+		add_action( 'edited_product_tag', array($this, 'pq_updated_seller_email'), 10, 2 );
+		add_filter( 'manage_edit-product_tag_columns', array($this, 'pq_display_seller_email_column_heading') ); 
+		add_action( 'manage_product_tag_custom_column', array($this, 'pq_display_seller_email_column_value') , 10, 3);
 	}
 
 	/**
@@ -719,7 +724,6 @@ class PQ_products_meta {
 	 *	Add custom meta boxes
 	*/
 
-
 	public static function pq_add_meta_boxes() {
 
 		add_meta_box(
@@ -764,7 +768,6 @@ class PQ_products_meta {
 	 * Save the custom descriptions
 	 */
 
-
 	public static function pq_save_custom_meta_boxes( $product ) {
 
 		$custom_data_keys = array(
@@ -783,6 +786,9 @@ class PQ_products_meta {
 	}
 
 
+	/**
+	 * Add image meta to sellers and producers
+	 */
 	function load_media_image_marchand_and_producer() {
 		$screen = get_current_screen();
 		if($screen->taxonomy != 'product_tag' && $screen->taxonomy != 'pq_producer' ) {
@@ -845,7 +851,32 @@ class PQ_products_meta {
 		return $columns;
 	}
 
+	/**
+	 * Add emails meta for sellers
+	 */
+	function pq_update_seller_email ( $term, $taxonomy ) { ?>
+		<tr class="form-field term-group-wrap">
+			<th scope="row">
+				<label for="pq_seller_email"><?php _e( 'Email(s)', 'panier-quebecois' ); ?></label>
+			</th>
+			<td>
+	
+				<?php $seller_email = get_term_meta ( $term -> term_id, 'pq_seller_email', true ); ?>
+				<input type="text" id="pq_seller_email" name="pq_seller_email" value="<?php echo $seller_email; ?>">
+	
+			</div></td>
+		</tr>
+	<?php
+	}
 
+	function pq_updated_seller_email ( $term_id, $tt_id ) {
+		if( isset( $_POST['pq_seller_email'] ) && '' !== $_POST['pq_seller_email'] ){
+			$seller_email = $_POST['pq_seller_email'];
+			update_term_meta ( $term_id, 'pq_seller_email', $seller_email );
+		} else {
+			update_term_meta ( $term_id, 'pq_seller_email', '' );
+		}
+	}
 }
 
 /**
