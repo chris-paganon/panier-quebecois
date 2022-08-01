@@ -83,8 +83,6 @@ class PQ_products_meta {
 		//Add seller email meta
 		add_action( 'product_tag_edit_form_fields', array($this, 'pq_update_seller_email'), 10, 2 );
 		add_action( 'edited_product_tag', array($this, 'pq_updated_seller_email'), 10, 2 );
-		add_filter( 'manage_edit-product_tag_columns', array($this, 'pq_display_seller_email_column_heading') ); 
-		add_action( 'manage_product_tag_custom_column', array($this, 'pq_display_seller_email_column_value') , 10, 3);
 	}
 
 	/**
