@@ -42,43 +42,45 @@ function pq_send_seller_emails() {
  */
 function pq_get_supplier_email_html( $products, $full_date, $supplier_needs_units = false ) {
 
-  $cell_style = 'border:solid 1px; padding: 10px; text-align: center; font-size: 17px;';
+  $cell_style = 'border:solid 1px; padding: 5px 10px; text-align: center; font-size: 15px;';
 
   ob_start();
 
   ?>
 
-  <h1 style="font-size: 20px;">Commande du <?php echo $full_date; ?>:</h1>
+  <h1 style="font-size: 18px;">Bonjour,</h1>
+  <h2 style="font-size: 15px;">Commande du <?php echo $full_date; ?>:</h2>
 
   <table style="border:solid 1px; border-collapse: collapse;">
-      <tr>
-          <th style="<?php echo $cell_style; ?>">Produit</th>
-          <th style="<?php echo $cell_style; ?>">Quantité</th>
-          <?php if ($supplier_needs_units) : ?>
-            <th style="<?php echo $cell_style; ?>">Unité</th>
-          <?php endif ?>
-      </tr>
+    <tr>
+      <th style="<?php echo $cell_style; ?>">Produit</th>
+      <th style="<?php echo $cell_style; ?>">Quantité</th>
+      <?php if ($supplier_needs_units) : ?>
+        <th style="<?php echo $cell_style; ?>">Unité</th>
+      <?php endif ?>
+    </tr>
 
   <?php
 
   foreach ( $products as $product_id => $quantity ) {
-      $product = wc_get_product( $product_id );
-      $short_name = get_post_meta( $product_id, '_short_name', true);
-      $weight = get_post_meta( $product_id, '_pq_weight', true );
-      $unit = get_post_meta( $product_id, '_lot_unit', true );
-      $weight_with_unit = $weight . $unit;
-      ?>
-      <tr>
-          <td style="<?php echo $cell_style; ?>"><?php echo $short_name; ?></td>
-          <td style="<?php echo $cell_style; ?>"><?php echo $quantity; ?></td>
-          <?php if ($supplier_needs_units) : ?>
-            <td style="<?php echo $cell_style; ?>"><?php echo $weight_with_unit; ?></td>
-          <?php endif ?>
-      </tr>
-      <?php
+    $product = wc_get_product( $product_id );
+    $short_name = get_post_meta( $product_id, '_short_name', true);
+    $weight = get_post_meta( $product_id, '_pq_weight', true );
+    $unit = get_post_meta( $product_id, '_lot_unit', true );
+    $weight_with_unit = $weight . $unit;
+    ?>
+    <tr>
+      <td style="<?php echo $cell_style; ?>"><?php echo $short_name; ?></td>
+      <td style="<?php echo $cell_style; ?>"><?php echo $quantity; ?></td>
+      <?php if ($supplier_needs_units) : ?>
+        <td style="<?php echo $cell_style; ?>"><?php echo $weight_with_unit; ?></td>
+      <?php endif ?>
+    </tr>
+    <?php
   }
   ?>
   </table>
+  <h2 style="font-size: 15px;">Merci et bonne journée,</h2>
   <?php
 
   return ob_get_clean();

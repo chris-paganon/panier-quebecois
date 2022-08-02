@@ -855,7 +855,7 @@ class PQ_products_meta {
 	function pq_update_seller_email ( $term, $taxonomy ) { ?>
 		<tr class="form-field term-group-wrap">
 			<th scope="row">
-				<label for="pq_seller_email"><?php _e( 'Email(s)', 'panier-quebecois' ); ?></label>
+				<label for="pq_seller_email"><?php _e( 'Email(s) (séparés par des virgules)', 'panier-quebecois' ); ?></label>
 			</th>
 			<td>
 	
