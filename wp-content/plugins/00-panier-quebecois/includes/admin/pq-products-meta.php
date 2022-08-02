@@ -864,6 +864,17 @@ class PQ_products_meta {
 	
 			</div></td>
 		</tr>
+		<tr class="form-field term-group-wrap">
+			<th scope="row">
+				<label for="pq_seller_needs_units"><?php _e( 'Besoin des unités?', 'panier-quebecois' ); ?></label>
+			</th>
+			<td>
+	
+				<?php $seller_needs_units = get_term_meta ( $term -> term_id, 'pq_seller_needs_units', true ); ?>
+				<input type="checkbox" id="pq_seller_needs_units" name="pq_seller_needs_units" value="<?php echo $seller_needs_units; ?>" <?php checked($seller_needs_units); ?>>
+	
+			</div></td>
+		</tr>
 	<?php
 	}
 
@@ -874,6 +885,9 @@ class PQ_products_meta {
 		} else {
 			update_term_meta ( $term_id, 'pq_seller_email', '' );
 		}
+
+		$seller_needs_units = isset($_POST['pq_seller_needs_units']) ? 1 : 0;
+		update_term_meta ( $term_id, 'pq_seller_needs_units', $seller_needs_units );
 	}
 }
 
