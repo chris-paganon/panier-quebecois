@@ -104,6 +104,7 @@ class Panier_Quebecois {
     include_once( PQ_INCLUDE_DIR . 'pq-products-slider.php' );
     include_once( PQ_INCLUDE_DIR . 'pq-wishlist.php' );
     include_once( PQ_INCLUDE_DIR . 'pq-page-content.php' );
+    include_once( PQ_INCLUDE_DIR . 'pq-navbar.php' );
     //include_once( PQ_INCLUDE_DIR . 'pq-ajax-add-to-cart.php' );
   }
 
