@@ -28,7 +28,8 @@ function pq_send_seller_emails() {
       $products = pq_get_products_array_for_supplier( $supplier, $orders );
 
       if ( ! empty($products) ) {
-        $supplier_order_html = pq_get_supplier_email_html( $products, $full_date );
+        $supplier_needs_units = get_term_meta ( $supplier->term_id, 'pq_seller_needs_units', true );
+        $supplier_order_html = pq_get_supplier_email_html( $products, $full_date, $supplier_needs_units );
         wp_mail( $supplier_email, 'Commande du ' . $full_date, $supplier_order_html, $headers);
       }
     }
@@ -39,7 +40,7 @@ function pq_send_seller_emails() {
 /**
  * Get supplier email html
  */
-function pq_get_supplier_email_html( $products, $full_date ) {
+function pq_get_supplier_email_html( $products, $full_date, $supplier_needs_units = false ) {
 
   $cell_style = 'border:solid 1px; padding: 10px; text-align: center; font-size: 17px;';
 
@@ -53,6 +54,9 @@ function pq_get_supplier_email_html( $products, $full_date ) {
       <tr>
           <th style="<?php echo $cell_style; ?>">Produit</th>
           <th style="<?php echo $cell_style; ?>">Quantité</th>
+          <?php if ($supplier_needs_units) : ?>
+            <th style="<?php echo $cell_style; ?>">Unité</th>
+          <?php endif ?>
       </tr>
 
   <?php
@@ -60,10 +64,16 @@ function pq_get_supplier_email_html( $products, $full_date ) {
   foreach ( $products as $product_id => $quantity ) {
       $product = wc_get_product( $product_id );
       $short_name = get_post_meta( $product_id, '_short_name', true);
+      $weight = get_post_meta( $product_id, '_pq_weight', true );
+      $unit = get_post_meta( $product_id, '_lot_unit', true );
+      $weight_with_unit = $weight . $unit;
       ?>
       <tr>
           <td style="<?php echo $cell_style; ?>"><?php echo $short_name; ?></td>
           <td style="<?php echo $cell_style; ?>"><?php echo $quantity; ?></td>
+          <?php if ($supplier_needs_units) : ?>
+            <td style="<?php echo $cell_style; ?>"><?php echo $weight_with_unit; ?></td>
+          <?php endif ?>
       </tr>
       <?php
   }
