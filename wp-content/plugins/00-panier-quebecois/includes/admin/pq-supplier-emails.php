@@ -49,7 +49,7 @@ function pq_get_supplier_email_html( $products, $full_date, $supplier_needs_unit
   ?>
 
   <h1 style="font-size: 18px;">Bonjour,</h1>
-  <h2 style="font-size: 15px;">Commande du <?php echo $full_date; ?>:</h2>
+  <h2 style="font-size: 15px;">Commande pour <?php echo $full_date; ?>:</h2>
 
   <table style="border:solid 1px; border-collapse: collapse;">
     <tr>
@@ -80,6 +80,7 @@ function pq_get_supplier_email_html( $products, $full_date, $supplier_needs_unit
   }
   ?>
   </table>
+  <h2 style="font-size: 15px;">Si vous avez des problèmes ou des questions contactez Thomas Lemoine (<a href="tel:5142317590">514 231-7590</a> ou <a href="mailto:tlemoine@panierquebecois.ca">tlemoine@panierquebecois.ca</a>) ou Arthur Capaldi (<a href="tel:5149982202">514 998-2202</a> ou <a href="mailto:acapaldi@panierquebecois.ca">acapaldi@panierquebecois.ca</a>) dès que possible.</h2>
   <h2 style="font-size: 15px;">Merci et bonne journée,</h2>
   <?php
 
