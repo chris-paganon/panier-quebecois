@@ -89,6 +89,42 @@ ul.woocommerce-shipping-methods li>p {
     display: none;
 }
 
+/* Delivery additional info style */
+.pq-timeslot-info-wrapper {
+    position: relative;
+    font-size: 0.9em;
+}
+p.pq-timeslot-info {
+    font-style: italic;
+    margin-bottom: 10px;
+}
+.pq-timeslot-info-text {
+    border-bottom: 1px dotted black;
+    cursor: pointer;
+}
+.pq-timeslot-additional-info {
+    display: none;
+    position: absolute;
+    text-align: center;
+    background-color: #efefef;
+    padding: 10px 15px;
+    border-radius: 2px;
+    z-index: 1;
+}
+.pq-timeslot-additional-info::after {
+    content: " ";
+    position: absolute;
+    bottom: 100%;  /* At the top of the tooltip */
+    left: 50%;
+    margin-left: -5px;
+    border-width: 10px;
+    border-style: solid;
+    border-color: transparent transparent #efefef transparent;
+  }
+.pq-timeslot-info-wrapper:hover .pq-timeslot-additional-info {
+    display: block;
+}
+
 /* Connect here for subscriptions */
 .entry-content .my_checkout_registration_form_div{
     margin: 20px auto 5px 3px;
