@@ -477,13 +477,21 @@ function myfct_orders_export($delivery_date_raw) {
 			$delivery_start_hour = floatval( substr($delivery_timeslot_start_string, 0, 2) );
 			$delivery_start_minutes = floatval( substr($delivery_timeslot_start_string, 3, 2) ) / 60;
 			$delivery_start_time = $delivery_start_hour + $delivery_start_minutes;
+			
+			$delivery_timeslot_end_string = $delivery_timeslot_array['time_to'];
+			$delivery_end_hour = floatval( substr($delivery_timeslot_end_string, 0, 2) );
+			$delivery_end_minutes = floatval( substr($delivery_timeslot_end_string, 3, 2) ) / 60;
+			$delivery_end_time = $delivery_end_hour + $delivery_end_minutes;
 	
-			$cutoff_time_to_split = 16;
+			$cutoff_start_time_to_split = 16;
+			$cutoff_end_time_to_split = 19.5; //19h30
 	
-			if ( $delivery_start_time < $cutoff_time_to_split ) {
-				$delivery_priority = 1;
-			} else {
-				$delivery_priority = 2;
+			if ( $delivery_start_time < $cutoff_start_time_to_split && $delivery_end_time > $cutoff_end_time_to_split ) {
+				$delivery_priority = 1; //Full ecoresponsible time slot
+			} elseif ( $delivery_start_time < $cutoff_start_time_to_split && $delivery_end_time < $cutoff_end_time_to_split ) {
+				$delivery_priority = 2; //Afternoon time slot
+			}else {
+				$delivery_priority = 3; //Evening time slot
 			}
 		}
 
