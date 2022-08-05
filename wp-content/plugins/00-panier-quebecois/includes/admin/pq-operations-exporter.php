@@ -71,7 +71,6 @@ function pq_operations_exporter_button_fct() {
  * Export all the lists for daily operations
  */
 function pq_export_operations_lists() {
-    require PQ_VENDOR_DIR . 'autoload.php';
 
     $timezone = new DateTimeZone( get_option( 'timezone_string' ) );
     $default_date_obj = new DateTime( 'today', $timezone );

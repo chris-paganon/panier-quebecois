@@ -9,8 +9,6 @@ if ( !defined( 'ABSPATH' ) ) {
  */
 function pq_send_seller_sms() {
 
-  require PQ_VENDOR_DIR . 'autoload.php';
-
   $sid = 'TWILIO_ACCOUNT_SID';
   $token = 'TWILIO_AUTH_TOKEN';
   $FROM_NO = 'TWILIO_FROM_NO';

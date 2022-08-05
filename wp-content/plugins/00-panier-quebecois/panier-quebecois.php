@@ -65,6 +65,9 @@ class Panier_Quebecois {
    * Include relevant php files
    */
   public function includes() {
+    //Dependencies
+    require_once PQ_VENDOR_DIR . 'autoload.php';
+
     //Admin
     include_once( PQ_INCLUDE_ADMIN_DIR . 'pq-exporter-functions.php' );
     include_once( PQ_INCLUDE_ADMIN_DIR . 'pq-products-meta.php' );
