@@ -81,8 +81,8 @@ class PQ_products_meta {
 		add_action( 'manage_pq_producer_custom_column', array($this, 'display_marchand_and_producer_image_column_value') , 10, 3);
 
 		//Add seller email meta
-		add_action( 'product_tag_edit_form_fields', array($this, 'pq_update_seller_email'), 10, 2 );
-		add_action( 'edited_product_tag', array($this, 'pq_updated_seller_email'), 10, 2 );
+		add_action( 'product_tag_edit_form_fields', array($this, 'pq_update_seller_contact_info'), 10, 2 );
+		add_action( 'edited_product_tag', array($this, 'pq_updated_seller_contact_info'), 10, 2 );
 	}
 
 	/**
@@ -852,7 +852,7 @@ class PQ_products_meta {
 	/**
 	 * Add emails meta for sellers
 	 */
-	function pq_update_seller_email ( $term, $taxonomy ) { ?>
+	function pq_update_seller_contact_info ( $term, $taxonomy ) { ?>
 		<tr class="form-field term-group-wrap">
 			<th scope="row">
 				<label for="pq_seller_email"><?php _e( 'Email(s) (séparés par des virgules)', 'panier-quebecois' ); ?></label>
@@ -861,6 +861,17 @@ class PQ_products_meta {
 	
 				<?php $seller_email = get_term_meta ( $term -> term_id, 'pq_seller_email', true ); ?>
 				<input type="text" id="pq_seller_email" name="pq_seller_email" value="<?php echo $seller_email; ?>">
+	
+			</div></td>
+		</tr>
+		<tr class="form-field term-group-wrap">
+			<th scope="row">
+				<label for="pq_seller_sms"><?php _e( 'Numéro(s) de téléphone. IMPORTANT: suivre le format suivant: "+15141234567" et séparer par des virgules', 'panier-quebecois' ); ?></label>
+			</th>
+			<td>
+	
+				<?php $seller_email = get_term_meta ( $term -> term_id, 'pq_seller_sms', true ); ?>
+				<input type="text" id="pq_seller_sms" name="pq_seller_sms" value="<?php echo $seller_email; ?>">
 	
 			</div></td>
 		</tr>
@@ -878,12 +889,19 @@ class PQ_products_meta {
 	<?php
 	}
 
-	function pq_updated_seller_email ( $term_id, $tt_id ) {
+	function pq_updated_seller_contact_info ( $term_id, $tt_id ) {
 		if( isset( $_POST['pq_seller_email'] ) && '' !== $_POST['pq_seller_email'] ){
 			$seller_email = $_POST['pq_seller_email'];
 			update_term_meta ( $term_id, 'pq_seller_email', $seller_email );
 		} else {
 			update_term_meta ( $term_id, 'pq_seller_email', '' );
+		}
+
+		if( isset( $_POST['pq_seller_sms'] ) && '' !== $_POST['pq_seller_sms'] ){
+			$seller_email = $_POST['pq_seller_sms'];
+			update_term_meta ( $term_id, 'pq_seller_sms', $seller_email );
+		} else {
+			update_term_meta ( $term_id, 'pq_seller_sms', '' );
 		}
 
 		$seller_needs_units = isset($_POST['pq_seller_needs_units']) ? 1 : 0;
