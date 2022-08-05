@@ -405,5 +405,6 @@ function pq_hook_function_to_pqhook_send_seller_emails() {
   $delivery_days = PQ_delivery_days::$delivery_days;
   foreach ( $delivery_days as $delivery_day ) {
     add_action( 'pqhook_send_seller_emails_' . $delivery_day, 'pq_send_seller_emails' );
+    add_action( 'pqhook_send_seller_emails_' . $delivery_day, 'pq_send_seller_sms' );
   }
 }
