@@ -9,7 +9,10 @@ if ( !defined( 'ABSPATH' ) ) {
  */
 function pq_send_seller_emails() {
   
-  $headers = array('Content-Type: text/html; charset=UTF-8');
+  $headers = array(
+    'Content-Type: text/html; charset=UTF-8', 
+    'Reply-To: Arthur Capaldi <acapaldi@panierquebecois.ca>',
+  );
   $fmt_fr = new IntlDateFormatter( 'fr_FR', IntlDateFormatter::MEDIUM, IntlDateFormatter::NONE, NULL, IntlDateFormatter::GREGORIAN, 'EEEE dd MMMM y' );
   $full_date = $fmt_fr->format( time() );
 
