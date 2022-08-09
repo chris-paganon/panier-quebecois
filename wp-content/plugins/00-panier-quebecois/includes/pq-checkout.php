@@ -61,8 +61,8 @@ function pq_timeslot_info($args) {
   ?>
 
   <div class="pq-timeslot-info-wrapper">
-    <p class="pq-timeslot-info"><span class="pq-timeslot-info-text">Livraison éco-responsable entre <?php echo $first_delivery_time_slot; ?> <span class="dashicons dashicons-editor-help"></span><span></p>
-    <div class="pq-timeslot-additional-info">Sélectionnez le créneau horaire entre <?php echo $first_delivery_time_slot; ?> afin de nous aider à optimiser nos trajets! Vous recevrez un e-mail lorsque votre livreur commence sa route avec un lien pour le suivre en temps réel. Vous verrez également le nombre de commandes à livrer avant vous.</div>
+    <p class="pq-timeslot-info"><span class="pq-timeslot-info-text"><?php echo esc_html__('Livraison éco-responsable entre', 'panier-quebecois'). ' ' . $first_delivery_time_slot; ?> <span class="dashicons dashicons-editor-help"></span><span></p>
+    <div class="pq-timeslot-additional-info"><?php echo esc_html__('Sélectionnez le créneau horaire entre', 'panier-quebecois') . ' ' . $first_delivery_time_slot . ' ' . esc_html__('afin de nous aider à optimiser nos trajets! Vous recevrez un courriel lorsque votre livreur commence sa route avec un lien pour le suivre en temps réel. Vous verrez également le nombre de commandes à livrer avant vous.', 'panier-quebecois'); ?> </div>
   </div>
 
   <?php
