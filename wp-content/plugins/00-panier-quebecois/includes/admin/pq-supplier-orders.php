@@ -121,7 +121,15 @@ function pq_is_relevant_product_for_supplier( $product, $supplier_to_count ) {
   
     foreach ( $product_suppliers as $product_supplier ) {
         if ( $product_supplier->term_id == $supplier_to_count->term_id ) {
-            $is_product_to_count = true;
+            $product_distributor = get_terms(array( 
+                'taxonomy' => array('pq_distributor', 'pq_producer'),
+                'object_ids' => $product_id,
+            ));
+            
+            //Do not count products that have 
+            if ( empty( $product_distributor ) ) {
+                $is_product_to_count = true;
+            }
         }
     }
 
