@@ -87,17 +87,24 @@ function pq_get_products_array_for_supplier( $supplier, $orders ) {
                 $new_quantity = $new_quantity_before_refund + $quantity_refunded;
         
                 $is_new_id = true;
-        
-                foreach ( $products as $id => $quantity ) {
-                    if ( $new_id == $id ) {
-                        $products[ $id ] += $new_quantity;
+                
+                foreach ( $products as $key => $product_arr ) {
+                    if ( $new_id == $product_arr['product_id'] ) {
+                        $products[$key]['quantity'] += $new_quantity;
                         $is_new_id = false;
                     }
                 }
         
                 if ( $is_new_id ) {
-                    $new_product = array( $new_id => $new_quantity );
-                    $products += $new_product;
+                    $short_name = get_post_meta( $new_id, '_short_name', true);
+                    $packing_priority = get_post_meta( $new_id, '_packing_priority', true);
+                    $new_product = array( array( 
+                        'product_id' => $new_id,
+                        'quantity' => $new_quantity,
+                        '_short_name' => $short_name,
+                        '_packing_priority' => $packing_priority,
+                    ));
+                    $products = array_merge($products, $new_product);
                 }
             }
         }

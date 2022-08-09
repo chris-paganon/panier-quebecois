@@ -65,9 +65,11 @@ function pq_get_supplier_email_html( $products, $full_date, $supplier_needs_unit
 
   <?php
 
-  foreach ( $products as $product_id => $quantity ) {
+  foreach ( $products as $key => $product_arr ) {
+    $product_id = $product_arr['product_id'];
     $product = wc_get_product( $product_id );
-    $short_name = get_post_meta( $product_id, '_short_name', true);
+    $quantity = $product_arr['quantity'];
+    $short_name = $product_arr['_short_name'];
     $weight = get_post_meta( $product_id, '_pq_weight', true );
     $unit = get_post_meta( $product_id, '_lot_unit', true );
     $weight_with_unit = $weight . $unit;

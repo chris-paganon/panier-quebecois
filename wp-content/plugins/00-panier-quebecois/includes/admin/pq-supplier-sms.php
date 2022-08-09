@@ -47,9 +47,11 @@ function pq_get_supplier_sms_message( $products, $full_date, $supplier_needs_uni
   $supplier_order_sms = "";
   $supplier_order_sms .= "Bon matin, voici la commande pour " . $full_date;
 
-  foreach ( $products as $product_id => $quantity ) {
+  foreach ( $products as $key => $product_arr ) {
+    $product_id = $product_arr['product_id'];
     $product = wc_get_product( $product_id );
-    $short_name = get_post_meta( $product_id, '_short_name', true);
+    $quantity = $product_arr['quantity'];
+    $short_name = $product_arr['_short_name'];
 
     $supplier_order_sms .= "\n";
     $supplier_order_sms .= $short_name . " " . $quantity;
