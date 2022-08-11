@@ -79,6 +79,7 @@ class Panier_Quebecois {
     include_once( PQ_INCLUDE_ADMIN_DIR . 'pq-supplier-emails.php' );
     include_once( PQ_INCLUDE_ADMIN_DIR . 'pq-supplier-sms.php' );
     include_once( PQ_INCLUDE_ADMIN_DIR . 'pq-operations-exporter.php' );
+    include_once( PQ_INCLUDE_ADMIN_DIR . 'pq-inventory-manager.php' );
 
     //AJAX shop
     include_once( PQ_INCLUDE_AJAXSHOP_DIR . 'pq-ajax-shop-starter.php' );
