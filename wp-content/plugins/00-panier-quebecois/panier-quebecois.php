@@ -47,6 +47,7 @@ class Panier_Quebecois {
     //Filesystem directory paths (for php files)
     define( 'PQ_ROOT_DIR', plugin_dir_path( __FILE__ ) );
     define( 'PQ_INCLUDE_DIR', PQ_ROOT_DIR . 'includes/' );
+    define( 'PQ_TEMPLATE_DIR', PQ_ROOT_DIR . 'templates/' );
     define( 'PQ_VENDOR_DIR', PQ_ROOT_DIR . 'vendor/' );
     define( 'PQ_INCLUDE_ADMIN_DIR', PQ_INCLUDE_DIR . 'admin/' );
     define( 'PQ_INCLUDE_LOYALTY_DIR', PQ_INCLUDE_DIR . 'loyalty/' );
