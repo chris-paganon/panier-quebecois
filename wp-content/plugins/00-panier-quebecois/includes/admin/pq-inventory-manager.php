@@ -87,3 +87,20 @@ function pq_get_products_array_for_inventory( $orders, $need_variations = false 
 
     return $products;
 }
+
+
+/**
+ * Update product meta with AJAX
+ */
+add_action( 'wp_ajax_pq_update_product_meta', 'pq_update_product_meta_with_ajax' );
+add_action( 'wp_ajax_nopriv_pq_update_product_meta', 'pq_update_product_meta_with_ajax' );
+
+function pq_update_product_meta_with_ajax() {
+	$product_id = $_POST['product_id'];
+	$meta_key = $_POST['meta_key'];
+	$meta_value = $_POST['meta_value'];
+
+	update_post_meta( $product_id, $meta_key, $meta_value );
+
+	wp_die();
+}

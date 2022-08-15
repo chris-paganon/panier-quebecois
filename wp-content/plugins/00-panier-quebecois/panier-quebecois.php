@@ -179,5 +179,11 @@ class Panier_Quebecois {
       wp_enqueue_style( 'slick-theme-css', PQ_ASSETS_URL . 'src/library/css/slick-theme.css', ['slick-css'], false, 'all' );
       wp_enqueue_script( 'slick-js', PQ_ASSETS_URL . 'src/library/js/slick.min.js', ['jquery'], rand( 111, 9999 ), true );
     }
+    
+    //Inventory manager AJAX
+    if ( is_a( $post, 'WP_Post' ) && has_shortcode( $post->post_content, 'pq_inventory_manager') ) {
+      wp_enqueue_script( 'pq_inventory_manager_js', PQ_JS_URL . 'pq-inventory-manager-ajax.js', array( 'jquery' ), rand( 111, 9999 ), true  );
+      wp_localize_script( 'pq_inventory_manager_js', 'pq_inventory_manager_variables', array('ajax_url' => admin_url('admin-ajax.php')) );
+    }
   }
 }
