@@ -12,9 +12,9 @@ if ( !defined( 'ABSPATH' ) ) {
 
 ?>
 
-<table>
+<table class="pq-inventory-manager-table">
   <thead>
-    <tr>
+    <tr class="inventory-title-row">
       <th>Produit</th>
       <th>Inventaire</th>
       <th>Unité</th>
@@ -25,12 +25,12 @@ if ( !defined( 'ABSPATH' ) ) {
       $product_json = htmlentities(json_encode($product_arr));
       ?>
       <tr class="inventory-product-row">
-        <td><?php echo $product_arr['_short_name'];?></td>
-        <td>
-          <input type="text" value="<?php echo $product_arr['_pq_operation_stock'];?>" product-data="<?php echo $product_json; ?>">
+        <td class="inventory_short_name"><?php echo $product_arr['_short_name'];?></td>
+        <td class="inventory_stock">
+          <input class="inventory_stock_input" type="text" value="<?php echo $product_arr['_pq_operation_stock'];?>" product-data="<?php echo $product_json; ?>">
           <?php wp_nonce_field('pq_inventory_changed', 'pq_inventory_nonce'); ?>
         </td>
-        <td><?php echo $product_arr['_lot_unit'];?></td>
+        <td class="inventory_unit"><?php echo $product_arr['_lot_unit'];?></td>
       </tr>
     <?php endforeach ?>
   </tbody>

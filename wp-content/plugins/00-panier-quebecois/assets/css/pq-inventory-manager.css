@@ -1,0 +1,8 @@
+table.pq-inventory-manager-table td.inventory_stock{
+  padding: 0;
+}
+table.pq-inventory-manager-table input.inventory_stock_input{
+  width: 100%;
+  border: none;
+  padding: 0.5em;
+}
