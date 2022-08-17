@@ -1,7 +1,24 @@
 jQuery(document).ready(function ($) {
+
+	$('#has-stock').change( function() {
+
+		var isChecked = $(this).is(":checked");
+		$('tr.inventory-product-row').each(function() {
+			
+			var productData = JSON.parse( $(this).attr("product-data") );
+
+			if (isChecked && productData._pq_operation_stock == '') {
+				$(this).hide();
+			}
+			if (!isChecked && productData._pq_operation_stock == '') {
+				$(this).show();
+			}
+		});
+	});
+
 	$('tr.inventory-product-row input').change( function() {
 
-		var productData = JSON.parse( $(this).attr("product-data") );
+		var productData = JSON.parse( $(this).parents('.inventory-product-row').attr("product-data") );
 		var inputValue = this.value;
 		var nonce = $(this).siblings('#pq_inventory_nonce');
 
