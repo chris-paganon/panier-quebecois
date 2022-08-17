@@ -1,14 +1,17 @@
 jQuery(document).ready(function ($) {
-    $('td input').change( function() {
-        var data = {
-            'action': 'pq_update_product_meta',
-						'product_id': 45968,
-						'meta_key': '_pq_operation_stock',
-						'meta_value': 11,
-        };
+	$('tr.inventory-product-row input').change( function() {
 
-				$.post( pq_inventory_manager_variables.ajax_url, data, function(response) {
-					console.log(response);
-				});
-    });
+		var productData = JSON.parse( $(this).attr("product-data") );
+		var inputValue = this.value;
+
+		var data = {
+			'action': 'pq_update_product_meta',
+			'product_id': productData.product_id,
+			'meta_key': '_pq_operation_stock',
+			'meta_value': inputValue,
+		};
+
+		$.post( pq_inventory_manager_variables.ajax_url, data, function(response) {
+		});
+	});
 });
