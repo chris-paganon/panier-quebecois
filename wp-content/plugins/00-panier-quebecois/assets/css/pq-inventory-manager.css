@@ -1,12 +1,34 @@
+/* Inventory table */
 table.pq-inventory-manager-table td.inventory_stock{
   padding: 0;
 }
+table.pq-inventory-manager-table td{
+  vertical-align: middle;
+  position: relative;
+}
 table.pq-inventory-manager-table input.inventory_stock_input{
+  position: absolute;
+  top: 0;
   width: 100%;
+  height: 100%;
   border: 1px solid transparent;
   padding: 0.5em;
 }
+@media (max-width:400px){
+  .ast-separate-container #content div.ast-container{
+    padding: 5px 0px;;
+  }
+  table.pq-inventory-manager-table td,
+  table.pq-inventory-manager-table td input.inventory_stock_input,
+  table.pq-inventory-manager-table th,
+  .inventory-filter,
+  .inventory-filter select{
+    font-size: 14px;
+  }
+}
 
+
+/* Table ajax feedback */
 table.pq-inventory-manager-table input.inventory_stock_input.pq-loading{
   opacity: 0.2;
   cursor: wait;
@@ -17,4 +39,19 @@ table.pq-inventory-manager-table input.inventory_stock_input.pq-updated{
 }
 table.pq-inventory-manager-table input.inventory_stock_input.pq-error{
   border: 1px solid red;
+}
+
+/* Filters */
+.inventory-filters-wrapper{
+  margin: 20px;
+  display: flex;
+  justify-content: space-evenly;
+  flex-wrap: wrap;
+}
+.inventory-filter{
+  display: flex;
+  align-items: center;
+}
+.inventory-filter > * {
+  margin: 5px;
 }
