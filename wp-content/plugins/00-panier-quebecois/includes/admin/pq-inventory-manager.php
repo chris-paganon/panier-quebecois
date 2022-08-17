@@ -96,11 +96,13 @@ add_action( 'wp_ajax_pq_update_product_meta', 'pq_update_product_meta_with_ajax'
 add_action( 'wp_ajax_nopriv_pq_update_product_meta', 'pq_update_product_meta_with_ajax' );
 
 function pq_update_product_meta_with_ajax() {
-	$product_id = $_POST['product_id'];
-	$meta_key = $_POST['meta_key'];
-	$meta_value = $_POST['meta_value'];
+	$product_id = sanitize_text_field( $_POST['product_id'] );
+	$meta_key = sanitize_text_field( $_POST['meta_key'] );
+	$meta_value = sanitize_text_field( $_POST['meta_value'] );
 
-	update_post_meta( $product_id, $meta_key, $meta_value );
+	if ( isset($_POST['nonce']) && wp_verify_nonce($_POST['nonce'], 'pq_inventory_changed')) {
+		update_post_meta( $product_id, $meta_key, $meta_value );
+	}
 
 	wp_die();
 }
