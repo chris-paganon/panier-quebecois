@@ -82,8 +82,7 @@ function pq_get_products_array_for_inventory( $orders, $need_variations = false 
     }
 
     $short_name_column = array_column($products, '_short_name');
-    $packing_priority_column = array_column($products, '_packing_priority');
-    array_multisort($packing_priority_column, SORT_ASC, SORT_STRING, $short_name_column, $products);
+    array_multisort($short_name_column, SORT_ASC, SORT_STRING, $products);
 
     return $products;
 }
