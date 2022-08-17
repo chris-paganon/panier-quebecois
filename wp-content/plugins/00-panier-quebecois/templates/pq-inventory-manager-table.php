@@ -13,14 +13,15 @@ if ( !defined( 'ABSPATH' ) ) {
 ?>
 
 <label for="product-categories">Catégorie</label>
-<select name="product-categories" id="product-categories">
+<select name="product-categories" id="product-categories" class="pq-inventory-options">
+  <option value="all">Tous les produits</option>
   <option value="fruit-et-legumes">Fruits et légumes</option>
   <option value="epicerie">Épicerie</option>
   <option value="frais">Frais</option>
 </select>
 
 <label for="has-stock">Stock renseigné?</label>
-<input type="checkbox" name="has-stock" id="has-stock">
+<input type="checkbox" name="has-stock" id="has-stock" class="pq-inventory-options">
 
 <table class="pq-inventory-manager-table">
   <thead>

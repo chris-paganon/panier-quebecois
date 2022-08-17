@@ -1,21 +1,55 @@
 jQuery(document).ready(function ($) {
 
-	$('#has-stock').change( function() {
+	/**
+	 * Show products depending on options selected by user
+	 */
+	$('.pq-inventory-options').change( function() {
 
-		var isChecked = $(this).is(":checked");
+		var selectedCategory =  $('#product-categories').val();
+		var hasStock = $('#has-stock').is(":checked");
+		var minPriority = 0;
+		var maxPriority = 100;
+
+		switch (selectedCategory) {
+			case 'all':
+				minPriority = 0;
+				maxPriority = 100;
+				break;
+			case 'epicerie':
+				minPriority = 0;
+				maxPriority = 9;
+				break;
+			case 'fruit-et-legumes':
+				minPriority = 10;
+				maxPriority = 19;
+				break;
+			case 'frais':
+				minPriority = 20;
+				maxPriority = 29;
+				break;
+			default:
+				minPriority = 0;
+				maxPriority = 100;
+		}
 		$('tr.inventory-product-row').each(function() {
-			
 			var productData = JSON.parse( $(this).attr("product-data") );
 
-			if (isChecked && productData._pq_operation_stock == '') {
+			if ( productData._packing_priority >= minPriority && productData._packing_priority <= maxPriority ) {
+				if ( hasStock && productData._pq_operation_stock == '' ) {
+					$(this).hide();
+				} else {
+					$(this).show();
+				}
+			} else {
 				$(this).hide();
-			}
-			if (!isChecked && productData._pq_operation_stock == '') {
-				$(this).show();
 			}
 		});
 	});
 
+
+	/**
+	 * Send inventory meta to database through AJAX
+	 */
 	$('tr.inventory-product-row input').change( function() {
 
 		var productData = JSON.parse( $(this).parents('.inventory-product-row').attr("product-data") );
@@ -37,7 +71,6 @@ jQuery(document).ready(function ($) {
 		$(this).addClass('pq-loading');
 
 		$.post( pq_inventory_manager_variables.ajax_url, data, function(response) {
-			console.log(response);
 			if (response) {
 				$(inputField).removeClass('pq-loading');
 				$(inputField).removeClass('pq-error');
