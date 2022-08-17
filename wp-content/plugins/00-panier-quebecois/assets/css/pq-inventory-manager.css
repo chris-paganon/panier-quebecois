@@ -3,6 +3,18 @@ table.pq-inventory-manager-table td.inventory_stock{
 }
 table.pq-inventory-manager-table input.inventory_stock_input{
   width: 100%;
-  border: none;
+  border: 1px solid transparent;
   padding: 0.5em;
+}
+
+table.pq-inventory-manager-table input.inventory_stock_input.pq-loading{
+  opacity: 0.2;
+  cursor: wait;
+  pointer-events: none;
+}
+table.pq-inventory-manager-table input.inventory_stock_input.pq-updated{
+  border: 1px solid green;
+}
+table.pq-inventory-manager-table input.inventory_stock_input.pq-error{
+  border: 1px solid red;
 }

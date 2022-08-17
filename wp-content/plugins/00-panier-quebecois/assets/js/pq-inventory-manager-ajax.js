@@ -13,7 +13,23 @@ jQuery(document).ready(function ($) {
 			'nonce': nonce[0].value,
 		};
 
+		var inputField = this;
+
+		$(this).removeClass('pq-updated');
+		$(this).removeClass('pq-error');
+		$(this).addClass('pq-loading');
+
 		$.post( pq_inventory_manager_variables.ajax_url, data, function(response) {
+			console.log(response);
+			if (response) {
+				$(inputField).removeClass('pq-loading');
+				$(inputField).removeClass('pq-error');
+				$(inputField).addClass('pq-updated');
+			} else {
+				$(inputField).removeClass('pq-loading');
+				$(inputField).removeClass('pq-updated');
+				$(inputField).addClass('pq-error');
+			}
 		});
 	});
 });

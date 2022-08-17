@@ -101,7 +101,14 @@ function pq_update_product_meta_with_ajax() {
 	$meta_value = sanitize_text_field( $_POST['meta_value'] );
 
 	if ( isset($_POST['nonce']) && wp_verify_nonce($_POST['nonce'], 'pq_inventory_changed')) {
-		update_post_meta( $product_id, $meta_key, $meta_value );
+		$update_success = update_post_meta( $product_id, $meta_key, $meta_value );
+		if ( $update_success !== true ) {
+			echo 0;
+		} else {
+			echo 1;
+		}
+	} else {
+		echo 0;	
 	}
 
 	wp_die();
