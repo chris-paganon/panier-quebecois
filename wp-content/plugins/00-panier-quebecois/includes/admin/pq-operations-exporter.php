@@ -79,6 +79,10 @@ function pq_export_operations_lists() {
 
     $product_rows = pq_get_product_rows($orders);
 
+    $short_name_columns = array_column($product_rows, '_short_name');
+    $supplier_column = array_column($product_rows, 'supplier');
+    array_multisort($supplier_column, SORT_ASC, SORT_STRING, $short_name_columns, $product_rows);
+
     $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
 
     pq_print_sheets($spreadsheet, $product_rows);
@@ -166,7 +170,7 @@ function pq_print_sheets($spreadsheet, $product_rows) {
 function pq_print_on_sheet( $sheet, $product_rows, $low_priority, $high_priority, $to_print, $products_to_print = '' ) {
 
   $row = 2;
-  foreach ( $product_rows as $product_id => $product_row ) {
+  foreach ( $product_rows as $product_row ) {
     $column = 1;
     $packing_priority = $product_row['_packing_priority'];
     $inventory_type = $product_row['pq_inventory_type'];
@@ -260,8 +264,20 @@ function pq_get_product_rows($orders) {
       if ( myfct_is_relevant_product( $product ) ) {
 
         if ( $item->get_variation_id() !== 0 ) {
-          $product_id = $item->get_variation_id();
           $parent_id = $product->get_id();
+          $product_id = $item->get_variation_id();
+
+          $variation_ids = $product->get_children();
+
+          $has_distinct_variations = false;
+          $previous_variation_short_name = '';
+          foreach ($variation_ids as $key => $variation_id) {
+            $variation_short_name = get_post_meta( $variation_id, '_short_name', true );
+            if ($key !== 0 && $variation_short_name != $previous_variation_short_name) {
+              $has_distinct_variations = true;
+            }
+            $previous_variation_short_name = $variation_short_name;
+          }
         } else {
           $product_id = $parent_id = $product->get_id();
         }
@@ -276,12 +292,12 @@ function pq_get_product_rows($orders) {
 
         $requires_new_row = true;
 
-        foreach ( $product_rows as $existing_product_id => $product_row ) {
+        foreach ( $product_rows as $key => $product_row ) {
 
-          $existing_short_name = $product_rows[$existing_product_id]['_short_name'];
+          $existing_short_name = $product_row['_short_name'];
 
-          if ( $product_id == $existing_product_id || $short_name == $existing_short_name ) {
-            $product_rows[$existing_product_id]['total_quantity'] += $total_quantity;
+          if ( $short_name == $existing_short_name ) {
+            $product_rows[$key]['total_quantity'] += $total_quantity;
             $requires_new_row = false;
           }
         }
@@ -291,6 +307,13 @@ function pq_get_product_rows($orders) {
           $unit = get_post_meta( $product_id, '_lot_unit', true );
           $weight_with_unit = $weight . $unit;
           $packing_priority = get_post_meta( $parent_id, '_packing_priority', true );
+
+          if ($has_distinct_variations) {
+            $product_id_to_display = $product_id;
+          } else {
+            $product_id_to_display = $parent_id;
+          }
+          $operation_stock = get_post_meta( $product_id_to_display, '_pq_operation_stock', true);
 
           $tags = wp_get_post_terms( $parent_id, 'pq_distributor', array( 'fields' => 'names' ) );
           if ( empty( $tags ) ) {
@@ -303,23 +326,22 @@ function pq_get_product_rows($orders) {
 
           $inventory_type = wp_get_post_terms( $parent_id, 'pq_inventory_type', array( 'fields' => 'slugs' ) );
 
-          $product_rows[$product_id] = array(
+          $new_product_row = array(array(
+            'product_id' => $product_id_to_display,
             'supplier' => $tags_string,
             '_short_name' => $short_name,
             'total_quantity' => $total_quantity,
             'weight' => $weight_with_unit,
             '_packing_priority' => $packing_priority,
             'pq_inventory_type' => $inventory_type,
-          );
+            '_pq_operation_stock' => $operation_stock,
+          ));
+
+          $product_rows = array_merge($product_rows, $new_product_row);
         }
       }
     }
   }
-
-  $columns = array_column($product_rows, '_short_name');
-  array_multisort($columns, SORT_ASC, SORT_STRING, $product_rows);
-  $columns = array_column($product_rows, 'supplier');
-  array_multisort($columns, SORT_ASC, SORT_STRING, $product_rows);
 
   return $product_rows;
 }
@@ -740,6 +762,7 @@ function pq_print_products_list($pdf, $order_array, $is_cold_labels = false) {
   $top_products_y = $pdf->GetY();
   $pdf->y0 = $top_products_y;
   $pdf->SetCol(0);
+  $previous_col = $pdf->col;
 
   foreach ( $order_array['product_lines'] as $product_info ) {
 
