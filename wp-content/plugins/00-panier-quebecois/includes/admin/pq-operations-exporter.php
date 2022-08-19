@@ -331,6 +331,7 @@ function pq_get_product_rows($orders) {
             'supplier' => $tags_string,
             '_short_name' => $short_name,
             'total_quantity' => $total_quantity,
+            '_lot_unit' => $unit,
             'weight' => $weight_with_unit,
             '_packing_priority' => $packing_priority,
             'pq_inventory_type' => $inventory_type,
