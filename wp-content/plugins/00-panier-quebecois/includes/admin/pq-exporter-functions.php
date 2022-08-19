@@ -282,52 +282,48 @@ function myfct_purchasing_export( $delivery_date_raw, $import_after_order = "" )
   $orders_count = count( $orders );
   $last_order = reset($orders);
   $last_order_number = $last_order->get_id();
-  $products = myfct_get_products_quantities( $orders );
+  $products = pq_get_product_rows( $orders );
 
-  $csv = array( array( 'Zone', 'Marchand', 'SKU', 'Nom Court', 'Référence fournisseur', 'Quantité', 'Quantité par lot', 'Quantité totale', 'Unité', 'ordre de Priorité', '', 'No de commandes:', $orders_count, 'Derniere commande:', $last_order_number ) );
+	$short_name_columns = array_column($products, '_short_name');
+	$supplier_column = array_column($products, 'supplier');
+	array_multisort($supplier_column, SORT_ASC, SORT_STRING, $short_name_columns, $products);
 
-  foreach ( $products as $product_id => $quantity ) {
-    $product = wc_get_product( $product_id );
+	$spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
 
-    $tags = $name = $short_name = $lot_unit = '';
-    $lot_quantity = $packing_priority = 0;
+	$to_purchase_sheet = $spreadsheet->getActiveSheet();
+  $to_purchase_sheet->setTitle('À acheter');
 
-    $short_name = get_post_meta( $product_id, '_short_name', true );
-    $lot_quantity = get_post_meta( $product_id, '_lot_quantity', true );
-    $weight = get_post_meta( $product_id, '_pq_weight', true );
-    $unit = get_post_meta( $product_id, '_lot_unit', true );
-	$weight_with_unit = $weight . $unit;
+  $to_print = array(
+		'pq_commercial_zone', 
+		'supplier', 
+		'sku',
+		'_short_name',
+		'_pq_reference',
+		'total_quantity',
+		'_lot_unit',
+		'_pq_operation_stock',
+		'_packing_priority',
+	);
 
-    if ( $product->get_type() == 'variation' ) {
-      $product_id = $product->get_parent_id();
-    }
+  $to_purchase_sheet->setCellValue('A1', 'Zone');
+  $to_purchase_sheet->setCellValue('B1', 'Marchand');
+  $to_purchase_sheet->setCellValue('C1', 'SKU');
+  $to_purchase_sheet->setCellValue('D1', 'Nom court');
+  $to_purchase_sheet->setCellValue('E1', 'Référence fournisseur');
+  $to_purchase_sheet->setCellValue('F1', 'Conso');
+  $to_purchase_sheet->setCellValue('G1', 'Unité');
+  $to_purchase_sheet->setCellValue('H1', 'Stock');
+  $to_purchase_sheet->setCellValue('I1', 'Ordre de prio');
+  $to_purchase_sheet->setCellValue('K1', 'No de commandes');
+  $to_purchase_sheet->setCellValue('L1', $orders_count);
+  $to_purchase_sheet->setCellValue('M1', 'Dernière commande:');
+  $to_purchase_sheet->setCellValue('N1', $last_order_number);
 
-    $tags = wp_get_post_terms( $product_id, 'pq_distributor', array( 'fields' => 'names' ) );
-	
-    if ( empty( $tags ) ) {
-	    $tags = wp_get_post_terms( $product_id, 'product_tag', array( 'fields' => 'names' ) );
-      if ( empty( $tags ) ) {
-        $tags = wp_get_post_terms( $product_id, 'pq_producer', array( 'fields' => 'names' ) );
-      }
-    }
+  pq_print_on_sheet( $to_purchase_sheet, $products, 1, 999, $to_print );
 
-    $tags_string = implode( ', ', $tags );
+	pq_style_sheets($spreadsheet);
 
-	$sku = $product->get_sku();
-	
-    $commercial_zone = wp_get_post_terms( $product_id, 'pq_commercial_zone', array( 'fields' => 'names' ) );
-    $commercial_zone_string = implode( ', ', $commercial_zone );
-	
-    $reference_name = get_post_meta( $product_id, '_pq_reference', true );
-    $packing_priority = get_post_meta( $product_id, '_packing_priority', true );
-
-    $total_quantity = $quantity * $lot_quantity;
-
-    $product_line = array( array( $commercial_zone_string, $tags_string, $sku, $short_name, $reference_name, $quantity, $lot_quantity, $total_quantity, $weight_with_unit, $packing_priority ) );
-    $csv = array_merge( $csv, $product_line );
-  }
-
-  myfct_export_csv( $filename, $csv );
+	pq_export_excel($spreadsheet, 'listes-achats');
 }
 
 /* ----- Export products to weight to csv ------ */
@@ -352,7 +348,7 @@ function myfct_products_to_weight_export( $delivery_date_raw ) {
     $short_name = get_post_meta( $product_id, '_short_name', true );
     $weight = get_post_meta( $product_id, '_pq_weight', true );
     $unit = get_post_meta( $product_id, '_lot_unit', true );
-	$weight_with_unit = $weight . $unit;
+		$weight_with_unit = $weight . $unit;
     $lot_quantity = get_post_meta( $product_id, '_lot_quantity', true );
 
     if ( $product->get_type() == 'variation' ) {

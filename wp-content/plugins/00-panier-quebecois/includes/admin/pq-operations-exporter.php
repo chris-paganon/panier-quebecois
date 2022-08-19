@@ -89,7 +89,7 @@ function pq_export_operations_lists() {
 
     pq_style_sheets($spreadsheet);
 
-    pq_export_excel($spreadsheet);
+    pq_export_excel($spreadsheet, 'listes-operations');
 }
 
 
@@ -307,6 +307,11 @@ function pq_get_product_rows($orders) {
           $unit = get_post_meta( $product_id, '_lot_unit', true );
           $weight_with_unit = $weight . $unit;
           $packing_priority = get_post_meta( $parent_id, '_packing_priority', true );
+          $commercial_zone = wp_get_post_terms( $parent_id, 'pq_commercial_zone', array( 'fields' => 'names' ) );
+          $commercial_zone_string = implode( ', ', $commercial_zone );
+          $reference_name = get_post_meta( $parent_id, '_pq_reference', true );
+      		$sku = $product->get_sku();
+
 
           if ($has_distinct_variations) {
             $product_id_to_display = $product_id;
@@ -328,14 +333,17 @@ function pq_get_product_rows($orders) {
 
           $new_product_row = array(array(
             'product_id' => $product_id_to_display,
+            'pq_commercial_zone' => $commercial_zone_string,
             'supplier' => $tags_string,
+            'sku' => $sku,
             '_short_name' => $short_name,
+            '_pq_reference' => $reference_name,
             'total_quantity' => $total_quantity,
             '_lot_unit' => $unit,
             'weight' => $weight_with_unit,
+            '_pq_operation_stock' => $operation_stock,
             '_packing_priority' => $packing_priority,
             'pq_inventory_type' => $inventory_type,
-            '_pq_operation_stock' => $operation_stock,
           ));
 
           $product_rows = array_merge($product_rows, $new_product_row);
@@ -351,10 +359,10 @@ function pq_get_product_rows($orders) {
 /**
  * Export the excel file
  */
-function pq_export_excel($spreadsheet) {
+function pq_export_excel($spreadsheet, $spreadsheet_name) {
   $timezone = new DateTimeZone( get_option( 'timezone_string' ) );
   $now = new DateTime( '', $timezone );
-  $filename = 'listes-operations_' . $now->format( 'Y-m-d' ) . '.xlsx';
+  $filename = $spreadsheet_name . '_' . $now->format( 'Y-m-d' ) . '.xlsx';
 
   $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
   header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
