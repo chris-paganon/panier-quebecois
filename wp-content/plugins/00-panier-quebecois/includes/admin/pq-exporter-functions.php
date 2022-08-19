@@ -274,10 +274,6 @@ function myfct_export_csv( $filename, $csv ) {
 /* ----- Export purchasing to csv ------ */
 function myfct_purchasing_export( $delivery_date_raw, $import_after_order = "" ) {
 
-  $timezone = new DateTimeZone( get_option( 'timezone_string' ) );
-  $now = new DateTime( '', $timezone );
-  $filename = 'Liste Achats ' . $now->format( 'Y-m-d G:i:s' ) . '.csv';
-
   $orders = myfct_get_relevant_orders( $delivery_date_raw, $import_after_order );
   $orders_count = count( $orders );
   $last_order = reset($orders);
@@ -303,6 +299,7 @@ function myfct_purchasing_export( $delivery_date_raw, $import_after_order = "" )
 		'_lot_unit',
 		'_pq_operation_stock',
 		'_packing_priority',
+		'supplier_auto_order_string',
 	);
 
   $to_purchase_sheet->setCellValue('A1', 'Zone');
@@ -314,16 +311,18 @@ function myfct_purchasing_export( $delivery_date_raw, $import_after_order = "" )
   $to_purchase_sheet->setCellValue('G1', 'Unité');
   $to_purchase_sheet->setCellValue('H1', 'Stock');
   $to_purchase_sheet->setCellValue('I1', 'Ordre de prio');
-  $to_purchase_sheet->setCellValue('K1', 'No de commandes');
-  $to_purchase_sheet->setCellValue('L1', $orders_count);
-  $to_purchase_sheet->setCellValue('M1', 'Dernière commande:');
-  $to_purchase_sheet->setCellValue('N1', $last_order_number);
+  $to_purchase_sheet->setCellValue('J1', 'Auto email/SMS');
+  $to_purchase_sheet->setCellValue('L1', 'No de commandes');
+  $to_purchase_sheet->setCellValue('M1', $orders_count);
+  $to_purchase_sheet->setCellValue('N1', 'Dernière commande:');
+  $to_purchase_sheet->setCellValue('O1', $last_order_number);
 
   pq_print_on_sheet( $to_purchase_sheet, $products, 1, 999, $to_print );
 
 	pq_style_sheets($spreadsheet);
 
-	pq_export_excel($spreadsheet, 'listes-achats');
+	$file_name = 'listes-achats';
+	pq_export_excel($spreadsheet, $file_name);
 }
 
 /* ----- Export products to weight to csv ------ */

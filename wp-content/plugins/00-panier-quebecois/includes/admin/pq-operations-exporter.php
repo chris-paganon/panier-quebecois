@@ -195,7 +195,7 @@ function pq_print_on_sheet( $sheet, $product_rows, $low_priority, $high_priority
 function pq_style_sheets($spreadsheet) {
   for ( $i = 0; $i <= $spreadsheet->getSheetCount() - 1; $i++ ) {
     $sheet = $spreadsheet->getSheet($i);
-    $last_column_string = $sheet->getHighestDataColumn();
+    $last_column_string = $sheet->getHighestDataColumn(2);
     $columns_count =  \PhpOffice\PhpSpreadsheet\Cell\Coordinate::columnIndexFromString($last_column_string);
     $rows_count = $sheet->getHighestDataRow();
 
@@ -320,21 +320,36 @@ function pq_get_product_rows($orders) {
           }
           $operation_stock = get_post_meta( $product_id_to_display, '_pq_operation_stock', true);
 
-          $tags = wp_get_post_terms( $parent_id, 'pq_distributor', array( 'fields' => 'names' ) );
-          if ( empty( $tags ) ) {
-            $tags = wp_get_post_terms( $parent_id, 'product_tag', array( 'fields' => 'names' ) );
-            if ( empty( $tags ) ) {
-              $tags = wp_get_post_terms( $parent_id, 'pq_producer', array( 'fields' => 'names' ) );
+          $suppliers = wp_get_post_terms( $parent_id, 'pq_distributor' );
+          if ( empty( $suppliers ) ) {
+            $suppliers = wp_get_post_terms( $parent_id, 'product_tag' );
+            if ( empty( $suppliers ) ) {
+              $suppliers = wp_get_post_terms( $parent_id, 'pq_producer' );
             }
           }
-          $tags_string = implode( ', ', $tags );
+
+          $suppliers_names = array();
+          $supplier_auto_order_string = '';
+          foreach ($suppliers as $supplier) {
+            array_push($suppliers_names, $supplier->name);
+            $supplier_email = get_term_meta ( $supplier->term_id, 'pq_seller_email', true );
+            $supplier_sms = get_term_meta ( $supplier->term_id, 'pq_seller_sms', true );
+            if ( ! empty($supplier_email) ) {
+              $supplier_auto_order_string .= $supplier_email . ', ';
+            }
+            if ( ! empty($supplier_sms) ) {
+              $supplier_auto_order_string .= $supplier_sms;
+            }
+          }
+
+          $suppliers_string = implode( ', ', $suppliers_names );
 
           $inventory_type = wp_get_post_terms( $parent_id, 'pq_inventory_type', array( 'fields' => 'slugs' ) );
 
           $new_product_row = array(array(
             'product_id' => $product_id_to_display,
             'pq_commercial_zone' => $commercial_zone_string,
-            'supplier' => $tags_string,
+            'supplier' => $suppliers_string,
             'sku' => $sku,
             '_short_name' => $short_name,
             '_pq_reference' => $reference_name,
@@ -344,6 +359,7 @@ function pq_get_product_rows($orders) {
             '_pq_operation_stock' => $operation_stock,
             '_packing_priority' => $packing_priority,
             'pq_inventory_type' => $inventory_type,
+            'supplier_auto_order_string' => $supplier_auto_order_string,
           ));
 
           $product_rows = array_merge($product_rows, $new_product_row);
