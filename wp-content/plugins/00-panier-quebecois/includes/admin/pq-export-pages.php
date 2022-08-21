@@ -23,7 +23,7 @@ function myfct_purchasing_export_content() {
     wp_die( __( 'You do not have sufficient pilchards to access this page.' ) );
   }
 
-  if ( ( isset( $_POST[ 'export_purchasing' ] ) || isset( $_POST[ 'export_products_to_weight' ] ) ) && check_admin_referer( 'export_purchasing_clicked' ) ) {
+  if ( isset( $_POST[ 'export_purchasing' ] ) && check_admin_referer( 'export_purchasing_clicked' ) ) {
 
     $delivery_date_raw = $_POST[ 'my_delivery_date' ];
     $error = myfct_validate_delivery_date( $delivery_date_raw );
@@ -31,21 +31,16 @@ function myfct_purchasing_export_content() {
     if ( !empty( $error ) ) {
       echo '<div class="notice notice-error"><p> ' . $error . '</p></div>';
     } else {
-      if ( isset( $_POST[ 'export_purchasing' ] ) ) {
-
-        if ( ! empty( $_POST[ 'pq_last_order' ] ) ) {
-          $import_after_order = $_POST[ 'pq_last_order' ];
-          $error = pq_validate_order_number($import_after_order);
-          if ( !empty( $error ) ) {
-            echo '<div class="notice notice-error"><p> ' . $error . '</p></div>';
-          } else {
-            myfct_purchasing_export( $delivery_date_raw, $import_after_order );
-          }
+      if ( ! empty( $_POST[ 'pq_last_order' ] ) ) {
+        $import_after_order = $_POST[ 'pq_last_order' ];
+        $error = pq_validate_order_number($import_after_order);
+        if ( !empty( $error ) ) {
+          echo '<div class="notice notice-error"><p> ' . $error . '</p></div>';
         } else {
-          myfct_purchasing_export( $delivery_date_raw );
+          myfct_purchasing_export( $delivery_date_raw, $import_after_order );
         }
-      } elseif ( isset( $_POST[ 'export_products_to_weight' ] ) ) {
-        myfct_products_to_weight_export( $delivery_date_raw );
+      } else {
+        myfct_purchasing_export( $delivery_date_raw );
       }
     }
   }

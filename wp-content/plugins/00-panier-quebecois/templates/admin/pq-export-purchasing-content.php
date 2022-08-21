@@ -24,6 +24,5 @@ $default_date = $default_date_obj->format( 'Y-m-d' ); ?>
 
     <input type="hidden" value="true" name="export_purchasing_form" />
     <?php submit_button('Exporter les achats', 'primary', 'export_purchasing'); ?>
-    <?php submit_button('Exporter les produits à peser', 'large', 'export_products_to_weight'); ?>
   </form>
 </div>
