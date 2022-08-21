@@ -147,47 +147,6 @@ function myfct_get_relevant_orders( $delivery_date_raw, $import_after_order = ""
 }
 
 
-/* ----- Get products SKUs and QTYs of relevant orders ----- */
-function myfct_get_products_quantities( $orders, $to_weight_only = false ) {
-  $products = array();
-
-  foreach ( $orders as $order ) {
-    foreach ( $order->get_items() as $item_id => $item ) {
-      $product = wc_get_product( $item->get_product_id() );
-
-      if ( myfct_is_relevant_product( $product, $to_weight_only ) ) {
-
-        if ( $item->get_variation_id() !== 0 ) {
-          $new_id = $item->get_variation_id();
-        } else {
-          $new_id = $product->get_id();
-        }
-
-        $new_quantity_before_refund = $item->get_quantity();
-        $quantity_refunded = $order->get_qty_refunded_for_item( $item_id );
-        $new_quantity = $new_quantity_before_refund + $quantity_refunded;
-
-        $is_new_id = true;
-
-        foreach ( $products as $id => $quantity ) {
-          if ( $new_id == $id ) {
-            $products[ $id ] += $new_quantity;
-            $is_new_id = false;
-          }
-        }
-
-        if ( $is_new_id ) {
-          $new_product = array( $new_id => $new_quantity );
-          $products += $new_product;
-        }
-      }
-    }
-  }
-
-  return $products;
-}
-
-
 /* ----- Get the special delivery number ------ */
 function myfct_get_special_product_number( $category_ids ) {
   $special_product_categories = array(
@@ -340,43 +299,6 @@ function myfct_purchasing_export( $delivery_date_raw, $import_after_order = "" )
 	pq_export_excel($spreadsheet, $file_name);
 }
 
-/* ----- Export products to weight to csv ------ */
-
-function myfct_products_to_weight_export( $delivery_date_raw ) {
-  //Get the time for the filename
-  $timezone = new DateTimeZone( get_option( 'timezone_string' ) );
-  $now = new DateTime( '', $timezone );
-  $filename = 'Peser ' . $now->format( 'Y-m-d G:i:s' ) . '.csv';
-
-  $orders = myfct_get_relevant_orders( $delivery_date_raw );
-  $products = myfct_get_products_quantities( $orders, true );
-
-  $csv = array( array( 'Nom Court', 'Quantité totale', 'Unité' ) );
-
-  foreach ( $products as $product_id => $quantity ) {
-    $product = wc_get_product( $product_id );
-
-    $short_name = $lot_unit = '';
-    $lot_quantity = 0;
-
-    $short_name = get_post_meta( $product_id, '_short_name', true );
-    $weight = get_post_meta( $product_id, '_pq_weight', true );
-    $unit = get_post_meta( $product_id, '_lot_unit', true );
-		$weight_with_unit = $weight . $unit;
-    $lot_quantity = get_post_meta( $product_id, '_lot_quantity', true );
-
-    if ( $product->get_type() == 'variation' ) {
-      $product_id = $product->get_parent_id();
-    }
-
-    $total_quantity = $quantity * $lot_quantity;
-
-    $product_line = array( array( $short_name, $total_quantity, $weight_with_unit ) );
-    $csv = array_merge( $csv, $product_line );
-  }
-
-  myfct_export_csv( $filename, $csv );
-}
 
 /* ----- Export orders to csv ------ */
 function myfct_orders_export($delivery_date_raw) {

@@ -71,25 +71,20 @@ function pq_operations_exporter_button_fct() {
  * Export all the lists for daily operations
  */
 function pq_export_operations_lists() {
+  $orders = pq_get_relevant_orders_today();
+  $product_rows = pq_get_product_rows($orders);
 
-    $timezone = new DateTimeZone( get_option( 'timezone_string' ) );
-    $default_date_obj = new DateTime( 'today', $timezone );
-    $default_date = $default_date_obj->format( 'Y-m-d' );
-    $orders = myfct_get_relevant_orders( $default_date );
+  $short_name_columns = array_column($product_rows, '_short_name');
+  $supplier_column = array_column($product_rows, 'supplier');
+  array_multisort($supplier_column, SORT_ASC, SORT_STRING, $short_name_columns, $product_rows);
 
-    $product_rows = pq_get_product_rows($orders);
+  $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
 
-    $short_name_columns = array_column($product_rows, '_short_name');
-    $supplier_column = array_column($product_rows, 'supplier');
-    array_multisort($supplier_column, SORT_ASC, SORT_STRING, $short_name_columns, $product_rows);
+  pq_print_sheets($spreadsheet, $product_rows);
 
-    $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
+  pq_style_sheets($spreadsheet);
 
-    pq_print_sheets($spreadsheet, $product_rows);
-
-    pq_style_sheets($spreadsheet);
-
-    pq_export_excel($spreadsheet, 'listes-operations');
+  pq_export_excel($spreadsheet, 'listes-operations');
 }
 
 
@@ -391,7 +386,7 @@ function pq_export_excel($spreadsheet, $spreadsheet_name) {
   header( "Expires: 0" );
 
   while (ob_get_level()) {
-      ob_end_clean();
+    ob_end_clean();
   }
   $writer->save('php://output');
   exit;
@@ -441,12 +436,9 @@ function pq_get_pdf_array( $orders ) {
   $pdf_array = array();
 
   foreach ( $orders as $order ) {
-    $order_id = $order->get_id();
     
     $order_array = pq_get_orders_info_array( $order );
-
     $order_array['product_lines'] = pq_get_product_lines_array( $order );
-
     $orders_array = array( $order_array );
 
     $pdf_array = array_merge($pdf_array, $orders_array);
@@ -587,13 +579,11 @@ function pq_get_product_lines_array( $order ) {
         $product_lot_quantity = get_post_meta($variation_id, '_lot_quantity', true);
         $product_weight = get_post_meta( $variation_id, '_pq_weight', true );
         $product_unit = get_post_meta( $variation_id, '_lot_unit', true );
-        $product_weight_with_unit = $product_weight . $product_unit;
       } else {
         $product_short_name = get_post_meta($product_id, '_short_name', true);
         $product_lot_quantity = get_post_meta($product_id, '_lot_quantity', true);
         $product_weight = get_post_meta( $product_id, '_pq_weight', true );
         $product_unit = get_post_meta( $product_id, '_lot_unit', true );
-        $product_weight_with_unit = $product_weight . $product_unit;
       }
 
       $product_packing_priority = get_post_meta($product_id, '_packing_priority', true);
