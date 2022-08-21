@@ -22,14 +22,14 @@ function pq_get_product_rows($orders) {
       $product = wc_get_product( $item->get_product_id() );
 
       if ( myfct_is_relevant_product( $product ) ) {
-
+        
+        $has_distinct_variations = false;
         if ( $item->get_variation_id() !== 0 ) {
           $parent_id = $product->get_id();
           $product_id = $item->get_variation_id();
 
           $variation_ids = $product->get_children();
 
-          $has_distinct_variations = false;
           $previous_variation_short_name = '';
           foreach ($variation_ids as $key => $variation_id) {
             $variation_short_name = get_post_meta( $variation_id, '_short_name', true );
