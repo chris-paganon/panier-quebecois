@@ -22,7 +22,7 @@ function pq_get_product_rows($orders) {
       $product = wc_get_product( $item->get_product_id() );
 
       if ( myfct_is_relevant_product( $product ) ) {
-        
+
         $has_distinct_variations = false;
         if ( $item->get_variation_id() !== 0 ) {
           $parent_id = $product->get_id();
@@ -238,7 +238,7 @@ function myfct_get_relevant_orders( $delivery_date_raw, $import_after_order = ""
  */
 function pq_get_relevant_orders_today() {
   $timezone = new DateTimeZone( get_option( 'timezone_string' ) );
-  $default_date_obj = new DateTime( 'August 10th 2022', $timezone );
+  $default_date_obj = new DateTime( 'today', $timezone );
   $default_date = $default_date_obj->format( 'Y-m-d' );
   $orders = myfct_get_relevant_orders( $default_date );
 
