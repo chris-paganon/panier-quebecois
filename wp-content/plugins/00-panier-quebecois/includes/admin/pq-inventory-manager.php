@@ -32,7 +32,7 @@ function pq_inventory_manager_fct() {
 
 		$args = array( 'products' => $products );
 		ob_start();
-		wc_pq_get_template( 'pq-inventory-manager-table.php', $args );
+		wc_pq_get_template( 'admin/pq-inventory-manager-table.php', $args );
 		return ob_get_clean();
 	}
 }
