@@ -70,18 +70,18 @@ class Panier_Quebecois {
     require_once PQ_VENDOR_DIR . 'autoload.php';
 
     //Admin
-    include_once( PQ_INCLUDE_ADMIN_DIR . 'pq-export-helpers.php' );
+    include_once( PQ_INCLUDE_ADMIN_DIR . 'pq-export-admin.php' );
     include_once( PQ_INCLUDE_ADMIN_DIR . 'pq-export-helpers-dependencies.php' );
-    include_once( PQ_INCLUDE_ADMIN_DIR . 'pq-exporter-functions.php' );
-    include_once( PQ_INCLUDE_ADMIN_DIR . 'pq-products-meta.php' );
+    include_once( PQ_INCLUDE_ADMIN_DIR . 'pq-export-helpers.php' );
+    include_once( PQ_INCLUDE_ADMIN_DIR . 'pq-export-operations.php' );
     include_once( PQ_INCLUDE_ADMIN_DIR . 'pq-export-pages.php' );
+    include_once( PQ_INCLUDE_ADMIN_DIR . 'pq-products-meta.php' );
     include_once( PQ_INCLUDE_ADMIN_DIR . 'pq-orders-completion.php' );
     include_once( PQ_INCLUDE_ADMIN_DIR . 'pq-stock-notifs.php' );
     include_once( PQ_INCLUDE_ADMIN_DIR . 'pq-settings-pages.php' );
     include_once( PQ_INCLUDE_ADMIN_DIR . 'pq-supplier-orders.php' );
     include_once( PQ_INCLUDE_ADMIN_DIR . 'pq-supplier-emails.php' );
     include_once( PQ_INCLUDE_ADMIN_DIR . 'pq-supplier-sms.php' );
-    include_once( PQ_INCLUDE_ADMIN_DIR . 'pq-operations-exporter.php' );
     include_once( PQ_INCLUDE_ADMIN_DIR . 'pq-inventory-manager.php' );
 
     //AJAX shop
