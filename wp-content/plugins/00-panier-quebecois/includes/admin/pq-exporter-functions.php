@@ -295,12 +295,12 @@ function myfct_purchasing_export( $delivery_date_raw, $import_after_order = "" )
 	foreach ( $commercial_zones_to_print as $key => $commercial_zone_to_print ) {
 		$commercial_zone_to_print_name = $commercial_zone_to_print->name;
 		if ( $key === 0 ) {
-			$to_purchase_sheet = $spreadsheet->getActiveSheet();
+			$current_sheet = $spreadsheet->getActiveSheet();
 		} else {
   		$new_sheet = new \PhpOffice\PhpSpreadsheet\Worksheet\Worksheet($spreadsheet, $commercial_zone_to_print_name);
-			$to_purchase_sheet = $spreadsheet->addSheet($new_sheet, 0);
+			$current_sheet = $spreadsheet->addSheet($new_sheet, 0);
 		}
-		$to_purchase_sheet->setTitle($commercial_zone_to_print_name);
+		$current_sheet->setTitle($commercial_zone_to_print_name);
 	
 		$to_print = array(
 			'pq_commercial_zone', 
@@ -316,22 +316,22 @@ function myfct_purchasing_export( $delivery_date_raw, $import_after_order = "" )
 			'supplier_auto_order_string',
 		);
 	
-		$to_purchase_sheet->setCellValue('A1', 'Zone');
-		$to_purchase_sheet->setCellValue('B1', 'Marchand');
-		$to_purchase_sheet->setCellValue('C1', 'SKU');
-		$to_purchase_sheet->setCellValue('D1', 'Nom court');
-		$to_purchase_sheet->setCellValue('E1', 'Référence fournisseur');
-		$to_purchase_sheet->setCellValue('F1', 'Conso');
-		$to_purchase_sheet->setCellValue('G1', 'Unité');
-		$to_purchase_sheet->setCellValue('H1', 'Stock');
-		$to_purchase_sheet->setCellValue('I1', 'Ordre de prio');
-		$to_purchase_sheet->setCellValue('J1', 'Auto email/SMS');
-		$to_purchase_sheet->setCellValue('L1', 'No de commandes');
-		$to_purchase_sheet->setCellValue('M1', $orders_count);
-		$to_purchase_sheet->setCellValue('N1', 'Dernière commande:');
-		$to_purchase_sheet->setCellValue('O1', $last_order_number);
+		$current_sheet->setCellValue('A1', 'Zone');
+		$current_sheet->setCellValue('B1', 'Marchand');
+		$current_sheet->setCellValue('C1', 'SKU');
+		$current_sheet->setCellValue('D1', 'Nom court');
+		$current_sheet->setCellValue('E1', 'Référence fournisseur');
+		$current_sheet->setCellValue('F1', 'Conso');
+		$current_sheet->setCellValue('G1', 'Unité');
+		$current_sheet->setCellValue('H1', 'Stock');
+		$current_sheet->setCellValue('I1', 'Ordre de prio');
+		$current_sheet->setCellValue('J1', 'Auto email/SMS');
+		$current_sheet->setCellValue('L1', 'No de commandes');
+		$current_sheet->setCellValue('M1', $orders_count);
+		$current_sheet->setCellValue('N1', 'Dernière commande:');
+		$current_sheet->setCellValue('O1', $last_order_number);
 	
-		pq_print_on_sheet( $to_purchase_sheet, $products, 1, 999, $to_print, '', $commercial_zone_to_print_name );
+		pq_print_on_sheet( $current_sheet, $products, 1, 999, $to_print, '', $commercial_zone_to_print_name );
 	}
 
 	pq_style_sheets($spreadsheet);
