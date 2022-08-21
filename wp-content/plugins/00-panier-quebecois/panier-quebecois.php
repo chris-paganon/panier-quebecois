@@ -71,6 +71,7 @@ class Panier_Quebecois {
 
     //Admin
     include_once( PQ_INCLUDE_ADMIN_DIR . 'pq-export-helpers.php' );
+    include_once( PQ_INCLUDE_ADMIN_DIR . 'pq-export-helpers-dependencies.php' );
     include_once( PQ_INCLUDE_ADMIN_DIR . 'pq-exporter-functions.php' );
     include_once( PQ_INCLUDE_ADMIN_DIR . 'pq-products-meta.php' );
     include_once( PQ_INCLUDE_ADMIN_DIR . 'pq-export-pages.php' );

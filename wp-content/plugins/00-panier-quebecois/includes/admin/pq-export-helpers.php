@@ -6,7 +6,7 @@ if ( !defined( 'ABSPATH' ) ) {
 
 /**
  * 
- * Export functions helpers
+ * Get relevant products and orders 
  *
  */
 
@@ -135,7 +135,9 @@ function pq_get_product_rows($orders) {
 }
 
 
-/* ----- Check if product should be counted based on its categories ----- */
+/**
+ *  Check if product should be counted based on its categories
+ */
 function myfct_is_relevant_product( $product, $to_weight_only = false ) {
   $category_ids = $product->get_category_ids();
   $product_id = $product->get_id();
@@ -164,7 +166,9 @@ function myfct_is_relevant_product( $product, $to_weight_only = false ) {
 }
 
 
-/* ----- Enable orddd timestamp for wc_get_orders query ------ */
+/**
+ * Enable orddd timestamp for wc_get_orders query 
+ */
 add_filter( 'woocommerce_order_data_store_cpt_get_orders_query', 'handle_custom_query_var', 10, 2 );
 
 function handle_custom_query_var( $query, $query_vars ) {
@@ -202,7 +206,9 @@ function pq_get_order_created_date($import_after_order) {
 	return $import_after_timestamp;
 }
 
-/* ----- Get relevant orders ----- */
+/**
+ * Get relevant orders
+ */
 function myfct_get_relevant_orders( $delivery_date_raw, $import_after_order = "" ) {
 	$delivery_date_obj = new DateTime( $delivery_date_raw );
 	if ( empty($import_after_order) ) {
@@ -243,7 +249,15 @@ function pq_get_relevant_orders_today() {
 }
 
 
-/* ----- Get the special delivery number ------ */
+/**
+ * 
+ * Get specific information from order or product
+ * 
+ */
+
+/**
+ * Get the special delivery number
+ */
 function myfct_get_special_product_number( $category_ids ) {
   $special_product_categories = array(
     381 => 2, //Plantes
@@ -316,6 +330,11 @@ function pq_get_route_no( $order_id ) {
   return $route_no_full;
 }
 
+/**
+ * 
+ * Get list of info from order or product
+ * 
+ */
 
 /**
  * Get all orders info for labels
@@ -448,4 +467,32 @@ function pq_get_product_lines_array( $order ) {
   array_multisort($columns, SORT_ASC, SORT_NUMERIC, $product_lines);
 
   return $product_lines;
+}
+
+
+/**
+ * 
+ * Print content onto a worksheet
+ * 
+ */
+function pq_print_on_sheet( $sheet, $product_rows, $low_priority, $high_priority, $to_print, $products_to_print = '', $commercial_zone_to_print = '' ) {
+
+  $row = 2;
+  foreach ( $product_rows as $product_row ) {
+    $column = 1;
+    $packing_priority = $product_row['_packing_priority'];
+    $inventory_type = $product_row['pq_inventory_type'];
+    $commercial_zone_string = $product_row['pq_commercial_zone'];
+
+    if ( $packing_priority >= $low_priority && $packing_priority <= $high_priority 
+    && ((empty($inventory_type) && empty($products_to_print)) 
+    || in_array($products_to_print, $inventory_type)) 
+    && (empty($commercial_zone_to_print) || empty($commercial_zone_string) || (!empty($commercial_zone_to_print) && strpos($commercial_zone_string, $commercial_zone_to_print) !== false)) ) {
+      foreach ( $to_print as $to_print_key ) {
+        $sheet->setCellValueByColumnAndRow($column, $row, $product_row[$to_print_key]);
+        $column++;
+      }
+      $row++;
+    }
+  }
 }

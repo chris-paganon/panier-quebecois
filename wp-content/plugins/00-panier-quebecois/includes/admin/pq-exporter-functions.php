@@ -5,40 +5,9 @@ if ( !defined( 'ABSPATH' ) ) {
 }
 
 
-/* ----- Export the csv ----- */
-function myfct_export_csv( $filename, $csv ) {
-  header( 'Content-Type: application/csv;charset=UTF-8' );
-  header( 'Content-Disposition: attachment; filename=' . $filename );
-  header( 'Cache-Control: no-cache' );
-  header( "Expires: 0" );
-
-  ob_end_clean();
-
-  //echo "\xEF\xBB\xBF"; (solves characters issues on windows)
-  //echo "sep=,\n";  (solves seperator issues on MAC OS)
-
-  $csv_string = '';
-
-  foreach ( $csv as $line ) {
-    $csv_string .= implode( "\t", $line ) . "\n";
-  }
-
-  $csv_encoded = mb_convert_encoding( $csv_string, 'UTF-16LE', 'UTF-8' );
-  echo chr( 255 ) . chr( 254 ) . $csv_encoded;
-
-  exit;
-}
-
-
-/*
- *
- *
- * Exporting functions
- *
- *
+/**
+ *  Export purchasing
  */
-
-/* ----- Export purchasing to csv ------ */
 function myfct_purchasing_export( $delivery_date_raw, $import_after_order = "" ) {
 
   $orders = myfct_get_relevant_orders( $delivery_date_raw, $import_after_order );
@@ -108,7 +77,9 @@ function myfct_purchasing_export( $delivery_date_raw, $import_after_order = "" )
 }
 
 
-/* ----- Export orders to csv ------ */
+/**
+ *  Export orders to csv
+ */
 function myfct_orders_export($delivery_date_raw) {
 
 	//Get the time for the filename
