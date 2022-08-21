@@ -41,3 +41,7 @@ echo '<h4>Nombre de commandes demain: ' . count($orders_tomorrow) . '</h4>';
   <input type="hidden" value="true" name="cold_labels_export_form" />
   <input type="submit" value="Exporter les étiquettes de froid">
 </form>
+
+</br>
+
+<a class="button" href="<?php echo get_permalink(60467); ?>">Gérer l'inventaire</a>
