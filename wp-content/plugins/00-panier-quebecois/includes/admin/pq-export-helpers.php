@@ -241,7 +241,7 @@ function myfct_get_relevant_orders( $delivery_date_raw, $import_after_order = ""
  */
 function pq_get_relevant_orders_today() {
   $timezone = new DateTimeZone( get_option( 'timezone_string' ) );
-  $default_date_obj = new DateTime( 'today', $timezone );
+  $default_date_obj = new DateTime( 'August 10th 2022', $timezone );
   $default_date = $default_date_obj->format( 'Y-m-d' );
   $orders = myfct_get_relevant_orders( $default_date );
 
@@ -461,10 +461,9 @@ function pq_get_product_lines_array( $order ) {
     }
   }
 
-  $columns = array_column($product_lines, 'product_short_name');
-  array_multisort($columns, SORT_ASC, SORT_STRING, $product_lines);
-  $columns = array_column($product_lines, 'packing_priority');
-  array_multisort($columns, SORT_ASC, SORT_NUMERIC, $product_lines);
+  $product_short_name_columns = array_column($product_lines, 'product_short_name');
+  $packing_priority_columns = array_column($product_lines, 'packing_priority');
+  array_multisort($packing_priority_columns, SORT_ASC, SORT_NUMERIC, $product_short_name_columns, $product_lines);
 
   return $product_lines;
 }
