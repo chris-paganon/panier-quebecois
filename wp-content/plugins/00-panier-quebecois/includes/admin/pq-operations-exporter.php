@@ -167,21 +167,22 @@ function pq_print_sheets($spreadsheet, $product_rows) {
 /**
  * Print content onto a worksheet
  */
-function pq_print_on_sheet( $sheet, $product_rows, $low_priority, $high_priority, $to_print, $products_to_print = '' ) {
+function pq_print_on_sheet( $sheet, $product_rows, $low_priority, $high_priority, $to_print, $products_to_print = '', $commercial_zone_to_print = '' ) {
 
   $row = 2;
   foreach ( $product_rows as $product_row ) {
     $column = 1;
     $packing_priority = $product_row['_packing_priority'];
     $inventory_type = $product_row['pq_inventory_type'];
+    $commercial_zone_string = $product_row['pq_commercial_zone'];
 
-    if ( $packing_priority >= $low_priority && $packing_priority <= $high_priority && 
-      ((empty($inventory_type) && empty($products_to_print)) || in_array($products_to_print, $inventory_type)) ) {
-      foreach ( $product_row as $name => $cell_value ) {
-        if ( in_array($name, $to_print) ) {
-          $sheet->setCellValueByColumnAndRow($column, $row, $cell_value);
-          $column++;
-        }
+    if ( $packing_priority >= $low_priority && $packing_priority <= $high_priority 
+    && ((empty($inventory_type) && empty($products_to_print)) 
+    || in_array($products_to_print, $inventory_type)) 
+    && (empty($commercial_zone_to_print) || (!empty($commercial_zone_to_print) && strpos($commercial_zone_string, $commercial_zone_to_print) !== false)) ) {
+      foreach ( $to_print as $to_print_key ) {
+        $sheet->setCellValueByColumnAndRow($column, $row, $product_row[$to_print_key]);
+        $column++;
       }
       $row++;
     }
@@ -320,6 +321,8 @@ function pq_get_product_rows($orders) {
           }
           $operation_stock = get_post_meta( $product_id_to_display, '_pq_operation_stock', true);
 
+          $quantity_to_buy = $total_quantity - $operation_stock;
+
           $suppliers = wp_get_post_terms( $parent_id, 'pq_distributor' );
           if ( empty( $suppliers ) ) {
             $suppliers = wp_get_post_terms( $parent_id, 'product_tag' );
@@ -357,6 +360,7 @@ function pq_get_product_rows($orders) {
             '_lot_unit' => $unit,
             'weight' => $weight_with_unit,
             '_pq_operation_stock' => $operation_stock,
+            'quantity_to_buy' => $quantity_to_buy,
             '_packing_priority' => $packing_priority,
             'pq_inventory_type' => $inventory_type,
             'supplier_auto_order_string' => $supplier_auto_order_string,

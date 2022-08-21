@@ -135,7 +135,7 @@ function myfct_get_relevant_orders( $delivery_date_raw, $import_after_order = ""
 	$export_end_date = $export_end_date_obj->format( 'y-m-d' );
 
 	$query = array(
-		'status' => 'wc-processing',
+		'status' => array( 'wc-processing', 'wc-completed' ),
 		'limit' => -1,
 		'date_created' => $export_start_date . '...' . $export_end_date,
 		'_shipping_date' => $delivery_date,
@@ -282,42 +282,57 @@ function myfct_purchasing_export( $delivery_date_raw, $import_after_order = "" )
 
 	$short_name_columns = array_column($products, '_short_name');
 	$supplier_column = array_column($products, 'supplier');
-	array_multisort($supplier_column, SORT_ASC, SORT_STRING, $short_name_columns, $products);
+	$commercial_zone_column = array_column($products, 'pq_commercial_zone');
+	array_multisort($commercial_zone_column, SORT_ASC, SORT_STRING, $supplier_column, $short_name_columns, $products);
 
 	$spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
 
-	$to_purchase_sheet = $spreadsheet->getActiveSheet();
-  $to_purchase_sheet->setTitle('À acheter');
-
-  $to_print = array(
-		'pq_commercial_zone', 
-		'supplier', 
-		'sku',
-		'_short_name',
-		'_pq_reference',
-		'total_quantity',
-		'_lot_unit',
-		'_pq_operation_stock',
-		'_packing_priority',
-		'supplier_auto_order_string',
-	);
-
-  $to_purchase_sheet->setCellValue('A1', 'Zone');
-  $to_purchase_sheet->setCellValue('B1', 'Marchand');
-  $to_purchase_sheet->setCellValue('C1', 'SKU');
-  $to_purchase_sheet->setCellValue('D1', 'Nom court');
-  $to_purchase_sheet->setCellValue('E1', 'Référence fournisseur');
-  $to_purchase_sheet->setCellValue('F1', 'Conso');
-  $to_purchase_sheet->setCellValue('G1', 'Unité');
-  $to_purchase_sheet->setCellValue('H1', 'Stock');
-  $to_purchase_sheet->setCellValue('I1', 'Ordre de prio');
-  $to_purchase_sheet->setCellValue('J1', 'Auto email/SMS');
-  $to_purchase_sheet->setCellValue('L1', 'No de commandes');
-  $to_purchase_sheet->setCellValue('M1', $orders_count);
-  $to_purchase_sheet->setCellValue('N1', 'Dernière commande:');
-  $to_purchase_sheet->setCellValue('O1', $last_order_number);
-
-  pq_print_on_sheet( $to_purchase_sheet, $products, 1, 999, $to_print );
+	$commercial_zones_to_print = get_terms( array(
+    'taxonomy' => 'pq_commercial_zone',
+    'hide_empty' => false,
+  ));
+	
+	foreach ( $commercial_zones_to_print as $key => $commercial_zone_to_print ) {
+		$commercial_zone_to_print_name = $commercial_zone_to_print->name;
+		if ( $key === 0 ) {
+			$to_purchase_sheet = $spreadsheet->getActiveSheet();
+		} else {
+  		$new_sheet = new \PhpOffice\PhpSpreadsheet\Worksheet\Worksheet($spreadsheet, $commercial_zone_to_print_name);
+			$to_purchase_sheet = $spreadsheet->addSheet($new_sheet, 0);
+		}
+		$to_purchase_sheet->setTitle($commercial_zone_to_print_name);
+	
+		$to_print = array(
+			'pq_commercial_zone', 
+			'supplier', 
+			'sku',
+			'_short_name',
+			'_pq_reference',
+			'total_quantity',
+			'_lot_unit',
+			'_pq_operation_stock',
+			'quantity_to_buy',
+			'_packing_priority',
+			'supplier_auto_order_string',
+		);
+	
+		$to_purchase_sheet->setCellValue('A1', 'Zone');
+		$to_purchase_sheet->setCellValue('B1', 'Marchand');
+		$to_purchase_sheet->setCellValue('C1', 'SKU');
+		$to_purchase_sheet->setCellValue('D1', 'Nom court');
+		$to_purchase_sheet->setCellValue('E1', 'Référence fournisseur');
+		$to_purchase_sheet->setCellValue('F1', 'Conso');
+		$to_purchase_sheet->setCellValue('G1', 'Unité');
+		$to_purchase_sheet->setCellValue('H1', 'Stock');
+		$to_purchase_sheet->setCellValue('I1', 'Ordre de prio');
+		$to_purchase_sheet->setCellValue('J1', 'Auto email/SMS');
+		$to_purchase_sheet->setCellValue('L1', 'No de commandes');
+		$to_purchase_sheet->setCellValue('M1', $orders_count);
+		$to_purchase_sheet->setCellValue('N1', 'Dernière commande:');
+		$to_purchase_sheet->setCellValue('O1', $last_order_number);
+	
+		pq_print_on_sheet( $to_purchase_sheet, $products, 1, 999, $to_print, '', $commercial_zone_to_print_name );
+	}
 
 	pq_style_sheets($spreadsheet);
 
