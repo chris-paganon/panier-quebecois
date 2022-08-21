@@ -16,6 +16,17 @@ function myfct_purchasing_export( $delivery_date_raw, $import_after_order = "" )
   $last_order_number = $last_order->get_id();
   $products = pq_get_product_rows( $orders );
 
+	foreach ( $products as $key => $product ) {
+		$operation_stock = $product['_pq_operation_stock'];
+		$total_quantity = $product['total_quantity'];
+
+		if ( is_numeric($operation_stock) ) {
+			$products[$key]['quantity_to_buy'] = max( $total_quantity - $operation_stock, 0 );
+		} else {
+			$products[$key]['quantity_to_buy'] = '';
+		}
+	}
+
 	$short_name_columns = array_column($products, '_short_name');
 	$supplier_column = array_column($products, 'supplier');
 	$commercial_zone_column = array_column($products, 'pq_commercial_zone');
@@ -60,12 +71,13 @@ function myfct_purchasing_export( $delivery_date_raw, $import_after_order = "" )
 		$current_sheet->setCellValue('F1', 'Conso');
 		$current_sheet->setCellValue('G1', 'Unité');
 		$current_sheet->setCellValue('H1', 'Stock');
-		$current_sheet->setCellValue('I1', 'Ordre de prio');
-		$current_sheet->setCellValue('J1', 'Auto email/SMS');
-		$current_sheet->setCellValue('L1', 'No de commandes');
-		$current_sheet->setCellValue('M1', $orders_count);
-		$current_sheet->setCellValue('N1', 'Dernière commande:');
-		$current_sheet->setCellValue('O1', $last_order_number);
+		$current_sheet->setCellValue('I1', 'Besoin');
+		$current_sheet->setCellValue('J1', 'Ordre de prio');
+		$current_sheet->setCellValue('K1', 'Auto email/SMS');
+		$current_sheet->setCellValue('M1', 'No de commandes');
+		$current_sheet->setCellValue('N1', $orders_count);
+		$current_sheet->setCellValue('O1', 'Dernière commande:');
+		$current_sheet->setCellValue('P1', $last_order_number);
 	
 		pq_print_on_sheet( $current_sheet, $products, 1, 999, $to_print, '', $commercial_zone_to_print_name );
 	}

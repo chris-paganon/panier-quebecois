@@ -80,8 +80,6 @@ function pq_get_product_rows($orders) {
           }
           $operation_stock = get_post_meta( $product_id_to_display, '_pq_operation_stock', true);
 
-          $quantity_to_buy = $total_quantity - $operation_stock;
-
           $suppliers = wp_get_post_terms( $parent_id, 'pq_distributor' );
           if ( empty( $suppliers ) ) {
             $suppliers = wp_get_post_terms( $parent_id, 'product_tag' );
@@ -119,7 +117,6 @@ function pq_get_product_rows($orders) {
             '_lot_unit' => $unit,
             'weight' => $weight_with_unit,
             '_pq_operation_stock' => $operation_stock,
-            'quantity_to_buy' => $quantity_to_buy,
             '_packing_priority' => $packing_priority,
             'pq_inventory_type' => $inventory_type,
             'supplier_auto_order_string' => $supplier_auto_order_string,
