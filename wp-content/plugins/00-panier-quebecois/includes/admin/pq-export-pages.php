@@ -88,3 +88,52 @@ function pq_products_export_content() {
 
   wc_pq_get_template( 'admin/pq-export-products-content.php', '' );
 }
+
+
+/**
+ *
+ *  Validate user input
+ * 
+ */
+
+/**
+ *  Validate delivery date before exporting
+ */
+function myfct_validate_delivery_date( $delivery_date_raw ) {
+  $error = '';
+
+  if ( empty( $delivery_date_raw ) ) {
+    $error = esc_html__( 'Erreur: Entrez une date de livraison' );
+  } else {
+    $delivery_date_raw_year = substr( $delivery_date_raw, 0, 4 );
+    $delivery_date_raw_month = substr( $delivery_date_raw, 5, 2 );
+    $delivery_date_raw_day = substr( $delivery_date_raw, 8, 2 );
+    $delivery_date_raw_length = strlen( $delivery_date_raw );
+
+    if ( !( is_numeric( $delivery_date_raw_year ) && is_numeric( $delivery_date_raw_month ) && is_numeric( $delivery_date_raw_day ) && $delivery_date_raw_length == 10 ) ) {
+      $error = esc_html__( 'Erreur: Entrez un format de date valide: AAAA-MM-JJ. Exemple: 2020-12-24' );
+    } elseif ( $delivery_date_raw_month > 12 || $delivery_date_raw_month < 1 ) {
+      $error = esc_html__( 'Le mois doit être compris entre 1 et 12' );
+    } elseif ( $delivery_date_raw_day > 31 || $delivery_date_raw_day < 1 ) {
+      $error = esc_html__( 'Le jour doit être compris entre 1 et 31' );
+    }
+  }
+
+  return $error;
+}
+
+/**
+ * Validate order number
+ */
+function pq_validate_order_number( $import_after_order ) {
+	$error = '';
+
+	$order_number_length = strlen((string) $import_after_order);
+	if ( filter_var($import_after_order, FILTER_VALIDATE_INT) === false ) {
+		$error = "Le numéro de commande n'est pas un nombre entier";
+	} elseif ( $order_number_length !== 5 ) {
+		$error = "Le numéro de commande n'est pas un nombre à 5 chiffres";
+	}
+
+	return $error;
+}
