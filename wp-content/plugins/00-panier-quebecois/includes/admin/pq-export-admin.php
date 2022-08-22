@@ -15,17 +15,7 @@ function myfct_purchasing_export( $delivery_date_raw, $import_after_order = "" )
   $last_order = reset($orders);
   $last_order_number = $last_order->get_id();
   $products = pq_get_product_rows( $orders );
-
-	foreach ( $products as $key => $product ) {
-		$operation_stock = $product['_pq_operation_stock'];
-		$total_quantity = $product['total_quantity'];
-
-		if ( is_numeric($operation_stock) ) {
-			$products[$key]['quantity_to_buy'] = max( $total_quantity - $operation_stock, 0 );
-		} else {
-			$products[$key]['quantity_to_buy'] = '';
-		}
-	}
+	$products = pq_add_quantity_to_buy_to_products($products);
 
 	$short_name_columns = array_column($products, '_short_name');
 	$supplier_column = array_column($products, 'supplier');

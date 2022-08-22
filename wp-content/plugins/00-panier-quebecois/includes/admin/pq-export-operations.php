@@ -44,6 +44,7 @@ function pq_operations_exporter_button_fct() {
 function pq_export_operations_lists() {
   $orders = pq_get_relevant_orders_today();
   $product_rows = pq_get_product_rows($orders);
+  $product_rows = pq_add_quantity_to_buy_to_products($product_rows);
 
   $short_name_columns = array_column($product_rows, '_short_name');
   $supplier_column = array_column($product_rows, 'supplier');
@@ -96,10 +97,12 @@ function pq_print_sheets($spreadsheet, $product_rows) {
   $centrale_sheet = new \PhpOffice\PhpSpreadsheet\Worksheet\Worksheet($spreadsheet, 'Centrale');
   $spreadsheet->addSheet($centrale_sheet, 0);
 
-  $to_print = array('_short_name', 'total_quantity');
+  $to_print = array('_short_name', 'total_quantity', '_pq_operation_stock', 'quantity_to_buy');
 
   $centrale_sheet->setCellValue('A1', 'Nom court');
   $centrale_sheet->setCellValue('B1', 'Conso');
+  $centrale_sheet->setCellValue('C1', 'Stock');
+  $centrale_sheet->setCellValue('D1', 'Besoin');
 
   pq_print_on_sheet( $centrale_sheet, $product_rows, 10, 19, $to_print );
 

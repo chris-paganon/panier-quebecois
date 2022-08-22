@@ -133,6 +133,24 @@ function pq_get_product_rows($orders) {
 
 
 /**
+ * Add quantity to buy to products rows
+ */
+function pq_add_quantity_to_buy_to_products($products) {
+  foreach ( $products as $key => $product ) {
+		$operation_stock = $product['_pq_operation_stock'];
+		$total_quantity = $product['total_quantity'];
+
+		if ( is_numeric($operation_stock) ) {
+			$products[$key]['quantity_to_buy'] = max( $total_quantity - $operation_stock, 0 );
+		} else {
+			$products[$key]['quantity_to_buy'] = '';
+		}
+	}
+
+  return $products;
+}
+
+/**
  *  Check if product should be counted based on its categories
  */
 function myfct_is_relevant_product( $product, $to_weight_only = false ) {
@@ -221,7 +239,7 @@ function myfct_get_relevant_orders( $delivery_date_raw, $import_after_order = ""
 	$export_end_date = $export_end_date_obj->format( 'y-m-d' );
 
 	$query = array(
-		'status' => array( 'wc-processing', 'wc-completed' ),
+		'status' => 'wc-processing',
 		'limit' => -1,
 		'date_created' => $export_start_date . '...' . $export_end_date,
 		'_shipping_date' => $delivery_date,
