@@ -32,4 +32,13 @@ jQuery(document).ready(function ($) {
             e.preventDefault();
         }   
     });
+
+    $('[data-clipboard]').on('click', function(e) {
+        e.preventDefault();
+        var copyText = $(this).data('clipboard');
+
+        console.log(copyText);
+        /* Copy the text inside the text field */
+        navigator.clipboard.writeText(copyText);
+    });
 });

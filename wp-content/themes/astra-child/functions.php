@@ -27,6 +27,10 @@ function child_enqueue_styles() {
 	
 	wp_enqueue_style( 'mycss-font-lato', 'https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&display=swap', array('astra-child-theme-css'), rand(111,9999) );
 
+	if(is_account_page()){
+		wp_enqueue_style( 'pq_dashboard_style', get_stylesheet_directory_uri() . '/assets/css/pq_myaccount_style.css', array('astra-theme-css'), rand(111,9999) );
+	}
+
 	//Enqueue JS
 	wp_enqueue_script( 'pq_products_single', get_stylesheet_directory_uri() . '/assets/js/pq_products_single.js', array('jquery'), rand(111,9999), true );
 }
@@ -44,6 +48,15 @@ function myfct_marketplace_menu_title() {
 }
 
 // END ENQUEUE PARENT ACTION
+
+//add_filter( 'woocommerce_account_menu_items', function ( $items, $endpoints ) {
+//	var_dump('WTF ?');
+//	echo '<pre>';
+//	print_r($items);
+//	echo '</pre>';
+//	die('endpoints');
+//	return $items;
+//}, 10, 2 );
 
 
 // ************************************************************************************************ //

@@ -1,0 +1,19 @@
+.woocommerce-dashboard .ast-container {
+    max-width: none;
+    width: 100%;
+    padding: 0;
+}
+.woocommerce-dashboard #primary {
+    margin-top: 0;
+}
+.woocommerce-dashboard #primary article.page {
+    padding: 0;
+}
+.woocommerce-dashboard .tgwc-navbar-tab {
+    display: none !important;
+}
+
+.mto-dashboard-container {
+    max-width: 1240px;
+    margin: auto;
+}

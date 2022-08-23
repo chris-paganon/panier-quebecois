@@ -171,7 +171,7 @@ class Panier_Quebecois {
     
     //Slick carousel
 		global $post;
-    if ( is_a( $post, 'WP_Post' ) && has_shortcode( $post->post_content, 'pq_products_slider') ) {
+    if ( ((is_a( $post, 'WP_Post' ) ) && has_shortcode( $post->post_content, 'pq_products_slider')) || is_account_page()) {
       wp_enqueue_script( 'pq_products_slider', PQ_JS_URL . 'pq-products-slider.js', array( 'jquery', 'slick-js' ), rand( 111, 9999 ), false );
       wp_enqueue_style( 'slick-css', PQ_ASSETS_URL . 'src/library/css/slick.css', [], false, 'all' );
       wp_enqueue_style( 'slick-theme-css', PQ_ASSETS_URL . 'src/library/css/slick-theme.css', ['slick-css'], false, 'all' );
