@@ -122,6 +122,10 @@
     margin-bottom: 0;
 }
 
+.woocommerce-dashboard .dashboard-np-btn a {
+    margin: auto;
+}
+
 .woocommerce-dashboard .dashboard-np-btn a, .woocommerce-dashboard .dashboard-lp-btn a, .woocommerce-dashboard .dashboard-referral .dashboard-ref-btn a {
     display: block;
     background-color: #4b9d50;

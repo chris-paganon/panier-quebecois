@@ -1,5 +1,5 @@
 <!--hardcoded bg image-->
-<div id="#mto-dashboard-header" class="mto-dashboard-header" style="background-image: url(https://panierquebecois.test/wp-content/uploads/2022/08/dashboard-header.jpg);">
+<div id="#mto-dashboard-header" class="mto-dashboard-header" style="background-image: url(<?php echo get_stylesheet_directory_uri(); ?>/assets/images/dashboard/dashboard-header.jpg);">
 	<div class="dashboard-header"><?php echo __( 'Hello', 'panierquebecois' ) ?> <?php echo $first_name; ?></div>
 	<div class="dashboard-subtitle"><?php echo __( 'What do you want to do today ?', 'panierquebecois' ) ?></div>
     <div class="main-cta">
