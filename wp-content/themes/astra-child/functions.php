@@ -47,6 +47,13 @@ function myfct_marketplace_menu_title() {
   }
 }
 
+add_filter( 'body_class', function($classes){
+	if(is_wc_endpoint_url('dashboard')){
+		$classes[] = 'woocommerce-dashboard';
+	}
+	return $classes;
+} );
+
 // END ENQUEUE PARENT ACTION
 
 //add_filter( 'woocommerce_account_menu_items', function ( $items, $endpoints ) {
