@@ -1,7 +1,7 @@
 <!--hardcoded bg image-->
 <div class="dashboard-loyalty-program" style="background-image: url(https://panierquebecois.test/wp-content/uploads/2022/08/dashboard-loyalty-program-bg.jpg);">
     <p class="dashboard-lp-title"><?php echo __('Loyalty Program', 'panierquebecois'); ?></p>
-	<?php if(pq_has_main_badge($user_id)) : ?>
+	<?php if (pq_has_main_badge($user_id)) : ?>
     <?php
 		$mycred = mycred();
 		$balance = $mycred->get_users_balance( $user_id );
