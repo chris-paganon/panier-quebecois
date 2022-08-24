@@ -5,6 +5,7 @@
 }
 .woocommerce-dashboard #primary {
     margin-top: 0;
+    margin-bottom: 0;
 }
 .woocommerce-dashboard #primary article.page {
     padding: 0;
@@ -13,7 +14,273 @@
     display: none !important;
 }
 
-.mto-dashboard-container {
+.woocommerce-dashboard .mto-dashboard-header {
+    position: relative;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    padding: 88px 20px;
+    text-align: center;
+    color: #ffffff;
+    font-family: 'Work Sans', sans-serif;
+}
+
+.woocommerce-dashboard .mto-dashboard-header .dashboard-header {
+    font-weight: 600;
+    font-size: 54px;
+    line-height: 63px;
+    margin-bottom: 16px;
+}
+
+.woocommerce-dashboard .mto-dashboard-header .dashboard-subtitle {
+    font-size: 21px;
+    line-height: 25px;
+    margin-bottom: 44px;
+}
+
+.woocommerce-dashboard .mto-dashboard-header .main-cta a {
+    display: block;
+    margin: 0 auto;
+    background-color: #4b9d50;
+    padding: 25px;
+    border-radius: 5px;
+    width: 290px;
+    min-width: 290px;
+    max-width: 290px;
+    font-weight: 600;
+    font-size: 21px;
+    line-height: 25px;
+    color: #ffffff;
+}
+
+.woocommerce-dashboard .mto-dashboard-header .nav-ctas {
+    margin-top: 44px;
+}
+
+.woocommerce-dashboard .mto-dashboard-header .nav-ctas ul {
+    list-style-type: none;
+    list-style: none;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+    gap: 14px;
+}
+
+@media (min-width: 768px) {
+    .woocommerce-dashboard .mto-dashboard-header .nav-ctas ul {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        max-width: 650px;
+    }
+}
+
+@media (min-width: 992px) {
+    .woocommerce-dashboard .mto-dashboard-header .nav-ctas ul {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        max-width: 900px;
+    }
+}
+
+.woocommerce-dashboard .mto-dashboard-header .nav-ctas ul li a {
+    display: block;
+    background-color: #4b9d50;
+    padding: 25px;
+    border-radius: 5px;
+    font-weight: 600;
+    font-size: 21px;
+    line-height: 25px;
+    color: #ffffff;
+}
+
+@media (min-width: 992px) {
+    .woocommerce-dashboard .mto-dashboard-header .nav-ctas ul li a {
+        min-width: 290px;
+    }
+}
+
+.woocommerce-dashboard .mto-dashboard-container {
     max-width: 1240px;
     margin: auto;
+}
+
+.woocommerce-dashboard .dashboard-new-products {
+    padding: 70px 20px;
+}
+
+.woocommerce-dashboard .dashboard-np-title {
+    font-family: 'Work Sans', sans-serif;
+    font-weight: 600;
+    font-size: 36px;
+    line-height: 42px;
+    color: #54595f;
+    margin-bottom: 44px;
+}
+
+.woocommerce-dashboard .dashboard-np-btn, .woocommerce-dashboard .dashboard-lp-btn, .woocommerce-dashboard .dashboard-referral .dashboard-ref-btn {
+    display: block;
+    text-align: center;
+    margin-top: 44px;
+    margin-bottom: 0;
+}
+
+.woocommerce-dashboard .dashboard-np-btn a, .woocommerce-dashboard .dashboard-lp-btn a, .woocommerce-dashboard .dashboard-referral .dashboard-ref-btn a {
+    display: block;
+    background-color: #4b9d50;
+    padding: 25px;
+    border-radius: 5px;
+    min-width: 290px;
+    max-width: 290px;
+    font-weight: 600;
+    font-size: 21px;
+    line-height: 25px;
+    color: #ffffff;
+}
+
+.woocommerce-dashboard .mto-dashboard-header .main-cta a:hover, .woocommerce-dashboard .mto-dashboard-header .nav-ctas ul li a:hover, .woocommerce-dashboard .dashboard-np-btn a:hover, .woocommerce-dashboard .dashboard-lp-btn a:hover, .woocommerce-dashboard .dashboard-referral .dashboard-ref-btn a:hover {
+    background-color: #54595f;
+}
+
+.woocommerce-dashboard .dashboard-lp-btn a {
+    margin: 0 auto;
+}
+
+.woocommerce-dashboard .dashboard-referral .dashboard-ref-btn {
+    margin: 0;
+}
+
+.woocommerce-dashboard .dashboard-referral .dashboard-ref-btn img {
+    width: 28px;
+    height: 28px;
+    margin-right: 5px;
+}
+
+.woocommerce-dashboard .dashboard-loyalty-program {
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    text-align: center;
+    color: #ffffff;
+    padding: 72px 20px;
+}
+
+.woocommerce-dashboard .dashboard-lp-title {
+    font-family: 'Work Sans', sans-serif;
+    font-weight: 600;
+    font-size: 28px;
+    line-height: 33px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+}
+
+.woocommerce-dashboard .dashboard-lp-discount, .woocommerce-dashboard .dashboard-lp-text {
+    display: block;
+    margin: 0 auto;
+    max-width: 616px;
+    font-family: 'Work Sans', sans-serif;
+    font-weight: 400;
+    font-size: 21px;
+    line-height: 25px;
+}
+
+.woocommerce-dashboard .dashboard-lp-balance {
+    margin-top: 16px;
+    font-family: 'Work Sans', sans-serif;
+    font-weight: 600;
+    font-size: 54px;
+    line-height: 63px;
+}
+
+.woocommerce-dashboard .dashboard-referral {
+    padding: 70px 20px;
+    background-color: #fcfaf4;
+}
+
+.woocommerce-dashboard .dashboard-referral .mto-dashboard-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+@media (min-width: 992px) {
+    .woocommerce-dashboard .dashboard-referral .mto-dashboard-container {
+        flex-direction: row;
+    }
+}
+
+.woocommerce-dashboard .dashboard-referral .dashboard-ref-img {
+    width: 100%;
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    min-height: 335px;
+}
+
+@media (min-width: 768px) {
+    .woocommerce-dashboard .dashboard-referral .dashboard-ref-img {
+        width: 65%;
+        background-size: cover;
+        margin: 0 auto;
+        min-height: 450px;
+    }
+}
+
+@media (min-width: 992px) {
+    .woocommerce-dashboard .dashboard-referral .dashboard-ref-img {
+        width: 40%;
+        background-size: contain;
+        margin: 0;
+    }
+}
+
+.woocommerce-dashboard .dashboard-referral .dashboard-ref-content {
+    width: 100%;
+    padding: 40px 0 0;
+    color: #54595f;
+    font-family: 'Work Sans', sans-serif;
+}
+
+@media (min-width: 768px) {
+    .woocommerce-dashboard .dashboard-referral .dashboard-ref-content {
+        width: 65%;
+        padding: 60px 0 0;
+        margin: 0 auto;
+    }
+}
+
+@media (min-width: 992px) {
+    .woocommerce-dashboard .dashboard-referral .dashboard-ref-content {
+        width: 40%;
+        max-width: 485px;
+        margin: 0;
+        margin-left: 115px;
+        padding: 124px 0 92px;
+    }
+}
+
+.woocommerce-dashboard .dashboard-referral .dashboard-ref-title {
+    font-weight: 600;
+    font-size: 36px;
+    line-height: 42px;
+    margin-bottom: 16px;
+    padding-right: 50px;
+}
+
+.woocommerce-dashboard .dashboard-referral .dashboard-ref-text {
+    font-weight: 400;
+    font-size: 21px;
+    line-height: 25px;
+    margin-bottom: 24px;
+}
+
+.woocommerce-dashboard .dashboard-seller-week {
+    padding: 70px 20px;
+}
+
+.woocommerce-dashboard .dashboard-sw-title {
+    font-family: 'Work Sans', sans-serif;
+    font-weight: 600;
+    font-size: 36px;
+    line-height: 42px;
+    color: #54595f;
+    margin-bottom: 44px;
 }
