@@ -48,7 +48,7 @@ function myfct_marketplace_menu_title() {
 }
 
 add_filter( 'body_class', function($classes){
-	if(is_wc_endpoint_url('dashboard')){
+	if(is_account_page() && !is_wc_endpoint_url()){
 		$classes[] = 'woocommerce-dashboard';
 	}
 	return $classes;
