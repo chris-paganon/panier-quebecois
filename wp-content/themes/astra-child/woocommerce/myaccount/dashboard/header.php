@@ -3,7 +3,7 @@
 	<div class="dashboard-header"><?php echo __( 'Hello', 'panierquebecois' ) ?> <?php echo $first_name; ?></div>
 	<div class="dashboard-subtitle"><?php echo __( 'What do you want to do today ?', 'panierquebecois' ) ?></div>
     <div class="main-cta">
-        <a href="<?php get_permalink( wc_get_page_id( 'shop' ) ) ?>"><?php echo __('Visit the market', 'panierquebecois'); ?></a>
+        <a href="<?php echo get_permalink( wc_get_page_id( 'shop' ) ) ?>"><?php echo __('Visit the market', 'panierquebecois'); ?></a>
     </div>
     <div class="nav-ctas">
         <ul>

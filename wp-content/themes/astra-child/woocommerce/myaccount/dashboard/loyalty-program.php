@@ -16,6 +16,6 @@
     </p>
 	<?php endif; ?>
     <p class="dashboard-lp-btn">
-        <a href="<?php get_permalink( wc_get_page_id( 'shop' ) ) ?>"><?php echo __('Place an order', 'panierquebecois'); ?></a>
+        <a href="<?php echo get_permalink( wc_get_page_id( 'shop' ) ) ?>"><?php echo __('Place an order', 'panierquebecois'); ?></a>
     </p>
 </div>
