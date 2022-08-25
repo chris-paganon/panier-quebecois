@@ -81,14 +81,17 @@
 }
 
 .woocommerce-dashboard .mto-dashboard-header .nav-ctas ul li a {
-    display: block;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     background-color: #4b9d50;
-    padding: 25px;
+    padding: 12px 40px;
     border-radius: 5px;
     font-weight: 600;
     font-size: 21px;
     line-height: 25px;
     color: #ffffff;
+    min-height: 75px;
 }
 
 @media (min-width: 992px) {
