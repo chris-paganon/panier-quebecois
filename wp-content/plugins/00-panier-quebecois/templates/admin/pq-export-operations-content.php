@@ -44,4 +44,4 @@ echo '<h4>Nombre de commandes demain: ' . count($orders_tomorrow) . '</h4>';
 
 </br>
 
-<a class="button" href="<?php echo get_permalink(60467); ?>">Gérer l'inventaire</a>
+<a class="button" href="<?php echo get_permalink(60999); ?>">Gérer l'inventaire</a>
