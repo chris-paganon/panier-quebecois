@@ -179,7 +179,7 @@ function pq_get_pdf_array( $orders ) {
   }
 
   $columns = array_column($pdf_array, 'route_no_full');
-  array_multisort($columns, SORT_ASC, SORT_STRING, $pdf_array);
+  array_multisort($columns, SORT_DESC, SORT_STRING, $pdf_array);
 
   $pdf_array = pq_fix_same_address_sequence($pdf_array);
 
