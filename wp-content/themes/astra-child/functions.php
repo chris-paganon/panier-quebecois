@@ -48,11 +48,24 @@ function myfct_marketplace_menu_title() {
 }
 
 add_filter( 'body_class', function($classes){
-	if(is_account_page() && !is_wc_endpoint_url()){
+	if(is_account_page() && !is_wc_endpoint_url() && is_user_logged_in()){
 		$classes[] = 'woocommerce-dashboard';
 	}
 	return $classes;
 } );
+
+add_action( 'template_redirect', function() {
+	if(is_front_page() && is_user_logged_in()){
+		session_start();
+		if(!isset($_SESSION['dashboard_seen'])){
+			$_SESSION['dashboard_seen'] = true;
+			$url = get_permalink( get_option('woocommerce_myaccount_page_id') );
+			wp_redirect($url);
+			exit;
+		}
+	}
+} );
+
 
 // END ENQUEUE PARENT ACTION
 
