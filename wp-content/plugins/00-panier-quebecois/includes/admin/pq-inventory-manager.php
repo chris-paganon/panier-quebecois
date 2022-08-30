@@ -26,9 +26,8 @@ function pq_inventory_manager_fct() {
 	
 		$orders = wc_get_orders( $query );
 		$products = pq_get_product_rows( $orders );
-
-        $short_name_columns = array_column($products, '_short_name');
-        array_multisort($short_name_columns, SORT_ASC, SORT_STRING, $products);
+		$short_name_columns = array_column($products, '_short_name');
+		array_multisort($short_name_columns, SORT_ASC, SORT_STRING, $products);
 
 		$args = array( 'products' => $products );
 		ob_start();
