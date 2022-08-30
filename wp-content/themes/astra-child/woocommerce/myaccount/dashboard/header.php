@@ -9,7 +9,7 @@
         <ul>
             <li><a href="<?php echo wc_get_endpoint_url('favoris', '', get_permalink(get_option('woocommerce_myaccount_page_id'))); ?>"><?php echo __('Favorites', 'panierquebecois'); ?></a></li>
             <li><a href="<?php echo wc_get_endpoint_url('fidelite', '', get_permalink(get_option('woocommerce_myaccount_page_id'))); ?>"><?php echo __('Loyalty program', 'panierquebecois'); ?></a></li>
-            <li><a href="<?php echo wc_get_endpoint_url('fidelite', '', get_permalink(get_option('woocommerce_myaccount_page_id'))); ?>#referral"><?php echo __('Reffer a friend', 'panierquebecois'); ?></a></li>
+            <li><a href="<?php echo wc_get_endpoint_url('fidelite', '', get_permalink(get_option('woocommerce_myaccount_page_id'))); ?>#referral"><?php echo __('Refer a friend', 'panierquebecois'); ?></a></li>
             <li><a href="<?php echo wc_get_endpoint_url('orders', '', get_permalink(get_option('woocommerce_myaccount_page_id'))); ?>"><?php echo __('See my order history', 'panierquebecois'); ?></a></li>
             <li><a href="<?php echo wc_get_endpoint_url('edit-account', '', get_permalink(get_option('woocommerce_myaccount_page_id'))); ?>"><?php echo __('Edit my profile', 'panierquebecois'); ?></a></li>
             <li><a href="<?php echo wp_logout_url( get_permalink( wc_get_page_id( 'myaccount' ) ) ); ?>"><?php echo __('Log out', 'panierquebecois'); ?></a></li>
