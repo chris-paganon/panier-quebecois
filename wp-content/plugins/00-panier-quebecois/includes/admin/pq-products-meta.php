@@ -138,6 +138,15 @@ class PQ_products_meta {
 			),
 			array(
 				'position'              => 'inventory',
+				'in_variable'           => true,
+				'input_args'            => array(
+					'id'                    => '_pq_operation_stock',
+					'label'                 => __( 'Stock en opération' ),
+					'woocommerce_wp'        => '_text_input',
+				),
+			),
+			array(
+				'position'              => 'inventory',
 				'in_variable'           => false,
 				'input_args'            => array(
 					'id'                    => '_pq_reference',

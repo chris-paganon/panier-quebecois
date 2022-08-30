@@ -3,6 +3,13 @@ if ( !defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
+/**
+ * Display templates from the plugin
+ */
+function wc_pq_get_template( $template_name, $args = array() ) {
+	wc_get_template( $template_name, $args, WC()->template_path(), PQ_TEMPLATE_DIR );
+}
+
 function myfct_return_true_if_has_category( $myCategory ) {
   foreach ( WC()->cart->get_cart() as $cart_item_key => $cart_item ) {
 		if ( has_term( $myCategory, 'product_cat', $cart_item[ 'product_id' ] ) ) {

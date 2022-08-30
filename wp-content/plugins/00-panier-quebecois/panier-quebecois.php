@@ -47,6 +47,7 @@ class Panier_Quebecois {
     //Filesystem directory paths (for php files)
     define( 'PQ_ROOT_DIR', plugin_dir_path( __FILE__ ) );
     define( 'PQ_INCLUDE_DIR', PQ_ROOT_DIR . 'includes/' );
+    define( 'PQ_TEMPLATE_DIR', PQ_ROOT_DIR . 'templates/' );
     define( 'PQ_VENDOR_DIR', PQ_ROOT_DIR . 'vendor/' );
     define( 'PQ_INCLUDE_ADMIN_DIR', PQ_INCLUDE_DIR . 'admin/' );
     define( 'PQ_INCLUDE_LOYALTY_DIR', PQ_INCLUDE_DIR . 'loyalty/' );
@@ -69,16 +70,19 @@ class Panier_Quebecois {
     require_once PQ_VENDOR_DIR . 'autoload.php';
 
     //Admin
-    include_once( PQ_INCLUDE_ADMIN_DIR . 'pq-exporter-functions.php' );
+    include_once( PQ_INCLUDE_ADMIN_DIR . 'pq-export-admin-pages.php' );
+    include_once( PQ_INCLUDE_ADMIN_DIR . 'pq-export-admin.php' );
+    include_once( PQ_INCLUDE_ADMIN_DIR . 'pq-export-helpers-dependencies.php' );
+    include_once( PQ_INCLUDE_ADMIN_DIR . 'pq-export-helpers.php' );
+    include_once( PQ_INCLUDE_ADMIN_DIR . 'pq-export-operations.php' );
     include_once( PQ_INCLUDE_ADMIN_DIR . 'pq-products-meta.php' );
-    include_once( PQ_INCLUDE_ADMIN_DIR . 'pq-export-pages.php' );
     include_once( PQ_INCLUDE_ADMIN_DIR . 'pq-orders-completion.php' );
     include_once( PQ_INCLUDE_ADMIN_DIR . 'pq-stock-notifs.php' );
     include_once( PQ_INCLUDE_ADMIN_DIR . 'pq-settings-pages.php' );
     include_once( PQ_INCLUDE_ADMIN_DIR . 'pq-supplier-orders.php' );
     include_once( PQ_INCLUDE_ADMIN_DIR . 'pq-supplier-emails.php' );
     include_once( PQ_INCLUDE_ADMIN_DIR . 'pq-supplier-sms.php' );
-    include_once( PQ_INCLUDE_ADMIN_DIR . 'pq-operations-exporter.php' );
+    include_once( PQ_INCLUDE_ADMIN_DIR . 'pq-inventory-manager.php' );
 
     //AJAX shop
     include_once( PQ_INCLUDE_AJAXSHOP_DIR . 'pq-ajax-shop-starter.php' );
@@ -176,6 +180,13 @@ class Panier_Quebecois {
       wp_enqueue_style( 'slick-css', PQ_ASSETS_URL . 'src/library/css/slick.css', [], false, 'all' );
       wp_enqueue_style( 'slick-theme-css', PQ_ASSETS_URL . 'src/library/css/slick-theme.css', ['slick-css'], false, 'all' );
       wp_enqueue_script( 'slick-js', PQ_ASSETS_URL . 'src/library/js/slick.min.js', ['jquery'], rand( 111, 9999 ), true );
+    }
+    
+    //Inventory manager AJAX
+    if ( is_a( $post, 'WP_Post' ) && has_shortcode( $post->post_content, 'pq_inventory_manager') ) {
+      wp_enqueue_script( 'pq_inventory_manager_js', PQ_JS_URL . 'pq-inventory-manager-ajax.js', array( 'jquery' ), rand( 111, 9999 ), true  );
+      wp_localize_script( 'pq_inventory_manager_js', 'pq_inventory_manager_variables', array('ajax_url' => admin_url('admin-ajax.php')) );
+	    wp_enqueue_style( 'pq_inventory_manager_css', PQ_CSS_URL . '/pq-inventory-manager.css', array('astra-theme-css'), rand(111,9999) );
     }
   }
 }
