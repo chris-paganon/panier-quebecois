@@ -52,6 +52,8 @@ function myfct_purchasing_export( $delivery_date_raw, $import_after_order = "" )
 			'_packing_priority',
 			'supplier_auto_order_string',
 		);
+
+		$products_to_print = 'all';
 	
 		$current_sheet->setCellValue('A1', 'Zone');
 		$current_sheet->setCellValue('B1', 'Marchand');
@@ -69,7 +71,7 @@ function myfct_purchasing_export( $delivery_date_raw, $import_after_order = "" )
 		$current_sheet->setCellValue('O1', 'Dernière commande:');
 		$current_sheet->setCellValue('P1', $last_order_number);
 	
-		pq_print_on_sheet( $current_sheet, $products, 1, 999, $to_print, '', $commercial_zone_to_print_name );
+		pq_print_on_sheet( $current_sheet, $products, 1, 999, $to_print, $products_to_print, $commercial_zone_to_print_name );
 	}
 
 	pq_style_sheets($spreadsheet);
