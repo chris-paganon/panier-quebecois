@@ -24,52 +24,47 @@ function myfct_purchasing_export( $delivery_date_raw, $import_after_order = "" )
 
 	$spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
 
+	$to_print = array(
+		'pq_commercial_zone', 
+		'supplier', 
+		'sku',
+		'_short_name',
+		'_pq_reference',
+		'total_quantity',
+		'_lot_unit',
+		'_pq_operation_stock',
+		'quantity_to_buy',
+		'_packing_priority',
+		'supplier_auto_order_string',
+	);
+
+	$products_to_print = 'all';
+
+	$current_sheet = $spreadsheet->getActiveSheet();
+
+	pq_set_purchasing_column_default_titles($current_sheet);
+	$current_sheet->setCellValue('M1', 'No de commandes');
+	$current_sheet->setCellValue('N1', $orders_count);
+	$current_sheet->setCellValue('O1', 'Dernière commande:');
+	$current_sheet->setCellValue('P1', $last_order_number);
+
+	$commercial_zone_to_print_name = 'Jean-Talon';
+	$current_sheet->setTitle($commercial_zone_to_print_name);
+	pq_print_on_sheet( $current_sheet, $products, 1, 999, $to_print, $products_to_print, $commercial_zone_to_print_name );
+
 	$commercial_zones_to_print = get_terms( array(
     'taxonomy' => 'pq_commercial_zone',
     'hide_empty' => false,
+		'exclude' => array(504, 805), //Exclude Marché Jean-Talon and Pourtour Marché Jean-Talon, they are in the first sheet just above
   ));
 	
 	foreach ( $commercial_zones_to_print as $key => $commercial_zone_to_print ) {
 		$commercial_zone_to_print_name = $commercial_zone_to_print->name;
-		if ( $key === 0 ) {
-			$current_sheet = $spreadsheet->getActiveSheet();
-		} else {
-  		$new_sheet = new \PhpOffice\PhpSpreadsheet\Worksheet\Worksheet($spreadsheet, $commercial_zone_to_print_name);
-			$current_sheet = $spreadsheet->addSheet($new_sheet, 0);
-		}
-		$current_sheet->setTitle($commercial_zone_to_print_name);
-	
-		$to_print = array(
-			'pq_commercial_zone', 
-			'supplier', 
-			'sku',
-			'_short_name',
-			'_pq_reference',
-			'total_quantity',
-			'_lot_unit',
-			'_pq_operation_stock',
-			'quantity_to_buy',
-			'_packing_priority',
-			'supplier_auto_order_string',
-		);
 
-		$products_to_print = 'all';
-	
-		$current_sheet->setCellValue('A1', 'Zone');
-		$current_sheet->setCellValue('B1', 'Marchand');
-		$current_sheet->setCellValue('C1', 'SKU');
-		$current_sheet->setCellValue('D1', 'Nom court');
-		$current_sheet->setCellValue('E1', 'Référence fournisseur');
-		$current_sheet->setCellValue('F1', 'Conso');
-		$current_sheet->setCellValue('G1', 'Unité');
-		$current_sheet->setCellValue('H1', 'Stock');
-		$current_sheet->setCellValue('I1', 'Besoin');
-		$current_sheet->setCellValue('J1', 'Ordre de prio');
-		$current_sheet->setCellValue('K1', 'Auto email/SMS');
-		$current_sheet->setCellValue('M1', 'No de commandes');
-		$current_sheet->setCellValue('N1', $orders_count);
-		$current_sheet->setCellValue('O1', 'Dernière commande:');
-		$current_sheet->setCellValue('P1', $last_order_number);
+		$new_sheet = new \PhpOffice\PhpSpreadsheet\Worksheet\Worksheet($spreadsheet, $commercial_zone_to_print_name);
+		$current_sheet = $spreadsheet->addSheet($new_sheet, 0);
+		pq_set_purchasing_column_default_titles($current_sheet);
+		$current_sheet->setTitle($commercial_zone_to_print_name);
 	
 		pq_print_on_sheet( $current_sheet, $products, 1, 999, $to_print, $products_to_print, $commercial_zone_to_print_name );
 	}
@@ -78,6 +73,24 @@ function myfct_purchasing_export( $delivery_date_raw, $import_after_order = "" )
 
 	$file_name = 'listes-achats';
 	pq_export_excel($spreadsheet, $file_name);
+}
+
+
+/**
+ * Set purchasing export default column names
+ */
+function pq_set_purchasing_column_default_titles($current_sheet) {
+	$current_sheet->setCellValue('A1', 'Zone');
+	$current_sheet->setCellValue('B1', 'Marchand');
+	$current_sheet->setCellValue('C1', 'SKU');
+	$current_sheet->setCellValue('D1', 'Nom court');
+	$current_sheet->setCellValue('E1', 'Référence fournisseur');
+	$current_sheet->setCellValue('F1', 'Conso');
+	$current_sheet->setCellValue('G1', 'Unité');
+	$current_sheet->setCellValue('H1', 'Stock');
+	$current_sheet->setCellValue('I1', 'Besoin');
+	$current_sheet->setCellValue('J1', 'Ordre de prio');
+	$current_sheet->setCellValue('K1', 'Commande');
 }
 
 
