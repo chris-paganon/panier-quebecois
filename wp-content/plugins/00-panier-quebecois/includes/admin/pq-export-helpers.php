@@ -94,11 +94,8 @@ function pq_get_product_rows($orders) {
             array_push($suppliers_names, $supplier->name);
             $supplier_email = get_term_meta ( $supplier->term_id, 'pq_seller_email', true );
             $supplier_sms = get_term_meta ( $supplier->term_id, 'pq_seller_sms', true );
-            if ( ! empty($supplier_email) ) {
-              $supplier_auto_order_string .= $supplier_email . ', ';
-            }
-            if ( ! empty($supplier_sms) ) {
-              $supplier_auto_order_string .= $supplier_sms;
+            if ( ! empty($supplier_email) || ! empty($supplier_sms) ) {
+              $supplier_auto_order_string = 'oui';
             }
           }
 
