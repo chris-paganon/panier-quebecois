@@ -110,11 +110,13 @@ function pq_print_sheets($spreadsheet, $product_rows) {
   $centrale_stock_sheet = new \PhpOffice\PhpSpreadsheet\Worksheet\Worksheet($spreadsheet, 'Centrale en stock');
   $spreadsheet->addSheet($centrale_stock_sheet, 0);
 
-  $to_print = array('_short_name', 'total_quantity');
+  $to_print = array('_short_name', 'total_quantity', '_pq_operation_stock', 'quantity_to_buy');
   $products_to_print = 'centrale-exterieur';
 
   $centrale_stock_sheet->setCellValue('A1', 'Nom court');
   $centrale_stock_sheet->setCellValue('B1', 'Conso');
+  $centrale_stock_sheet->setCellValue('C1', 'Stock');
+  $centrale_stock_sheet->setCellValue('D1', 'Besoin');
 
   pq_print_on_sheet( $centrale_stock_sheet, $product_rows, 1, 999, $to_print, $products_to_print );
 
@@ -122,12 +124,13 @@ function pq_print_sheets($spreadsheet, $product_rows) {
   $peser_sheet = new \PhpOffice\PhpSpreadsheet\Worksheet\Worksheet($spreadsheet, 'Peser');
   $spreadsheet->addSheet($peser_sheet, 0);
 
-  $to_print = array('_short_name', 'total_quantity', 'weight');
+  $to_print = array('_short_name', 'total_quantity', 'weight', '_pq_operation_stock');
   $products_to_print = 'a-peser';
 
   $peser_sheet->setCellValue('A1', 'Nom court');
   $peser_sheet->setCellValue('B1', 'Conso');
   $peser_sheet->setCellValue('C1', 'Poids');
+  $peser_sheet->setCellValue('D1', 'Stock');
 
   pq_print_on_sheet( $peser_sheet, $product_rows, 1, 999, $to_print, $products_to_print );
 }
