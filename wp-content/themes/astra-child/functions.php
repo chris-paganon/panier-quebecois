@@ -54,17 +54,6 @@ add_filter( 'body_class', function($classes){
 	return $classes;
 } );
 
-//add_action( 'template_redirect', function() {
-//	if(is_front_page() && is_user_logged_in()){
-//		if(!isset($_COOKIE['dashboard_seen'])){
-//			setcookie('dashboard_seen', true, 0, "/");
-//			$url = get_permalink( get_option('woocommerce_myaccount_page_id') );
-//			wp_redirect($url);
-//			exit;
-//		}
-//	}
-//} );
-
 add_action('wp_head', function(){
 	if(is_front_page() && is_user_logged_in()){
 		echo "<script type='text/javascript'>        
