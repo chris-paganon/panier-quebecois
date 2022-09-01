@@ -7,12 +7,12 @@
 		$mycred = mycred();
 		$balance = $mycred->get_users_balance( $user_id );
 		?>
-    <p class="dashboard-lp-discount"><?php echo __('Your loyalty discount amount:') ?></p>
+    <p class="dashboard-lp-discount"><?php echo __('Your cash back available:', 'panierquebecois') ?></p>
     <p class="dashboard-lp-balance"><?php echo wc_price($balance); ?></p>
 
 	<?php else : ?>
     <p class="dashboard-lp-text">
-        <?php echo __('After 5 orders processed on our online shop, you\'ll unlock our loyalty system of 1% available whenever you need.', 'panierquebecois' ); ?>
+        <?php echo __('After 5 orders processed on our online shop, you\'ll unlock our 1% cash back system redeemable anytime.', 'panierquebecois' ); ?>
     </p>
 	<?php endif; ?>
     <p class="dashboard-lp-btn">

@@ -22,11 +22,4 @@ jQuery(document).ready(function( $ ) {
             }
         });
     }
-
-    // if($('body').hasClass('home') && $('body').hasClass('logged-in')){
-        if(!sessionStorage.getItem('dashboard_seen')){
-            sessionStorage.setItem('dashboard_seen', true);
-            window.location.replace('/mon-compte/');
-        }
-    // }
 });

@@ -32,15 +32,9 @@ $first_name = $user_info->first_name;
 	<?php echo wc_get_template( 'myaccount/dashboard/new-products.php', ['first_name' => $first_name] ); ?>
 <!--    full screen loyalty-->
 	<?php echo wc_get_template( 'myaccount/dashboard/loyalty-program.php', ['user_id' => get_current_user_id()] ); ?>
-
     <!--    refferal-->
 	<?php echo wc_get_template( 'myaccount/dashboard/refferal.php', ['user_id' => get_current_user_id()] ); ?>
-
     <!--    sellers of the week-->
 	<?php echo wc_get_template( 'myaccount/dashboard/seller-of-the-week.php' ); ?>
-
-<!--    <div class="mto-dashboard-container">-->
-<!--        --><?php //do_shortcode('[pq_seller_week]'); ?>
-<!--    </div>-->
 </div>
 
