@@ -14,3 +14,50 @@ function pq_missing_products_manager_fct() {
   wc_pq_get_template( 'admin/pq-missing-products-manager-content.php', '' );
   return ob_get_clean();
 }
+
+
+/**
+ * Handle short_name meta in wc_get_products
+ */
+add_filter( 'woocommerce_product_data_store_cpt_get_products_query', 'pq_handle_short_name_query_var', 10, 2 );
+
+function pq_handle_short_name_query_var( $query, $query_vars ) {
+	if ( ! empty( $query_vars['pq_short_name'] ) ) {
+		$query['meta_query'][] = array(
+			'key' => '_short_name',
+			'value' => esc_attr( $query_vars['pq_short_name'] ),
+      'compare' => 'LIKE',
+		);
+	}
+
+	return $query;
+}
+
+
+/**
+ * Get products short name list with AJAX 
+ */
+add_action( 'wp_ajax_pq_get_products_short_names', 'pq_get_products_short_names_with_ajax' );
+add_action( 'wp_ajax_nopriv_pq_get_products_short_names', 'pq_get_products_short_names_with_ajax' );
+
+function pq_get_products_short_names_with_ajax() {
+	$short_name_input = sanitize_text_field( $_POST['short_name_input'] );
+  $products_query_arg = array(
+    'limit' => 10,
+    'status' => 'publish',
+		'pq_short_name' => $short_name_input,
+		'post_type' => 'product',
+  );
+
+  $products = wc_get_products( $products_query_arg );
+ 
+  $products_short_names = array();
+  foreach ( $products as $product ) {
+    $short_name = get_post_meta($product->get_id(), '_short_name', true);
+    array_push($products_short_names, $short_name);
+  }
+
+  echo print_r($products_short_names, true);
+
+  wp_die();
+}
