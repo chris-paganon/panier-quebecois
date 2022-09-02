@@ -6,8 +6,23 @@ if ( !defined( 'ABSPATH' ) ) {
 
 ?>
 
-<h2>Sélectionner le produit manquant et son remplacement:</h2>
+<form class="missing-product-form">
 
-<input type="text" id="pq-short-name-search-box">
-<input type="hidden" id="selected-product">
-<ul id="pq-search-results"></ul>
+  <div class="product-selection-wrapper">
+    <label for="pq-missing-short-name-search-box">Produit manquant:</label>
+    <input type="text" id="pq-missing-short-name-search-box" class="pq-short-name-search-box">
+    <input type="hidden" id="selected-missing-product" class="selected-product">
+    <ul class="pq-search-results"></ul>
+  </div>
+
+  <div class="product-selection-wrapper">
+    <label for="pq-replacement-short-name-search-box">Produit de remplacement:</label>
+
+    <input type="text" id="pq-replacement-short-name-search-box" class="pq-short-name-search-box">
+    <input type="hidden" id="selected-replacement-product" class="selected-product">
+    <ul class="pq-search-results"></ul>
+  </div>
+
+  <button>Suivant</button>
+
+</form>

@@ -1,9 +1,8 @@
 jQuery(document).ready(function ($) {
-  var searchBox = $('#pq-short-name-search-box');
-  var searchResults = $('#pq-search-results');
 
-  searchBox.keyup( function pq_search_products_short_name_with_ajax () {
-    var inputValue = $('#pq-short-name-search-box').val();
+  $('.pq-short-name-search-box').keyup( function() {
+    var inputValue = this.value;
+    var searchResults = $(this).siblings('.pq-search-results');
     var data = {
 			'action': 'pq_get_products_short_names',
       'short_name_input': inputValue,
@@ -19,10 +18,9 @@ jQuery(document).ready(function ($) {
 		});
   });
 
-  searchResults.on( 'click', '.pq-product-search-result', function() {
-    console.log($(this).attr("pq-data"));
-    searchBox.val( $(this).text() );
-    $('#selected-product').val( $(this).attr("pq-data") );
-    searchResults.hide();
+  $('.pq-search-results').on( 'click', '.pq-product-search-result', function() {
+    $(this).parent().siblings('.pq-short-name-search-box').val( $(this).text() );
+    $(this).parent().siblings('.selected-product').val( $(this).attr("pq-data") );
+    $(this).parent().hide();
   });
 });
