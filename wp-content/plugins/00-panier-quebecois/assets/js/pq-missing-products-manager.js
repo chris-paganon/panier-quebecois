@@ -1,5 +1,6 @@
 jQuery(document).ready(function ($) {
 
+  //Get search results from AJAX
   $('.pq-short-name-search-box').keyup( function() {
     var inputValue = this.value;
     var searchResults = $(this).siblings('.pq-search-results');
@@ -18,9 +19,30 @@ jQuery(document).ready(function ($) {
 		});
   });
 
+  //Select a search result
   $('.pq-search-results').on( 'click', '.pq-product-search-result', function() {
     $(this).parent().siblings('.pq-short-name-search-box').val( $(this).text() );
     $(this).parent().siblings('.selected-product').val( $(this).attr("pq-data") );
     $(this).parent().hide();
+  });
+
+  //Submit missing products for review
+  $('#review-missing-product').click(function(e) {
+    e.preventDefault();
+
+    var formData = $('#missing-product-form').serializeArray();
+
+    var data = {
+      'action': 'pq_review_missing_product',
+      'missing_products_form_data': formData,
+    }
+
+    $.post( pq_missing_products_variables.ajax_url, data, function(response) {
+			if (response) {
+        $('#review-missing-product-popup').html(response);
+      } else {
+        $('#review-missing-product-popup').html('error');
+      }
+    });
   });
 });

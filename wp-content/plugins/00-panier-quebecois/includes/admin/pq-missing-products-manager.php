@@ -38,7 +38,6 @@ function pq_handle_short_name_query_var( $query, $query_vars ) {
  * Get products short name list with AJAX 
  */
 add_action( 'wp_ajax_pq_get_products_short_names', 'pq_get_products_short_names_with_ajax' );
-add_action( 'wp_ajax_nopriv_pq_get_products_short_names', 'pq_get_products_short_names_with_ajax' );
 
 function pq_get_products_short_names_with_ajax() {
 	$short_name_input = sanitize_text_field( $_POST['short_name_input'] );
@@ -57,6 +56,17 @@ function pq_get_products_short_names_with_ajax() {
     $product_html = '<li class="pq-product-search-result" pq-data="' . $product_id . '">' . $short_name . '</li>';
     echo $product_html;
   }
+
+  wp_die();
+}
+
+/**
+ * Get products short name list with AJAX 
+ */
+add_action( 'wp_ajax_pq_review_missing_product', 'pq_review_missing_product_with_ajax' );
+
+function pq_review_missing_product_with_ajax() {
+  echo print_r($_POST['missing_products_form_data'], true);
 
   wp_die();
 }
