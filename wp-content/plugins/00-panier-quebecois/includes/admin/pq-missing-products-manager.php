@@ -51,13 +51,12 @@ function pq_get_products_short_names_with_ajax() {
 
   $products = wc_get_products( $products_query_arg );
  
-  $products_short_names = array();
   foreach ( $products as $product ) {
-    $short_name = get_post_meta($product->get_id(), '_short_name', true);
-    array_push($products_short_names, $short_name);
+    $product_id = $product->get_id();
+    $short_name = get_post_meta($product_id, '_short_name', true);
+    $product_html = '<li class="pq-product-search-result" pq-data="' . $product_id . '">' . $short_name . '</li>';
+    echo $product_html;
   }
-
-  echo print_r($products_short_names, true);
 
   wp_die();
 }

@@ -9,4 +9,4 @@ if ( !defined( 'ABSPATH' ) ) {
 <h2>Sélectionner le produit manquant et son remplacement:</h2>
 
 <input type="text" id="pq-short-name-search-box">
-<div id="pq-search-results"></div>
+<ul id="pq-search-results"></ul>
