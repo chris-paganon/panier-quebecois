@@ -141,13 +141,22 @@ function pq_add_quantity_to_buy_to_products($products) {
   foreach ( $products as $key => $product ) {
 		$operation_stock = $product['_pq_operation_stock'];
 		$total_quantity = $product['total_quantity'];
+		$supplier_auto_order_string = $product['supplier_auto_order_string'];
 
 		if ( is_numeric($operation_stock) ) {
-			$products[$key]['quantity_to_buy'] = max( $total_quantity - $operation_stock, 0 );
+      $quantity_to_buy = max( $total_quantity - $operation_stock, 0 );
+			$products[$key]['quantity_to_buy'] = $quantity_to_buy;
+
+      if ( $quantity_to_buy == 0 && $supplier_auto_order_string == 'oui' ) {
+        $products[$key]['supplier_auto_order_string'] = 'non';
+      }
 		} elseif ( empty($operation_stock) ) {
       $products[$key]['quantity_to_buy'] = $total_quantity;
     } else {
 			$products[$key]['quantity_to_buy'] = '';
+      if ( $supplier_auto_order_string == 'oui' ) {
+        $products[$key]['supplier_auto_order_string'] = 'non';
+      }
 		}
 	}
 
