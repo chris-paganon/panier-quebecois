@@ -25,10 +25,13 @@ function pq_send_seller_emails() {
     $supplier_email = get_term_meta ( $supplier->term_id, 'pq_seller_email', true );
     if ( ! empty($supplier_email) ) {
 
-      $delivery_date_raw = pq_get_current_delivery_date_for_supplier();
-      $orders = myfct_get_relevant_orders( $delivery_date_raw, "" );
+      $orders = pq_get_relevant_orders_today();
+      $products = pq_get_product_rows( $orders, $supplier );
+      $products = pq_add_quantity_to_buy_to_products($products);
 
-      $products = pq_get_products_array_for_supplier( $supplier, $orders );
+      $short_name_column = array_column($products, '_short_name');
+      $packing_priority_column = array_column($products, '_packing_priority');
+      array_multisort($packing_priority_column, SORT_ASC, SORT_STRING, $short_name_column, $products);
 
       if ( ! empty($products) ) {
         $supplier_needs_units = get_term_meta ( $supplier->term_id, 'pq_seller_needs_units', true );
@@ -65,23 +68,21 @@ function pq_get_supplier_email_html( $products, $full_date, $supplier_needs_unit
 
   <?php
 
-  foreach ( $products as $key => $product_arr ) {
-    $product_id = $product_arr['product_id'];
-    $product = wc_get_product( $product_id );
-    $quantity = $product_arr['quantity'];
+  foreach ( $products as $product_arr ) {
+    $quantity = $product_arr['quantity_to_buy'];
     $short_name = $product_arr['_short_name'];
-    $weight = get_post_meta( $product_id, '_pq_weight', true );
-    $unit = get_post_meta( $product_id, '_lot_unit', true );
-    $weight_with_unit = $weight . $unit;
-    ?>
-    <tr>
-      <td style="<?php echo $cell_style; ?>"><?php echo $short_name; ?></td>
-      <td style="<?php echo $cell_style; ?>"><?php echo $quantity; ?></td>
-      <?php if ($supplier_needs_units) : ?>
-        <td style="<?php echo $cell_style; ?>"><?php echo $weight_with_unit; ?></td>
-      <?php endif ?>
-    </tr>
-    <?php
+    $weight_with_unit = $product_arr['weight'];
+    if ( $quantity > 0 ) {
+      ?>
+      <tr>
+        <td style="<?php echo $cell_style; ?>"><?php echo $short_name; ?></td>
+        <td style="<?php echo $cell_style; ?>"><?php echo $quantity; ?></td>
+        <?php if ($supplier_needs_units) : ?>
+          <td style="<?php echo $cell_style; ?>"><?php echo $weight_with_unit; ?></td>
+        <?php endif ?>
+      </tr>
+      <?php
+    }
   }
   ?>
   </table>

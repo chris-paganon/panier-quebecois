@@ -13,7 +13,7 @@ if ( !defined( 'ABSPATH' ) ) {
  /**
  * Get all the product rows in an array
  */
-function pq_get_product_rows($orders) {
+function pq_get_product_rows( $orders, $supplier_to_get = '' ) {
 
   $product_rows = array();
     
@@ -21,7 +21,9 @@ function pq_get_product_rows($orders) {
     foreach ( $order->get_items() as $item_id => $item ) {
       $product = wc_get_product( $item->get_product_id() );
 
-      if ( myfct_is_relevant_product( $product ) ) {
+      $is_relevant_product = empty($supplier_to_get) ? myfct_is_relevant_product($product) : pq_is_relevant_product_for_supplier($product, $supplier_to_get);
+
+      if ( $is_relevant_product ) {
 
         $has_distinct_variations = false;
         if ( $item->get_variation_id() !== 0 ) {
