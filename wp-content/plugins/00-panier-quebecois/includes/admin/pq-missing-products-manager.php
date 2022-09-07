@@ -87,9 +87,15 @@ function pq_review_missing_product_with_ajax() {
   $replacement_product = wc_get_product( $replacement_product_id );
   $replacement_product_name = $replacement_product->get_name();
 
-  $email_content = '<p>Bonjour,</p> 
-  <p>En achetant les produits ce matin, notre marchand nous a informé ne plus avoir de ' . $missing_product_name . ' en stock. Nous avons donc décidé de le remplacer par ' . $replacement_product_name . '. Si le produit de remplacement ne vous convient pas, laissez-le nous savoir et nous nous ferons un plaisir de vous rembourser (même si vous avez déjà reçus votre commande). Nous faisons toujours notre possible pour vous fournir les meilleurs produits du marché en fonction des stocks disponibles. Nous nous excusons pour ce changement de dernière minute, et vous remercions pour votre confiance dans notre service!</p> 
-  <p>Bonne journée,</p>';
+  $args = array( 
+    'missing_product_name' => $missing_product_name,
+    'replacement_product_name' => $replacement_product_name,
+    'billing_first_name' => 'Arthuro',
+    'billing_language' => 'francais',
+  );
+  ob_start();
+  wc_pq_get_template( 'email/pq-replace-product-email.php', $args );
+  $email_content = ob_get_clean();
 
   echo $email_content;
 
@@ -114,7 +120,7 @@ function pq_review_missing_product_with_ajax() {
     if ( $order_is_concerned ) {
       $order_to_replace = array( array(
         'billing_email' => $order->get_billing_email(),
-        'billing_first_name' => $order->get_billing_first_name(),
+        'billing_first_name' => ucfirst(strtolower( $order->get_billing_first_name() )),
         'billing_language' => get_post_meta( $order_id, '_billing_language', true ),
       ));
 
