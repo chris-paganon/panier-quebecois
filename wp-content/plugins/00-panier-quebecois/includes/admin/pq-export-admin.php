@@ -31,7 +31,7 @@ function myfct_purchasing_export( $delivery_date_raw, $import_after_order = "" )
 		'_short_name',
 		'_pq_reference',
 		'total_quantity',
-		'_lot_unit',
+		'weight',
 		'_pq_operation_stock',
 		'quantity_to_buy',
 		'_packing_priority',
