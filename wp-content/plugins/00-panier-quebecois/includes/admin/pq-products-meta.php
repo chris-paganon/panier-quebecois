@@ -895,6 +895,17 @@ class PQ_products_meta {
 	
 			</div></td>
 		</tr>
+		<tr class="form-field term-group-wrap">
+			<th scope="row">
+				<label for="pq_seller_is_ordered_on_spot"><?php _e( 'Commandé sur place?', 'panier-quebecois' ); ?></label>
+			</th>
+			<td>
+	
+				<?php $seller_is_ordered_on_spot = get_term_meta ( $term -> term_id, 'pq_seller_is_ordered_on_spot', true ); ?>
+				<input type="checkbox" id="pq_seller_is_ordered_on_spot" name="pq_seller_is_ordered_on_spot" value="<?php echo $seller_is_ordered_on_spot; ?>" <?php checked($seller_is_ordered_on_spot); ?>>
+	
+			</div></td>
+		</tr>
 	<?php
 	}
 
@@ -915,6 +926,9 @@ class PQ_products_meta {
 
 		$seller_needs_units = isset($_POST['pq_seller_needs_units']) ? 1 : 0;
 		update_term_meta ( $term_id, 'pq_seller_needs_units', $seller_needs_units );
+
+		$seller_is_ordered_on_spot = isset($_POST['pq_seller_is_ordered_on_spot']) ? 1 : 0;
+		update_term_meta ( $term_id, 'pq_seller_is_ordered_on_spot', $seller_is_ordered_on_spot );
 	}
 }
 
