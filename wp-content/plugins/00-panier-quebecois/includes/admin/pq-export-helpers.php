@@ -94,8 +94,11 @@ function pq_get_product_rows($orders) {
             array_push($suppliers_names, $supplier->name);
             $supplier_email = get_term_meta ( $supplier->term_id, 'pq_seller_email', true );
             $supplier_sms = get_term_meta ( $supplier->term_id, 'pq_seller_sms', true );
+            $supplier_is_ordered_on_spot = get_term_meta ( $supplier->term_id, 'pq_seller_is_ordered_on_spot', true );
             if ( ! empty($supplier_email) || ! empty($supplier_sms) ) {
               $supplier_auto_order_string = 'oui';
+            } elseif ( $supplier_is_ordered_on_spot == 1 ) {
+              $supplier_auto_order_string = 'sur place';
             }
           }
 
