@@ -42,16 +42,18 @@ add_action( 'wp_ajax_pq_get_products_short_names', 'pq_get_products_short_names_
 function pq_get_products_short_names_with_ajax() {
 	$short_name_input = sanitize_text_field( $_POST['short_name_input'] );
   $products_query_arg = array(
-    'limit' => 10,
-    'status' => 'publish',
-		'pq_short_name' => $short_name_input,
-		'post_type' => 'product',
-  );
-
-  $products = wc_get_products( $products_query_arg );
+		'posts_per_page' => 10,
+		'meta_query'    => array( array(
+			'key'     => '_short_name',
+			'value'   => $short_name_input,
+      'compare' => 'LIKE',
+		)),
+		'post_type' => array( 'product', 'product_variation' ),
+	);
+  $products_query = new WP_Query( $products_query_arg );
  
-  foreach ( $products as $product ) {
-    $product_id = $product->get_id();
+  foreach ( $products_query->posts as $product_post ) {
+    $product_id = $product_post->ID;
     $short_name = get_post_meta($product_id, '_short_name', true);
     $product_html = '<li class="pq-product-search-result" pq-data="' . $product_id . '">' . $short_name . '</li>';
     echo $product_html;
