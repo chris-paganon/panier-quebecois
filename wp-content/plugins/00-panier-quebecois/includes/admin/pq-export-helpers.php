@@ -512,8 +512,8 @@ function pq_print_on_sheet( $sheet, $product_rows, $low_priority, $high_priority
     $commercial_zone_string = $product_row['pq_commercial_zone'];
 
     if ( $packing_priority >= $low_priority && $packing_priority <= $high_priority 
-    && ( (empty($inventory_type) && empty($products_to_print)) || $products_to_print == 'all' || in_array($products_to_print, $inventory_type))
-    && (empty($commercial_zone_to_print) || empty($commercial_zone_string) || (!empty($commercial_zone_to_print) && strpos($commercial_zone_string, $commercial_zone_to_print) !== false)) ) {
+    && ((empty($inventory_type) && empty($products_to_print)) || $products_to_print == 'all' || in_array($products_to_print, $inventory_type))
+    && (empty($commercial_zone_to_print) || (empty($commercial_zone_string) && $commercial_zone_to_print == 'Jean-Talon') || (!empty($commercial_zone_to_print) && strpos($commercial_zone_string, $commercial_zone_to_print) !== false)) ) {
       foreach ( $to_print as $to_print_key ) {
         $sheet->setCellValueByColumnAndRow($column, $row, $product_row[$to_print_key]);
         $column++;
