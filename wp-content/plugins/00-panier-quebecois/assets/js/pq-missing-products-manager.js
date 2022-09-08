@@ -1,5 +1,22 @@
 jQuery(document).ready(function ($) {
 
+  //Adapt missing product form to the missing product type
+  $('#missing-product-type').change( function() {
+    const missingProductType = $(this).val();
+
+    switch (missingProductType) {
+      case 'replacement':
+        $('#replacement-product-wrapper').show();
+        break;
+      case 'organic-replacement':
+        $('#replacement-product-wrapper').hide();
+        break;
+      case 'refund':
+        $('#replacement-product-wrapper').hide();
+        break;
+    }
+  });
+
   //Get search results from AJAX
   $('.pq-short-name-search-box').keyup( function() {
     var inputValue = this.value;
