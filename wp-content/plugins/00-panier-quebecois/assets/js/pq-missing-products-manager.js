@@ -39,9 +39,29 @@ jQuery(document).ready(function ($) {
 
     $.post( pq_missing_products_variables.ajax_url, data, function(response) {
 			if (response) {
-        $('#review-missing-product-popup').html(response);
+        $('#review-missing-product-content-wrapper').html(response);
       } else {
-        $('#review-missing-product-popup').html('error');
+        $('#review-missing-product-content-wrapper').html('error');
+      }
+    });
+  });
+
+  //Submit missing products to send to clients
+  $('#submit-missing-product').click(function(e) {
+    e.preventDefault();
+
+    var formData = $('#missing-product-form').serializeArray();
+
+    var data = {
+      'action': 'pq_send_missing_product',
+      'missing_products_form_data': formData,
+    }
+
+    $.post( pq_missing_products_variables.ajax_url, data, function(response) {
+			if (response) {
+        $('#review-missing-product-content-wrapper').html(response);
+      } else {
+        $('#review-missing-product-content-wrapper').html('error');
       }
     });
   });

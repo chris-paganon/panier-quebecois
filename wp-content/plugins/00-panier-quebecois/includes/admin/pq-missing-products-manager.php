@@ -153,3 +153,47 @@ function pq_review_missing_product_with_ajax() {
 
   wp_die();
 }
+
+
+/**
+ * Send missing products emails to customers
+ */
+add_action( 'wp_ajax_pq_send_missing_product', 'pq_send_missing_product_with_ajax' );
+
+function pq_send_missing_product_with_ajax() {
+
+  $missing_products_form_data = $_POST['missing_products_form_data'];
+
+  $missing_product_id = pq_get_js_form_field_value( $missing_products_form_data, 'selected-missing-product' );
+  $missing_product = wc_get_product( $missing_product_id );
+  $missing_product_name = $missing_product->get_name();
+  
+  $replacement_product_id = pq_get_js_form_field_value( $missing_products_form_data, 'selected-replacement-product' );
+  $replacement_product = wc_get_product( $replacement_product_id );
+  $replacement_product_name = $replacement_product->get_name();
+
+  $orders_to_replace = pq_get_missing_product_orders ( $missing_product_id );
+
+  foreach ( $orders_to_replace as $order_to_replace ) {
+    $args = array( 
+      'missing_product_name' => $missing_product_name,
+      'replacement_product_name' => $replacement_product_name,
+      'billing_first_name' => $order_to_replace['billing_first_name'],
+      'billing_language' => $order_to_replace['billing_language'],
+    );
+    ob_start();
+    wc_pq_get_template( 'email/pq-replace-product-email.php', $args );
+    $email_content = ob_get_clean();
+
+    $headers = array(
+      'Content-Type: text/html; charset=UTF-8', 
+      'Reply-To: Panier Québécois <commandes@panierquebecois.ca>',
+    );
+
+    wp_mail( $order_to_replace['billing_email'], 'Produit remplacé', $email_content, $headers);
+  }
+
+  echo '<h3>' . count($orders_to_replace) . ' emails envoyés</h3>';
+
+  wp_die();
+}

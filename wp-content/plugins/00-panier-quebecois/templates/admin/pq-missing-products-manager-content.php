@@ -27,4 +27,7 @@ if ( !defined( 'ABSPATH' ) ) {
 
 </form>
 
-<div id="review-missing-product-popup"></div>
+<div id="review-missing-product-popup">
+  <div id="review-missing-product-content-wrapper"></div>
+  <button id="submit-missing-product">Envoyer</button>
+</div>
