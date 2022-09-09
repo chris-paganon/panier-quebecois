@@ -104,6 +104,13 @@ function pq_get_missing_product_orders ( $missing_product_id ) {
       }
     }
 
+    $existing_order_refunds = $order->get_refunds();
+    foreach ( $existing_order_refunds as $existing_order_refund ) {
+      if( $existing_order_refund->get_reason() == 'missing_product_' . $missing_product_id ) {
+        $order_is_concerned = false;
+      }
+    }
+
     if ( $order_is_concerned ) {
       $order_to_replace = array( array(
         'order_id' => $order_id,
