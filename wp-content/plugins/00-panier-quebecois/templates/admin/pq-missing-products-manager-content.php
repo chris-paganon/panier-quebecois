@@ -31,6 +31,11 @@ if ( !defined( 'ABSPATH' ) ) {
     <ul class="pq-search-results"></ul>
   </div>
 
+  <div class="pq-form-row is-refund-needed-wrapper">
+    <label for="is-refund-needed">Remboursement nécéssaire?</label>
+    <input type="checkbox" name="is-refund-needed" id="is-refund-needed" checked>
+  </div>
+
   <button id="review-missing-product">Suivant</button>
 
 </form>

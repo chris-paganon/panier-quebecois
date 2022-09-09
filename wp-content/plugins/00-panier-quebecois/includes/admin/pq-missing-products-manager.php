@@ -118,6 +118,19 @@ function pq_get_missing_product_orders ( $missing_product_id ) {
 
 
 /**
+ * Get price difference between 2 products
+ */
+function pq_get_price_difference_for_refund( $missing_product, $replacement_product ) {
+  $missing_product_price = $missing_product->get_price();
+  $replacement_product_price = $replacement_product->get_price();
+
+  $refund_amount = max( $missing_product_price - $replacement_product_price, 0 );
+
+  return $refund_amount;
+}
+
+
+/**
  * Review email and number of customers before sending 
  */
 add_action( 'wp_ajax_pq_review_missing_product', 'pq_review_missing_product_with_ajax' );
@@ -134,11 +147,20 @@ function pq_review_missing_product_with_ajax() {
   $replacement_product = wc_get_product( $replacement_product_id );
   $replacement_product_name = $replacement_product->get_name();
 
+  $refund_amount = pq_get_price_difference_for_refund( $missing_product, $replacement_product );
+  $is_refund_needed = pq_get_js_form_field_value( $missing_products_form_data, 'is-refund-needed' ); //Returns false if empty
+  
+  if ( ! $refund_amount > 0 && $is_refund_needed ) {
+    $is_refund_needed = false;
+  }
+
   $args = array( 
     'missing_product_name' => $missing_product_name,
     'replacement_product_name' => $replacement_product_name,
     'billing_first_name' => 'Arthuro',
     'billing_language' => 'francais',
+    'is_refund_needed' => $is_refund_needed,
+    'refund_amount' => $refund_amount,
   );
   ob_start();
   wc_pq_get_template( 'email/pq-replace-product-email.php', $args );
@@ -150,6 +172,7 @@ function pq_review_missing_product_with_ajax() {
   $orders_to_replace = pq_get_missing_product_orders ( $missing_product_id );
 
   echo "<h3>Nombre de clients concernés: " . count($orders_to_replace) . "</h3>";
+  echo "<h3>Remboursement: " . $refund_amount . "</h3>";
 
   wp_die();
 }
