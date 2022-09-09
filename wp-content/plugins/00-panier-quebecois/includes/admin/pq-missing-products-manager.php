@@ -90,20 +90,24 @@ function pq_get_missing_product_orders ( $missing_product_id ) {
   foreach ( $orders_today as $order ) {
     $order_id = $order->get_id();
     $order_is_concerned = false;
-    foreach ( $order->get_items() as $item ) {
+    foreach ( $order->get_items() as $item_id => $item ) {
       $product_id = $item->get_product_id();
       if ( $product_id == $missing_product_id ) {
         $order_is_concerned = true;
+        $missing_item_id = $item_id;
       } else {
         $variation_id = $item->get_variation_id();
         if ( !empty($variation_id) && $variation_id == $missing_product_id ) {
           $order_is_concerned = true;
+          $missing_item_id = $item_id;
         }
       }
     }
 
     if ( $order_is_concerned ) {
       $order_to_replace = array( array(
+        'order_id' => $order_id,
+        'item_id' => $missing_item_id,
         'billing_email' => $order->get_billing_email(),
         'billing_first_name' => ucfirst(strtolower( $order->get_billing_first_name() )),
         'billing_language' => get_post_meta( $order_id, '_billing_language', true ),
@@ -195,6 +199,13 @@ function pq_send_missing_product_with_ajax() {
   $replacement_product = wc_get_product( $replacement_product_id );
   $replacement_product_name = $replacement_product->get_name();
 
+  $refund_amount = pq_get_price_difference_for_refund( $missing_product, $replacement_product );
+  $is_refund_needed = pq_get_js_form_field_value( $missing_products_form_data, 'is-refund-needed' ); //Returns false if empty
+  
+  if ( ! $refund_amount > 0 && $is_refund_needed ) {
+    $is_refund_needed = false;
+  }
+
   $orders_to_replace = pq_get_missing_product_orders ( $missing_product_id );
 
   foreach ( $orders_to_replace as $order_to_replace ) {
@@ -203,6 +214,8 @@ function pq_send_missing_product_with_ajax() {
       'replacement_product_name' => $replacement_product_name,
       'billing_first_name' => $order_to_replace['billing_first_name'],
       'billing_language' => $order_to_replace['billing_language'],
+      'is_refund_needed' => $is_refund_needed,
+      'refund_amount' => $refund_amount,
     );
     ob_start();
     wc_pq_get_template( 'email/pq-replace-product-email.php', $args );
@@ -214,9 +227,24 @@ function pq_send_missing_product_with_ajax() {
     );
 
     wp_mail( $order_to_replace['billing_email'], 'Produit remplacé', $email_content, $headers);
+
+    if ( $is_refund_needed ) {
+      $line_items = array();
+      $line_items[$order_to_replace['item_id']] = array(
+        'refund_total' => $refund_amount,
+      );
+
+      wc_create_refund( array(
+        'amount' => $refund_amount,
+        'reason' => 'missing_product_' . $missing_product_id,
+        'order_id' => $order_to_replace['order_id'],
+        'line_items' => $line_items,
+        'refund_payment' => false, //Switch to true for production
+      ));
+    }
   }
 
-  echo '<h3>' . count($orders_to_replace) . ' emails envoyés</h3>';
+  echo '<h3>' . count($orders_to_replace) . ' email(s) envoyé(s)</h3>';
 
   wp_die();
 }
