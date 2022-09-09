@@ -177,13 +177,13 @@ function pq_review_missing_product_with_ajax() {
   wc_pq_get_template( 'email/pq-replace-product-email.php', $args );
   $email_content = ob_get_clean();
 
-  echo "<h3>Contenu de l'email:</h3>";
-  echo $email_content;
-
   $orders_to_replace = pq_get_missing_product_orders ( $missing_product_id );
 
   echo "<h3>Nombre de clients concernés: " . count($orders_to_replace) . "</h3>";
-  echo "<h3>Remboursement: " . $refund_amount . "</h3>";
+  echo "<h3>Remboursement: " . wc_price($refund_amount) . "</h3>";
+
+  echo "<h3>Contenu de l'email:</h3>";
+  echo $email_content;
 
   wp_die();
 }
@@ -251,7 +251,7 @@ function pq_send_missing_product_with_ajax() {
     }
   }
 
-  echo '<h3>' . count($orders_to_replace) . ' email(s) envoyé(s)</h3>';
+  echo '<h3>' . count($orders_to_replace) . ' commande(s) traitée(s)</h3>';
 
   wp_die();
 }
