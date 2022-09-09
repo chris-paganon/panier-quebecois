@@ -33,7 +33,7 @@ if ( !defined( 'ABSPATH' ) ) {
 
   <div class="pq-form-row is-refund-needed-wrapper">
     <label for="is-refund-needed">Remboursement nécéssaire?</label>
-    <input type="checkbox" name="is-refund-needed" id="is-refund-needed" checked>
+    <input type="checkbox" name="is-refund-needed" id="is-refund-needed" value="1" checked>
   </div>
 
   <button id="review-missing-product">Suivant</button>
