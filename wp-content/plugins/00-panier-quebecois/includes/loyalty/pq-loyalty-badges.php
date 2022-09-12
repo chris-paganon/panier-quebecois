@@ -17,9 +17,9 @@ function pq_get_main_badge_id() {
  */
 function pq_has_main_badge( $user_id ) {
     $pq_badge_id = pq_get_main_badge_id();
-    $user_badges = mycred_get_users_badges($user_id);
+	$user_badges = mycred_get_users_badges($user_id);
 
-    if ( array_key_exists($pq_badge_id, $user_badges) ) {
+	if ( array_key_exists($pq_badge_id, $user_badges) ) {
         return true;
     } else {
         return false;
