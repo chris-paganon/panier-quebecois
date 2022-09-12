@@ -1,6 +1,6 @@
 <div class="dashboard-referral">
     <div class="mto-dashboard-container">
-        <div class="dashboard-ref-img" style="background-image: url(<?php echo get_stylesheet_directory_uri(); ?>/assets/images/dashboard/dashboard-referral.jpg);">
+        <div class="dashboard-ref-img" style="background-image: url(<?php echo wp_get_attachment_url( 61318 ); ?>">
         </div>
         <div class="dashboard-ref-content">
             <p class="dashboard-ref-title"><?php echo __('Refer a friend and recieve $20 each', 'panierquebecois'); ?></p>
@@ -8,7 +8,7 @@
              <p><?php echo home_url(); ?>?pqc=<?php echo $user_id ?></p>
             <div class="dashboard-ref-btn">
                 <a data-clipboard="<?php echo home_url(); ?>?pqc=<?php echo $user_id ?>" href="#";>
-                    <img src="<?php echo get_stylesheet_directory_uri(); ?>/assets/images/dashboard/copy-icon.png" alt="Copy Icon" />
+                    <img src="<?php echo wp_get_attachment_url( 61320 ); ?>" alt="Copy Icon" />
                     <span><?php echo __('Copy url', 'panierquebecois'); ?></span>
                 </a>
             </div>
