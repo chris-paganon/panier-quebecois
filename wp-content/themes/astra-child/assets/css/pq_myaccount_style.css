@@ -19,10 +19,14 @@
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-    padding: 88px 20px;
+    padding: 0;
     text-align: center;
     color: #ffffff;
     font-family: 'Work Sans', sans-serif;
+}
+.woocommerce-dashboard .mto-dashboard-header-overlay {
+    background-color: #00000073;
+    padding: 88px 20px;
 }
 
 .woocommerce-dashboard .mto-dashboard-header .dashboard-header {
