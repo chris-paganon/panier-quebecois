@@ -12,7 +12,20 @@
 
 	<?php else : ?>
     <p class="dashboard-lp-text">
-        <?php echo __('After 5 orders processed on our online shop, you\'ll unlock our 1% cash back system redeemable anytime.', 'panierquebecois' ); ?>
+        <?php 
+        $minimum_orders = 5;
+
+        $user_orders = wc_get_orders( array(
+            'limit' => $minimum_orders,
+            'customer_id' => $user_id,
+        ));
+        
+        $count_user_orders = count( $user_orders );
+        $orders_left = $minimum_orders - $count_user_orders;
+
+        echo esc_html__( 'After 5 orders processed on our online shop, you\'ll unlock our 1% cash back system redeemable anytime. ', 'panierquebecois' );
+        echo esc_html__( 'You only need ', 'panierquebecois' ) . $orders_left . esc_html__( ' more order(s)!', 'panierquebecois' );
+        ?>
     </p>
 	<?php endif; ?>
     <p class="dashboard-lp-btn">
