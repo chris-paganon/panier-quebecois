@@ -14,6 +14,7 @@
 }
 .pq-search-box-wrapper{
   flex: auto;
+  position: relative;;
 }
 .pq-short-name-search-box{
   width: 100%;
@@ -26,8 +27,10 @@
   padding: 0;
   position: absolute;
   background: #fcfaf5;
+  width: 100%;
   max-height: 300px;
   overflow-y: scroll;
+  z-index: 5;
   list-style: none;
 }
 .pq-product-search-result{
