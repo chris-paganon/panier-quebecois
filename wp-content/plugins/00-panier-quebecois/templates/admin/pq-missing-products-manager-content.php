@@ -8,7 +8,7 @@ if ( !defined( 'ABSPATH' ) ) {
 
 <form id="missing-product-form">
 
-  <div class="pq-form-row missing-product-type-wrapper">
+  <div class="pq-form-row" id="missing-product-type-wrapper">
     <label for="missing-product-type">Type de produit manquant:</label>
     <select name="missing-product-type" id="missing-product-type">
       <option value="replacement">Remplacement</option>
@@ -31,12 +31,12 @@ if ( !defined( 'ABSPATH' ) ) {
     <ul class="pq-search-results"></ul>
   </div>
 
-  <div class="pq-form-row is-refund-needed-wrapper">
+  <div class="pq-form-row" id="is-refund-needed-wrapper">
     <label for="is-refund-needed">Remboursement nécéssaire?</label>
     <input type="checkbox" name="is-refund-needed" id="is-refund-needed" value="1" checked>
   </div>
 
-  <div class="pq-form-row manual-refund-amount-wrapper">
+  <div class="pq-form-row" id="manual-refund-amount-wrapper">
     <label for="manual-refund-amount">Montant à rembourser</label>
     <input type="number" name="manual-refund-amount" id="manual-refund-amount">
   </div>

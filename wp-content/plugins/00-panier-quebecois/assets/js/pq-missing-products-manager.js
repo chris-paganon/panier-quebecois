@@ -7,12 +7,18 @@ jQuery(document).ready(function ($) {
     switch (missingProductType) {
       case 'replacement':
         $('#replacement-product-wrapper').show();
+        $('#is-refund-needed-wrapper').show();
+        $('#manual-refund-amount-wrapper').show();
         break;
       case 'organic-replacement':
-        $('#replacement-product-wrapper').hide();
+          $('#replacement-product-wrapper').hide();
+          $('#is-refund-needed-wrapper').show();
+          $('#manual-refund-amount-wrapper').show();
         break;
       case 'refund':
         $('#replacement-product-wrapper').hide();
+        $('#is-refund-needed-wrapper').hide();
+        $('#manual-refund-amount-wrapper').hide();
         break;
     }
   });
