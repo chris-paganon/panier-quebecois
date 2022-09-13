@@ -185,6 +185,7 @@ function pq_review_missing_product_with_ajax() {
       pq_review_replacement_product( $missing_products_form_data );
       break;
     case 'organic-replacement':
+      pq_review_replacement_organic_product( $missing_products_form_data );
       break;
     case 'refund':
       pq_review_refunded_product( $missing_products_form_data );
@@ -220,6 +221,38 @@ function pq_review_replacement_product( $missing_products_form_data ) {
   );
   ob_start();
   wc_pq_get_template( 'email/pq-replace-product-email.php', $args );
+  $email_content = ob_get_clean();
+
+  $orders_to_replace = pq_get_missing_product_orders ( $missing_product_id );
+
+  echo "<h3>Nombre de clients concernés: " . count($orders_to_replace) . "</h3>";
+  echo "<h3>Remboursement: " . wc_price($refund_amount) . "</h3>";
+
+  echo "<h3>Contenu de l'email:</h3>";
+  echo $email_content;
+}
+
+
+/**
+ * Review content for organic product replacement
+ */
+function pq_review_replacement_organic_product( $missing_products_form_data ) {
+  $missing_product_id = pq_get_js_form_field_value( $missing_products_form_data, 'selected-missing-product' );
+  $missing_product = wc_get_product( $missing_product_id );
+  $missing_product_name = $missing_product->get_name();
+
+  $refund_amount = pq_get_js_form_field_value( $missing_products_form_data, 'manual-refund-amount' );
+  $is_refund_needed = pq_is_refund_needed( $missing_products_form_data, $refund_amount );
+
+  $args = array( 
+    'missing_product_name' => $missing_product_name,
+    'billing_first_name' => 'Arthuro',
+    'billing_language' => 'francais',
+    'is_refund_needed' => $is_refund_needed,
+    'refund_amount' => $refund_amount,
+  );
+  ob_start();
+  wc_pq_get_template( 'email/pq-replace-organic-product-email.php', $args );
   $email_content = ob_get_clean();
 
   $orders_to_replace = pq_get_missing_product_orders ( $missing_product_id );
@@ -276,6 +309,7 @@ function pq_send_missing_product_with_ajax() {
       pq_send_replacement_product( $missing_products_form_data );
       break;
     case 'organic-replacement':
+      pq_send_replacement_organic_product( $missing_products_form_data );
       break;
     case 'refund':
       pq_send_refunded_product( $missing_products_form_data );
@@ -349,6 +383,66 @@ function pq_send_replacement_product( $missing_products_form_data ) {
   echo '<h3>' . count($orders_to_replace) . ' commande(s) traitée(s)</h3>';
 }
 
+
+/**
+ * Send email and refund for organic product replacement
+ */
+function pq_send_replacement_organic_product( $missing_products_form_data ) {
+  $missing_product_id = pq_get_js_form_field_value( $missing_products_form_data, 'selected-missing-product' );
+  $missing_product = wc_get_product( $missing_product_id );
+  $missing_product_name = $missing_product->get_name();  
+  
+  $refund_amount = pq_get_js_form_field_value( $missing_products_form_data, 'manual-refund-amount' );
+  $is_refund_needed = pq_is_refund_needed( $missing_products_form_data, $refund_amount );
+
+  $orders_to_replace = pq_get_missing_product_orders ( $missing_product_id );
+
+  foreach ( $orders_to_replace as $order_to_replace ) {
+    $args = array( 
+      'missing_product_name' => $missing_product_name,
+      'billing_first_name' => $order_to_replace['billing_first_name'],
+      'billing_language' => $order_to_replace['billing_language'],
+      'is_refund_needed' => $is_refund_needed,
+      'refund_amount' => $refund_amount,
+    );
+    ob_start();
+    wc_pq_get_template( 'email/pq-replace-organic-product-email.php', $args );
+    $email_content = ob_get_clean();
+
+    $headers = array(
+      'Content-Type: text/html; charset=UTF-8', 
+      'Reply-To: Panier Québécois <commandes@panierquebecois.ca>',
+    );
+
+    wp_mail( $order_to_replace['billing_email'], 'Produit remplacé', $email_content, $headers);
+
+    if ( $is_refund_needed ) {
+
+      $order_id = $order_to_replace['order_id'];
+      $order = wc_get_order( $order_id );
+      $item_id = $order_to_replace['item_id'];
+  
+      //Get item quantity to refund
+      $item_quantity = pq_get_item_qty_after_refunds( $order, $item_id );
+      $refund_amount = $refund_amount * $item_quantity;
+
+      $line_items = array();
+      $line_items[$order_to_replace['item_id']] = array(
+        'refund_total' => $refund_amount,
+      );
+  
+      wc_create_refund( array(
+        'amount' => $refund_amount,
+        'reason' => 'missing_product_' . $missing_product_id,
+        'order_id' => $order_id,
+        'line_items' => $line_items,
+        'refund_payment' => false, //Switch to true for production
+      ));
+    }
+  }
+
+  echo '<h3>' . count($orders_to_replace) . ' commande(s) traitée(s)</h3>';
+}
 
 /**
  * Send email and refund for product refund
