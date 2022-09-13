@@ -36,6 +36,11 @@ if ( !defined( 'ABSPATH' ) ) {
     <input type="checkbox" name="is-refund-needed" id="is-refund-needed" value="1" checked>
   </div>
 
+  <div class="pq-form-row manual-refund-amount-wrapper">
+    <label for="manual-refund-amount">Montant à rembourser</label>
+    <input type="number" name="manual-refund-amount" id="manual-refund-amount">
+  </div>
+
   <button id="review-missing-product">Suivant</button>
 
 </form>
