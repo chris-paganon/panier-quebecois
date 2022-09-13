@@ -51,6 +51,7 @@ if ( !defined( 'ABSPATH' ) ) {
 
 <div id="review-missing-product-popup-wrapper">
   <div id="review-missing-product-popup">
+    <span class="pq-close">×</span>
     <div id="review-missing-product-content-wrapper"></div>
     <button id="submit-missing-product">Envoyer</button>
   </div>

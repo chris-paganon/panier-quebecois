@@ -61,14 +61,12 @@ jQuery(document).ready(function ($) {
 
   $(document).click(function() {
     $('.pq-search-results').hide();
-    $('#review-missing-product-popup-wrapper').hide();
   });
 
   //Submit missing products for review
   $('#review-missing-product').click(function(e) {
     e.preventDefault();
     e.stopPropagation();
-    $('#review-missing-product-popup-wrapper').css('display', 'flex');
 
     var formData = $('#missing-product-form').serializeArray();
 
@@ -79,11 +77,19 @@ jQuery(document).ready(function ($) {
 
     $.post( pq_missing_products_variables.ajax_url, data, function(response) {
 			if (response) {
+        $('#review-missing-product-popup-wrapper').css('display', 'flex');
         $('#review-missing-product-content-wrapper').html(response);
       } else {
         $('#review-missing-product-content-wrapper').html('error');
       }
     });
+  });
+
+  $('#review-missing-product-popup-wrapper, .pq-close').click(function(){
+    $('#review-missing-product-popup-wrapper').hide();
+  });
+  $('#review-missing-product-popup').click(function(e){
+    e.stopPropagation();
   });
 
   //Submit missing products to send to clients
