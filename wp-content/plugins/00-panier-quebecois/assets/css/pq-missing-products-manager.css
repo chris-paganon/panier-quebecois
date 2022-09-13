@@ -1,14 +1,67 @@
+/* General form */
 .pq-form-row {
   margin: 10px 0;
 }
 
+.product-selection-wrapper{
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+.product-selection-wrapper label{
+  min-width: fit-content;
+  margin-right: 5px;
+}
+.pq-search-box-wrapper{
+  flex: auto;
+}
+.pq-short-name-search-box{
+  width: 100%;
+}
+
+/* Search results */
 .pq-search-results{
+  display: none;
   margin: 0;
   padding: 0;
-  padding: 15px;
   position: absolute;
   background: #fcfaf5;
-  height: 300px;
+  max-height: 300px;
   overflow-y: scroll;
   list-style: none;
+}
+.pq-product-search-result{
+  cursor: pointer;
+  padding: 5px 20px;
+}
+.pq-product-search-result:hover{
+  background-color: #4B9E50;
+  color: white;
+}
+.parent-product{
+  color: #4054B2;
+  font-weight: 500;
+}
+.parent-product:hover{
+  text-decoration: underline;
+}
+
+/* Pop up */
+#review-missing-product-popup-wrapper{
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 100;
+  justify-content: center;
+  align-items: center;
+}
+#review-missing-product-popup{
+  position: fixed;
+  width: 80%;
+  background-color: white;
+  border: 1px solid;
+  padding: 30px 50px;
 }
