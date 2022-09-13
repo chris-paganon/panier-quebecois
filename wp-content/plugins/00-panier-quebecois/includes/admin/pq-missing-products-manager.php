@@ -187,6 +187,7 @@ function pq_review_missing_product_with_ajax() {
     case 'organic-replacement':
       break;
     case 'refund':
+      pq_review_refunded_product( $missing_products_form_data );
       break;
   }
 
@@ -232,6 +233,35 @@ function pq_review_replacement_product( $missing_products_form_data ) {
 
 
 /**
+ * Review content for product refund
+ */
+function pq_review_refunded_product( $missing_products_form_data ) {
+  $missing_product_id = pq_get_js_form_field_value( $missing_products_form_data, 'selected-missing-product' );
+  $missing_product = wc_get_product( $missing_product_id );
+  $missing_product_name = $missing_product->get_name();
+
+  $refund_amount = $missing_product->get_price();
+
+  $args = array( 
+    'missing_product_name' => $missing_product_name,
+    'billing_first_name' => 'Arthuro',
+    'billing_language' => 'francais',
+  );
+  ob_start();
+  wc_pq_get_template( 'email/pq-refund-product-email.php', $args );
+  $email_content = ob_get_clean();
+
+  $orders_to_replace = pq_get_missing_product_orders ( $missing_product_id );
+
+  echo "<h3>Nombre de clients concernés: " . count($orders_to_replace) . "</h3>";
+  echo "<h3>Remboursement: " . wc_price($refund_amount) . "</h3>";
+
+  echo "<h3>Contenu de l'email:</h3>";
+  echo $email_content;
+}
+
+
+/**
  * Send missing products emails to customers
  */
 add_action( 'wp_ajax_pq_send_missing_product', 'pq_send_missing_product_with_ajax' );
@@ -248,6 +278,7 @@ function pq_send_missing_product_with_ajax() {
     case 'organic-replacement':
       break;
     case 'refund':
+      pq_send_refunded_product( $missing_products_form_data );
       break;
   }
 
@@ -306,6 +337,82 @@ function pq_send_replacement_product( $missing_products_form_data ) {
         'refund_payment' => false, //Switch to true for production
       ));
     }
+  }
+
+  echo '<h3>' . count($orders_to_replace) . ' commande(s) traitée(s)</h3>';
+}
+
+
+/**
+ * Send email and refund for product refund
+ */
+function pq_send_refunded_product( $missing_products_form_data ) {
+  $missing_product_id = pq_get_js_form_field_value( $missing_products_form_data, 'selected-missing-product' );
+  $missing_product = wc_get_product( $missing_product_id );
+  $missing_product_name = $missing_product->get_name();
+
+  $orders_to_replace = pq_get_missing_product_orders ( $missing_product_id );
+
+  foreach ( $orders_to_replace as $order_to_replace ) {
+    $args = array( 
+      'missing_product_name' => $missing_product_name,
+      'billing_first_name' => $order_to_replace['billing_first_name'],
+      'billing_language' => $order_to_replace['billing_language'],
+    );
+    ob_start();
+    wc_pq_get_template( 'email/pq-refund-product-email.php', $args );
+    $email_content = ob_get_clean();
+
+    $headers = array(
+      'Content-Type: text/html; charset=UTF-8', 
+      'Reply-To: Panier Québécois <commandes@panierquebecois.ca>',
+    );
+
+    wp_mail( $order_to_replace['billing_email'], 'Produit remplacé', $email_content, $headers);
+
+    $order_id = $order_to_replace['order_id'];
+    $order = wc_get_order( $order_id );
+    $item_id = $order_to_replace['item_id'];
+    $item = $order->get_item($item_id);
+
+    //Get item quantity to refund
+    $quantity_before_refunds = $item->get_quantity();
+    $quantity_already_refunded = $order->get_qty_refunded_for_item( $item_id );
+    $item_quantity = $quantity_before_refunds + $quantity_already_refunded;
+
+    //Get items total to refund (before refunds already made)
+    $item_total = $item->get_total();
+    $item_tax_total = $item->get_total_tax();
+
+    //Get taxes already refunded and what is left to refund per tax id
+    $item_taxes = $item->get_taxes();
+    $item_tax_total_already_refunded = 0;
+    $item_taxes_to_refund = array();
+    foreach ( $item_taxes['total'] as $tax_id => $tax_total ) {
+      $tax_amount_already_refunded = $order->get_tax_refunded_for_item( $item_id, $tax_id );
+      $item_tax_total_already_refunded += $tax_amount_already_refunded;
+      $item_taxes_to_refund[$tax_id] = $tax_total - $tax_amount_already_refunded;
+    }
+
+    //Calculate final refund amounts
+    $item_total_already_refunded = $order->get_total_refunded_for_item( $item_id );
+    $item_total_refund_amount = $item_total - $item_total_already_refunded;
+    $refund_amount = $item_total_refund_amount + $item_tax_total - $item_tax_total_already_refunded;
+
+    $line_items = array();
+    $line_items[$order_to_replace['item_id']] = array(
+      'qty' => $item_quantity,
+      'refund_total' => $item_total_refund_amount,
+      'refund_tax' => $item_taxes_to_refund,
+    );
+
+    wc_create_refund( array(
+      'amount' => $refund_amount,
+      'reason' => 'missing_product_' . $missing_product_id,
+      'order_id' => $order_id,
+      'line_items' => $line_items,
+      'refund_payment' => false, //Switch to true for production
+    ));
   }
 
   echo '<h3>' . count($orders_to_replace) . ' commande(s) traitée(s)</h3>';
