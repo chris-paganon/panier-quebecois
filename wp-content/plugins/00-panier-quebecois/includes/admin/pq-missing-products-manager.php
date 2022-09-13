@@ -324,15 +324,22 @@ function pq_send_replacement_product( $missing_products_form_data ) {
     wp_mail( $order_to_replace['billing_email'], 'Produit remplacé', $email_content, $headers);
 
     if ( $is_refund_needed ) {
+      $item_id = $order_to_replace['item_id'];
+      $order_id = $order_to_replace['order_id'];
+      $order = wc_get_order( $order_id );
+      $item_quantity = pq_get_item_qty_after_refunds( $order, $item_id );
+
+      $refund_amount = $refund_amount * $item_quantity;
+
       $line_items = array();
-      $line_items[$order_to_replace['item_id']] = array(
+      $line_items[$item_id] = array(
         'refund_total' => $refund_amount,
       );
 
       wc_create_refund( array(
         'amount' => $refund_amount,
         'reason' => 'missing_product_' . $missing_product_id,
-        'order_id' => $order_to_replace['order_id'],
+        'order_id' => $order_id,
         'line_items' => $line_items,
         'refund_payment' => false, //Switch to true for production
       ));
@@ -376,9 +383,7 @@ function pq_send_refunded_product( $missing_products_form_data ) {
     $item = $order->get_item($item_id);
 
     //Get item quantity to refund
-    $quantity_before_refunds = $item->get_quantity();
-    $quantity_already_refunded = $order->get_qty_refunded_for_item( $item_id );
-    $item_quantity = $quantity_before_refunds + $quantity_already_refunded;
+    $item_quantity = pq_get_item_qty_after_refunds( $order, $item_id );
 
     //Get items total to refund (before refunds already made)
     $item_total = $item->get_total();

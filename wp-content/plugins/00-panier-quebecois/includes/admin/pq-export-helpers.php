@@ -44,9 +44,7 @@ function pq_get_product_rows( $orders, $supplier_to_get = '' ) {
           $product_id = $parent_id = $product->get_id();
         }
 
-        $product_quantity_before_refund = $item->get_quantity();
-        $product_quantity_refunded = $order->get_qty_refunded_for_item( $item_id );
-        $product_quantity = $product_quantity_before_refund + $product_quantity_refunded;
+        $product_quantity = pq_get_item_qty_after_refunds( $order, $item_id );
         $lot_quantity = get_post_meta( $product_id, '_lot_quantity', true );
         $total_quantity = $product_quantity * $lot_quantity;
 
@@ -131,6 +129,19 @@ function pq_get_product_rows( $orders, $supplier_to_get = '' ) {
   }
 
   return $product_rows;
+}
+
+
+/**
+ * Get item quantity after refunds
+ */
+function pq_get_item_qty_after_refunds ( $order, $item_id ) {
+  $item = $order->get_item($item_id);
+  $product_quantity_before_refund = $item->get_quantity();
+  $product_quantity_refunded = $order->get_qty_refunded_for_item( $item_id );
+  $product_quantity = $product_quantity_before_refund + $product_quantity_refunded;
+
+  return $product_quantity;
 }
 
 
