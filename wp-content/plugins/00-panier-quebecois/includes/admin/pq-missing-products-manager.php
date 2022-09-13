@@ -42,20 +42,37 @@ add_action( 'wp_ajax_pq_get_products_short_names', 'pq_get_products_short_names_
 function pq_get_products_short_names_with_ajax() {
 	$short_name_input = sanitize_text_field( $_POST['short_name_input'] );
   $products_query_arg = array(
-		'posts_per_page' => 10,
+		'posts_per_page' => 30,
 		'meta_query'    => array( array(
 			'key'     => '_short_name',
 			'value'   => $short_name_input,
       'compare' => 'LIKE',
 		)),
+    'tax_query' => array(
+			'taxonomy' => 'product_cat',
+			'field' => 'id',
+			'terms' => 153, //Produit unité only
+		),
 		'post_type' => array( 'product', 'product_variation' ),
 	);
   $products_query = new WP_Query( $products_query_arg );
  
   foreach ( $products_query->posts as $product_post ) {
     $product_id = $product_post->ID;
+    $product = wc_get_product( $product_id );
     $short_name = get_post_meta($product_id, '_short_name', true);
-    $product_html = '<li class="pq-product-search-result" pq-data="' . esc_attr($product_id) . '">' . esc_html( $short_name ) . '</li>';
+
+    $extra_variation_html = '';
+    $parent_product_html = '';
+    if ( $product->get_type() == 'variation' ) {
+      $variation_attributes = $product->get_variation_attributes();
+      $variation_name = urldecode(implode(',', $variation_attributes));
+      $extra_variation_html = ' (' . $variation_name . ')';
+      $parent_product_id = $product->get_parent_id();
+      $parent_product_html = '<span class="parent-product" pq-parent-data="' . esc_attr($parent_product_id) . '"> Sélectionner tous</span>';
+    }
+
+    $product_html = '<li class="pq-product-search-result" pq-data="' . esc_attr($product_id) . '"><span class="variation-name">' . esc_html__( $short_name ) . $extra_variation_html . '</span>' . $parent_product_html . '</li>';
     echo $product_html;
   }
 

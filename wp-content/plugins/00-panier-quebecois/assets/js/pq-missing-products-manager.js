@@ -43,7 +43,14 @@ jQuery(document).ready(function ($) {
   });
 
   //Select a search result
-  $('.pq-search-results').on( 'click', '.pq-product-search-result', function() {
+  $('.pq-search-results').on( 'click', '.parent-product', function(e) {
+    e.stopPropagation();
+    $(this).parents('.pq-search-results').siblings('.pq-short-name-search-box').val( '(TOUS) ' + $(this).siblings('.variation-name').text() );
+    $(this).parents('.pq-search-results').siblings('.selected-product').val( $(this).attr("pq-parent-data") );
+    $(this).parents('.pq-search-results').hide();
+  });
+
+  $('.pq-search-results').on( 'click', '.pq-product-search-result', function(e) {
     $(this).parent().siblings('.pq-short-name-search-box').val( $(this).text() );
     $(this).parent().siblings('.selected-product').val( $(this).attr("pq-data") );
     $(this).parent().hide();
