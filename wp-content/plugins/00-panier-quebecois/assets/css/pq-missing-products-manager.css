@@ -1,0 +1,14 @@
+.pq-form-row {
+  margin: 10px 0;
+}
+
+.pq-search-results{
+  margin: 0;
+  padding: 0;
+  padding: 15px;
+  position: absolute;
+  background: #fcfaf5;
+  height: 300px;
+  overflow-y: scroll;
+  list-style: none;
+}
