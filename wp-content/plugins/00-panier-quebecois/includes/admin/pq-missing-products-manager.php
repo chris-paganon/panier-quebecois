@@ -178,7 +178,26 @@ add_action( 'wp_ajax_pq_review_missing_product', 'pq_review_missing_product_with
 function pq_review_missing_product_with_ajax() {
 
   $missing_products_form_data = $_POST['missing_products_form_data'];
+  $missing_product_type = pq_get_js_form_field_value( $missing_products_form_data, 'missing-product-type' );
 
+  switch ( $missing_product_type ) {
+    case 'replacement':
+      pq_review_replacement_product( $missing_products_form_data );
+      break;
+    case 'organic-replacement':
+      break;
+    case 'refund':
+      break;
+  }
+
+  wp_die();
+}
+
+
+/**
+ * Review content for product replacement
+ */
+function pq_review_replacement_product( $missing_products_form_data ) {
   $missing_product_id = pq_get_js_form_field_value( $missing_products_form_data, 'selected-missing-product' );
   $missing_product = wc_get_product( $missing_product_id );
   $missing_product_name = $missing_product->get_name();
@@ -209,8 +228,6 @@ function pq_review_missing_product_with_ajax() {
 
   echo "<h3>Contenu de l'email:</h3>";
   echo $email_content;
-
-  wp_die();
 }
 
 
@@ -222,7 +239,26 @@ add_action( 'wp_ajax_pq_send_missing_product', 'pq_send_missing_product_with_aja
 function pq_send_missing_product_with_ajax() {
 
   $missing_products_form_data = $_POST['missing_products_form_data'];
+  $missing_product_type = pq_get_js_form_field_value( $missing_products_form_data, 'missing-product-type' );
 
+  switch ( $missing_product_type ) {
+    case 'replacement':
+      pq_send_replacement_product( $missing_products_form_data );
+      break;
+    case 'organic-replacement':
+      break;
+    case 'refund':
+      break;
+  }
+
+  wp_die();
+}
+
+
+/**
+ * Send email and refund for product replacement
+ */
+function pq_send_replacement_product( $missing_products_form_data ) {
   $missing_product_id = pq_get_js_form_field_value( $missing_products_form_data, 'selected-missing-product' );
   $missing_product = wc_get_product( $missing_product_id );
   $missing_product_name = $missing_product->get_name();
@@ -273,6 +309,4 @@ function pq_send_missing_product_with_ajax() {
   }
 
   echo '<h3>' . count($orders_to_replace) . ' commande(s) traitée(s)</h3>';
-
-  wp_die();
 }
