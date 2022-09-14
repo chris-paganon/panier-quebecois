@@ -203,7 +203,7 @@ function pq_validate_missing_product_form( $missing_products_form_data ) {
     if ( ! wc_get_product($missing_product_id) ) {
       throw new Exception('Produit manquant invalide');
     }
-    if ( ! wc_get_product($replacement_product_id) && $missing_product_type != 'replacement' ) {
+    if ( ! wc_get_product($replacement_product_id) && $missing_product_type == 'replacement' ) {
       throw new Exception('Produit de remplacement invalide');
     }
     if ( ! is_numeric($manual_refund_amount) && ! empty($manual_refund_amount) ) {
