@@ -430,7 +430,7 @@ function pq_send_replacement_product( $missing_products_form_data ) {
         'reason' => 'missing_product_' . $missing_product_id,
         'order_id' => $order_id,
         'line_items' => $line_items,
-        'refund_payment' => false, //Switch to true for production
+        'refund_payment' => true, //Switch to true for production
       ));
     }
   }
@@ -491,7 +491,7 @@ function pq_send_replacement_organic_product( $missing_products_form_data ) {
         'reason' => 'missing_product_' . $missing_product_id,
         'order_id' => $order_id,
         'line_items' => $line_items,
-        'refund_payment' => false, //Switch to true for production
+        'refund_payment' => true, //Switch to true for production
       ));
     }
   }
@@ -565,7 +565,7 @@ function pq_send_refunded_product( $missing_products_form_data ) {
       'reason' => 'missing_product_' . $missing_product_id,
       'order_id' => $order_id,
       'line_items' => $line_items,
-      'refund_payment' => false, //Switch to true for production
+      'refund_payment' => true, //Switch to true for production
     ));
   }
 
