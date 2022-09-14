@@ -188,6 +188,31 @@ function pq_is_refund_needed( $missing_products_form_data, $refund_amount ) {
 
 
 /**
+ * Validate missing product form data
+ */
+function pq_validate_missing_product_form( $missing_products_form_data ) {
+  $missing_product_type = pq_get_js_form_field_value( $missing_products_form_data, 'missing-product-type' );
+  $missing_product_id = pq_get_js_form_field_value( $missing_products_form_data, 'selected-missing-product' );
+  $replacement_product_id = pq_get_js_form_field_value( $missing_products_form_data, 'selected-replacement-product' );
+  $manual_refund_amount = pq_get_js_form_field_value( $missing_products_form_data, 'manual-refund-amount' );
+
+  try {
+    if ( ! wc_get_product($missing_product_id) ) {
+      throw new Exception('Produit manquant invalide');
+    }
+    if ( ! wc_get_product($replacement_product_id) && $missing_product_type != 'replacement' ) {
+      throw new Exception('Produit de remplacement invalide');
+    }
+    if ( ! is_numeric($manual_refund_amount) && ! empty($manual_refund_amount) ) {
+      throw new Exception("Remboursement manuel n'est pas un chiffre");
+    }
+  } catch(Exception $e) {
+    echo $e->getMessage();
+    wp_die();
+  }
+}
+
+/**
  * Review email and number of customers before sending 
  */
 add_action( 'wp_ajax_pq_review_missing_product', 'pq_review_missing_product_with_ajax' );
@@ -195,6 +220,7 @@ add_action( 'wp_ajax_pq_review_missing_product', 'pq_review_missing_product_with
 function pq_review_missing_product_with_ajax() {
 
   $missing_products_form_data = $_POST['missing_products_form_data'];
+  pq_validate_missing_product_form( $missing_products_form_data );
   $missing_product_type = pq_get_js_form_field_value( $missing_products_form_data, 'missing-product-type' );
 
   switch ( $missing_product_type ) {
@@ -319,6 +345,7 @@ add_action( 'wp_ajax_pq_send_missing_product', 'pq_send_missing_product_with_aja
 function pq_send_missing_product_with_ajax() {
 
   $missing_products_form_data = $_POST['missing_products_form_data'];
+  pq_validate_missing_product_form( $missing_products_form_data );
   $missing_product_type = pq_get_js_form_field_value( $missing_products_form_data, 'missing-product-type' );
 
   switch ( $missing_product_type ) {
