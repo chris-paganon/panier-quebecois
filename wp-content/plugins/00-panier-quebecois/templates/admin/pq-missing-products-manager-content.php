@@ -35,6 +35,8 @@ if ( !defined( 'ABSPATH' ) ) {
     <input type="hidden" id="selected-replacement-product" name="selected-replacement-product" class="selected-product">
   </div>
 
+  <?php wp_nonce_field('pq_missing_products_search', 'pq_missing_products_search_nonce'); ?>
+
   <div class="pq-form-row" id="is-refund-needed-wrapper">
     <label for="is-refund-needed">Remboursement nécéssaire?</label>
     <input type="checkbox" name="is-refund-needed" id="is-refund-needed" value="1" checked>

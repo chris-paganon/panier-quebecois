@@ -40,6 +40,12 @@ function pq_handle_short_name_query_var( $query, $query_vars ) {
 add_action( 'wp_ajax_pq_get_products_short_names', 'pq_get_products_short_names_with_ajax' );
 
 function pq_get_products_short_names_with_ajax() {
+
+  if ( ! isset($_POST['nonce']) || ! wp_verify_nonce($_POST['nonce'], 'pq_missing_products_search') ) {
+    echo 'INVALID';
+    wp_die();
+  }
+
 	$short_name_input = sanitize_text_field( $_POST['short_name_input'] );
   $products_query_arg = array(
 		'posts_per_page' => 30,

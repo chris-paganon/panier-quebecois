@@ -29,9 +29,12 @@ jQuery(document).ready(function ($) {
     var searchResults = $(this).siblings('.pq-search-results');
 
     if ( inputValue.length > 3 ) {
+      var nonce = $('#pq_missing_products_search_nonce');
+
       var data = {
         'action': 'pq_get_products_short_names',
         'short_name_input': inputValue,
+        'nonce': nonce[0].value,
       }
 
       searchResults.addClass('pq-loading');
