@@ -77,6 +77,8 @@ jQuery(document).ready(function ($) {
     e.preventDefault();
     e.stopPropagation();
 
+    $('#submit-missing-product').show();
+
     var formData = $('#missing-product-form').serializeArray();
     var nonce = $('#pq_missing_products_submit_nonce');
 
@@ -120,8 +122,10 @@ jQuery(document).ready(function ($) {
     $.post( pq_missing_products_variables.ajax_url, data, function(response) {
 			if (response) {
         $('#review-missing-product-content-wrapper').html(response);
+        $('#submit-missing-product').hide();
       } else {
         $('#review-missing-product-content-wrapper').html('error');
+        $('#submit-missing-product').hide();
       }
     });
   });
