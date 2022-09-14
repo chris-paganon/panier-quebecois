@@ -17,7 +17,7 @@ if ( !defined( 'ABSPATH' ) ) {
 ?>
 
 <p>Bonjour <?php esc_html_e($billing_first_name) ?>,</p>
-<p>En achetant les produits ce matin, notre marchand nous a informé ne plus avoir de <?php _e($missing_product_name) ?> en stock. Nous avons donc décidé de le remplacer par son équivalent "non bio"<?php if ( ! $is_refund_needed ) { esc_html_e(' au même prix', 'panier-quebecois');} ?>.</p>
+<p>En achetant les produits ce matin, notre marchand nous a informé ne plus avoir le produit "<?php _e($missing_product_name) ?>"" en stock. Nous avons donc décidé de le remplacer par son équivalent "non bio"<?php if ( ! $is_refund_needed ) { esc_html_e(' au même prix', 'panier-quebecois');} ?>.</p>
 
 <?php if ( $is_refund_needed ) : ?>
   <p>Nous vous avons donc remboursé les <?php echo wc_price($refund_amount); ?> de différence. Si vous souhaitez toutefois un remboursement total nous pouvons également le faire sur demande.</p>

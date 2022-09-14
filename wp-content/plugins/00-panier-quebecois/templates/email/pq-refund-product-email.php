@@ -15,7 +15,7 @@ if ( !defined( 'ABSPATH' ) ) {
 ?>
 
 <p>Bonjour <?php esc_html_e($billing_first_name) ?>,</p>
-<p>En achetant les produits ce matin, notre marchand nous a informé ne plus avoir de <?php _e($missing_product_name) ?> en stock. En l'absence de produit équivalent nous avons décidé de vous le rembourser directement sur votre carte de crédit/débit.</p>
+<p>En achetant les produits ce matin, notre marchand nous a informé ne plus avoir le produit "<?php _e($missing_product_name) ?>" en stock. En l'absence de produit équivalent nous avons décidé de vous le rembourser directement sur votre carte de crédit/débit.</p>
 
 <p>Nous faisons toujours notre possible pour vous fournir les meilleurs produits du marché en fonction des stocks disponibles.</p>
 
