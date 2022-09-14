@@ -46,6 +46,7 @@ if ( !defined( 'ABSPATH' ) ) {
   </div>
 
   <button id="review-missing-product">Suivant</button>
+  <?php wp_nonce_field('pq_missing_products_submit', 'pq_missing_products_submit_nonce'); ?>
 
 </form>
 

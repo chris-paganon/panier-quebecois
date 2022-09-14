@@ -197,6 +197,9 @@ function pq_validate_missing_product_form( $missing_products_form_data ) {
   $manual_refund_amount = pq_get_js_form_field_value( $missing_products_form_data, 'manual-refund-amount' );
 
   try {
+    if ( ! isset($_POST['nonce']) || ! wp_verify_nonce($_POST['nonce'], 'pq_missing_products_submit') ) {
+      throw new Exception('Requete invalide');
+    }
     if ( ! wc_get_product($missing_product_id) ) {
       throw new Exception('Produit manquant invalide');
     }

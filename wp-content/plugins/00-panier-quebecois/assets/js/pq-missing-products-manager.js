@@ -75,10 +75,12 @@ jQuery(document).ready(function ($) {
     e.stopPropagation();
 
     var formData = $('#missing-product-form').serializeArray();
+    var nonce = $('#pq_missing_products_submit_nonce');
 
     var data = {
       'action': 'pq_review_missing_product',
       'missing_products_form_data': formData,
+      'nonce': nonce[0].value,
     }
 
     $.post( pq_missing_products_variables.ajax_url, data, function(response) {
@@ -104,10 +106,12 @@ jQuery(document).ready(function ($) {
     e.stopPropagation();
 
     var formData = $('#missing-product-form').serializeArray();
+    var nonce = $('#pq_missing_products_submit_nonce');
 
     var data = {
       'action': 'pq_send_missing_product',
       'missing_products_form_data': formData,
+      'nonce': nonce[0].value,
     }
 
     $.post( pq_missing_products_variables.ajax_url, data, function(response) {
