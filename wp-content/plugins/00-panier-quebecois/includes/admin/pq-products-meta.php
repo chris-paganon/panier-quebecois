@@ -235,7 +235,27 @@ class PQ_products_meta {
 					'type'                  => 'number',
 					'woocommerce_wp'        => '_text_input',
 				),
-			)
+			),
+			array(
+				'position'              => 'inventory',
+				'in_variable'           => false,
+				'input_args'            => array(
+					'id'                    => '_quantity_per_crate',
+					'label'                 => __( 'Quantité par caisse' ),
+					'type'                  => 'number',
+					'woocommerce_wp'        => '_text_input',
+				),
+			),
+			array(
+				'position'              => 'inventory',
+				'in_variable'           => false,
+				'input_args'            => array(
+					'id'                    => '_min_quantity_for_crate',
+					'label'                 => __( 'Quantité minimum pour une caisse' ),
+					'type'                  => 'number',
+					'woocommerce_wp'        => '_text_input',
+				),
+			),
 		);
 
 		return $all_custom_meta_input_args;
