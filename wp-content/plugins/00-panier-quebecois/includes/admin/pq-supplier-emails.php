@@ -69,7 +69,7 @@ function pq_get_supplier_email_html( $products, $full_date, $supplier_needs_unit
   <?php
 
   foreach ( $products as $product_arr ) {
-    $quantity = $product_arr['quantity_to_buy'];
+    $quantity = ! array_key_exists('crates_to_order', $product_arr) ? $product_arr['quantity_to_buy'] : $product_arr['crates_to_order'];
     $short_name = $product_arr['_short_name'];
     $weight_with_unit = $product_arr['weight'];
     if ( $quantity > 0 ) {

@@ -192,6 +192,7 @@ function pq_add_quantity_to_buy_to_products($products) {
         $crates_to_order_string = floor($crates_to_order) . ' caisse + ' . $reminder;
       }
       
+      $products[$key]['crates_to_order'] = $crates_to_order_string;
       if ( empty($supplier_auto_order_string) ) {
         $products[$key]['supplier_auto_order_string'] = $crates_to_order_string;
       } else {
