@@ -66,6 +66,8 @@ function pq_get_product_rows( $orders, $supplier_to_get = '' ) {
           $weight = get_post_meta( $product_id, '_pq_weight', true );
           $unit = get_post_meta( $product_id, '_lot_unit', true );
           $weight_with_unit = $weight . $unit;
+          $quantity_per_crate = get_post_meta( $parent_id, '_quantity_per_crate', true );
+          $min_quantity_for_crate = get_post_meta( $parent_id, '_min_quantity_for_crate', true );
           $packing_priority = get_post_meta( $parent_id, '_packing_priority', true );
           $commercial_zone = wp_get_post_terms( $parent_id, 'pq_commercial_zone', array( 'fields' => 'names' ) );
           $commercial_zone_string = implode( ', ', $commercial_zone );
@@ -116,6 +118,8 @@ function pq_get_product_rows( $orders, $supplier_to_get = '' ) {
             'total_quantity' => $total_quantity,
             '_lot_unit' => $unit,
             'weight' => $weight_with_unit,
+            '_quantity_per_crate' => $quantity_per_crate,
+            '_min_quantity_for_crate' => $min_quantity_for_crate,
             '_pq_operation_stock' => $operation_stock,
             '_packing_priority' => $packing_priority,
             'pq_inventory_type' => $inventory_type,
@@ -169,6 +173,31 @@ function pq_add_quantity_to_buy_to_products($products) {
         $products[$key]['supplier_auto_order_string'] = 'non';
       }
 		}
+
+		$quantity_per_crate = $product['_quantity_per_crate'];
+		$min_quantity_for_crate = ! empty( $product['_min_quantity_for_crate'] ) ? $product['_min_quantity_for_crate'] : 0;
+		$quantity_to_buy = $products[$key]['quantity_to_buy'];
+		$supplier_auto_order_string = $products[$key]['supplier_auto_order_string'];
+
+    if ( ! empty($quantity_per_crate) && $quantity_per_crate != 0 && ! empty($quantity_to_buy) && $quantity_to_buy != 0 ) {
+
+      $crates_to_order = $quantity_to_buy / $quantity_per_crate;
+      $reminder = $quantity_to_buy % $quantity_per_crate;
+
+      if ( $reminder >= $min_quantity_for_crate || $reminder == 0 || empty($min_quantity_for_crate) ) {
+        $crates_to_order_string = ceil($crates_to_order) . ' caisse';
+      } elseif ( $crates_to_order < 1 ) {
+        $crates_to_order_string = $quantity_to_buy . ' unités';
+      } else {
+        $crates_to_order_string = floor($crates_to_order) . ' caisse + ' . $reminder;
+      }
+      
+      if ( empty($supplier_auto_order_string) ) {
+        $products[$key]['supplier_auto_order_string'] = $crates_to_order_string;
+      } else {
+        $products[$key]['supplier_auto_order_string'] = $supplier_auto_order_string . ' -- ' . $crates_to_order_string;
+      }
+    }
 	}
 
   return $products;
