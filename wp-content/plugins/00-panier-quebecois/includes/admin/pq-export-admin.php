@@ -124,6 +124,8 @@ function myfct_orders_export($delivery_date_raw) {
 		'Produit spéciale',
 		'Priorité de livraison',
 		'Première commande',
+		'From',
+		'To',
 	));
 
 	//Loop through orders
@@ -198,25 +200,23 @@ function myfct_orders_export($delivery_date_raw) {
 		//Get delivery priority according to timeslots
 		$delivery_timeslot_array = get_post_meta($order_id, '_delivery_time_frame', true);
 
-		if ( empty( $delivery_timeslot_array ) ) {
+		if ( empty( $delivery_timeslot_array ) ) { //For pickup locations
 			$delivery_priority = 1;
+			$delivery_start_time_string = '13:30';
+			$delivery_end_time_string_with_buffer = '15:15';
 		} else {
-			$delivery_timeslot_start_string = $delivery_timeslot_array['time_from'];
-			$delivery_start_hour = floatval( substr($delivery_timeslot_start_string, 0, 2) );
-			$delivery_start_minutes = floatval( substr($delivery_timeslot_start_string, 3, 2) ) / 60;
-			$delivery_start_time = $delivery_start_hour + $delivery_start_minutes;
-			
-			$delivery_timeslot_end_string = $delivery_timeslot_array['time_to'];
-			$delivery_end_hour = floatval( substr($delivery_timeslot_end_string, 0, 2) );
-			$delivery_end_minutes = floatval( substr($delivery_timeslot_end_string, 3, 2) ) / 60;
-			$delivery_end_time = $delivery_end_hour + $delivery_end_minutes;
+			$delivery_start_time_obj = new DateTime($delivery_timeslot_array['time_from']);
+			$delivery_end_time_obj = new DateTime($delivery_timeslot_array['time_to']);
+			$cutoff_start_time_obj = new DateTime('16:00');
+			$cutoff_end_time_obj = new DateTime('19:30');
+
+			$delivery_start_time_string = $delivery_start_time_obj->format('H:i');
+			$delivery_end_time_with_buffer = $delivery_end_time_obj->modify('-30 minutes');
+			$delivery_end_time_string_with_buffer = $delivery_end_time_with_buffer->format('H:s');
 	
-			$cutoff_start_time_to_split = 16;
-			$cutoff_end_time_to_split = 19.5; //19h30
-	
-			if ( $delivery_start_time < $cutoff_start_time_to_split && $delivery_end_time > $cutoff_end_time_to_split ) {
+			if ( $delivery_start_time_obj < $cutoff_start_time_obj && $delivery_end_time_obj > $cutoff_end_time_obj ) {
 				$delivery_priority = 1; //Full ecoresponsible time slot
-			} elseif ( $delivery_start_time < $cutoff_start_time_to_split && $delivery_end_time < $cutoff_end_time_to_split ) {
+			} elseif ( $delivery_start_time_obj < $cutoff_start_time_obj && $delivery_end_time_obj < $cutoff_end_time_obj ) {
 				$delivery_priority = 2; //Afternoon time slot
 			}else {
 				$delivery_priority = 3; //Evening time slot
@@ -285,6 +285,8 @@ function myfct_orders_export($delivery_date_raw) {
 					$special_product_number,
 					$delivery_priority,
 					$is_first_order,
+					$delivery_start_time_string,
+					$delivery_end_time_string_with_buffer,
 				));
 
 				$csv = array_merge($csv, $product_line);
