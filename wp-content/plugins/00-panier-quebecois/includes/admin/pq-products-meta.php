@@ -58,6 +58,7 @@ class PQ_products_meta {
 		add_action( 'init', array($this, 'myfct_food_restrictions_taxonomy') );
 		add_action( 'init', array($this, 'pq_collection_taxonomy') );
 		add_action( 'init', array($this, 'pq_inventory_type_taxonomy') );
+		add_action( 'init', array($this, 'pq_recipe_taxonomy') );
 
 		//Add custom descriptions
 		add_action( 'add_meta_boxes', array($this, 'pq_add_meta_boxes') );
@@ -742,6 +743,28 @@ class PQ_products_meta {
 
 		register_taxonomy( 'pq_collections', 'product', $args );
 		register_taxonomy_for_object_type( 'pq_collections', 'product' );
+	}
+
+
+	/**
+	 * Register collections taxonomy to display products on certain pages
+	 */
+	public static function pq_recipe_taxonomy() {
+		$labels = array(
+			'name'                       => 'Recette',
+			'singular_name'              => 'Recette',
+			'separate_items_with_commas' => 'Séparer par des virgules',
+			'choose_from_most_used'      => 'Choisir parmis les plus utilisés',
+		);
+
+		$args = array(
+			'labels'            => $labels,
+			'public'            => true,
+			'show_admin_column' => true,
+		);
+
+		register_taxonomy( 'pq_recettes', 'product', $args );
+		register_taxonomy_for_object_type( 'pq_recettes', 'product' );
 	}
 
 
