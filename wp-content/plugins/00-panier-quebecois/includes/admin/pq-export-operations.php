@@ -174,7 +174,8 @@ function pq_get_pdf_array( $orders ) {
 
   foreach ( $orders as $order ) {
     
-    $order_array = pq_get_orders_info_array( $order );
+    $order_positions = pq_get_route_no();
+    $order_array = pq_get_orders_info_array( $order, $order_positions );
     $order_array['product_lines'] = pq_get_product_lines_array( $order );
     $orders_array = array( $order_array );
 

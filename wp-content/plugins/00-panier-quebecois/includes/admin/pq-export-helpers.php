@@ -378,25 +378,48 @@ function pq_is_first_order( $billing_email, $order_date ) {
 /**
  * Get route numbers with sequence from TrackPOD
  */
-function pq_get_route_no( $order_id ) {
-  $url = 'https://api.track-pod.com/Order/Number/' . $order_id;
+function pq_get_route_no() {
+  $timezone = new DateTimeZone( get_option( 'timezone_string' ) );
+  $today_obj = new DateTime( 'today', $timezone );
+  $today = $today_obj->format( 'Y-m-d' );
+  $api_url = 'https://demo.cigotracker.com/api/v1/';
+  $itineraries_url = $api_url . 'itineraries/date/' . '2022-10-14'; //Replace hardcoded date with $today for production
   
-  $response = wp_remote_get( $url, array(
+  $itineraries_response = wp_remote_get( $itineraries_url, array(
     'method' => 'GET',
-    'httpversion' => '1.0',
     'headers' => array(
       'Content-Type' => 'application/json',
-      'X-API-KEY' => '534f2b64-1171-40a2-9942-b4a6c2c8e61b',
+      'Authorization' => 'Basic ' . base64_encode('Nl5pIMgGC3ENyTMg8uyAAcbq5L0kqi6kubQMpUPHFCt:CNkQ2J6kziliRBz37tEkPWrRyy5BX5doXS8B1GJ1gO2'),
     ),
   ));
 
-  $trackpod_data = json_decode($response['body']);
+  $itineraries_body = json_decode($itineraries_response['body']);
 
-  $route_no = $trackpod_data->RouteNumber;
-  $order_sequence = $trackpod_data->SeqNumber;
-  $route_no_full = $route_no . '--' . sprintf("%02d", $order_sequence);
+  $orders_positions = array();
+  foreach ( $itineraries_body->itineraries as $itinerary ) {
+    foreach ( $itinerary->stops as $stop ) {
 
-  return $route_no_full;
+      $job_url = $api_url . 'jobs/id/' . $stop->job_id;
+      $job_response = wp_remote_get( $job_url, array(
+        'method' => 'GET',
+        'headers' => array(
+          'Content-Type' => 'application/json',
+          'Authorization' => 'Basic ' . base64_encode('Nl5pIMgGC3ENyTMg8uyAAcbq5L0kqi6kubQMpUPHFCt:CNkQ2J6kziliRBz37tEkPWrRyy5BX5doXS8B1GJ1gO2'),
+        ),
+      ));
+
+      $job_body = json_decode( $job_response['body'] );
+      $order_id = $job_body->job->invoices;
+
+      $order_position = array( array(
+        'order_id' => reset($order_id),
+        'route_no_full' => 'R' . $itinerary->numeric_id . '--' . sprintf("%02d", $stop->position),
+      ));
+      $orders_positions = array_merge($orders_positions, $order_position);
+    }
+  }
+
+  return $orders_positions;
 }
 
 /**
@@ -408,12 +431,18 @@ function pq_get_route_no( $order_id ) {
 /**
  * Get all orders info for labels
  */
-function pq_get_orders_info_array( $order ) {
+function pq_get_orders_info_array( $order, $order_positions ) {
 
   $order_id = $order->get_id();
   $order_meta = array();
 
-  $route_no_full = pq_get_route_no( $order_id );
+  $route_no_full = '';
+  foreach ( $order_positions as $order_position ) {
+    if ( $order_id == $order_position['order_id'] ) {
+      $route_no_full = $order_position['route_no_full'];
+      break;
+    }
+  }
 
   if ( ! empty($order->get_shipping_address_2()) ) { //If there is apt number
     $full_delivery_address = $order->get_shipping_address_1() . ', ' . $order->get_shipping_address_2() . ', ' . $order->get_shipping_city() . ', ' . $order->get_shipping_postcode() . ', ' . $order->get_shipping_country();
