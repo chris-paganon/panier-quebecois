@@ -294,7 +294,7 @@ function pq_print_top_labels($pdf, $order_array) {
         default:
         $tag = 'main';
       }
-      $top_label_html .= '<' . $tag . '>' . $item_line . '</' . $tag . '>';
+      $top_label_html .= '<' . $tag . '>' . pq_split_long_words($item_line) . '</' . $tag . '>';
     }
   }
   $top_label_html .= '</' . $label_color . '>';
@@ -375,7 +375,7 @@ function pq_print_products_list($pdf, $order_array, $is_cold_labels = false) {
     if ( ! empty($product_info['product_lot_quantity']) )
       $product_line_html .= '<' . $product_lot_quantity_color . '>' . $product_info['product_lot_quantity'] . ' </' . $product_lot_quantity_color . '>';
 
-    $product_line_html .= '<' . $product_short_name_color . '>' . $product_info['product_short_name'] . '</' . $product_short_name_color . '>';
+    $product_line_html .= '<' . $product_short_name_color . '>' . pq_split_long_words($product_info['product_short_name']) . '</' . $product_short_name_color . '>';
     $product_line_html .= '</main>';
     $pdf->SetX($pdf->col_left_x);
     $pdf->WriteTag($product_info_cell_width, $product_info_cell_height, $product_line_html, 0, 'L');
