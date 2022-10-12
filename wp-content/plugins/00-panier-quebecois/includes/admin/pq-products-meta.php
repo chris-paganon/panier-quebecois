@@ -929,6 +929,17 @@ class PQ_products_meta {
 		</tr>
 		<tr class="form-field term-group-wrap">
 			<th scope="row">
+				<label for="pq_contact_seller_early"><?php _e( 'Envoyer email/SMS à minuit?', 'panier-quebecois' ); ?></label>
+			</th>
+			<td>
+	
+				<?php $contact_seller_early = get_term_meta ( $term -> term_id, 'pq_contact_seller_early', true ); ?>
+				<input type="checkbox" id="pq_contact_seller_early" name="pq_contact_seller_early" value="<?php echo $contact_seller_early; ?>" <?php checked($contact_seller_early); ?>>
+	
+			</div></td>
+		</tr>
+		<tr class="form-field term-group-wrap">
+			<th scope="row">
 				<label for="pq_seller_needs_units"><?php _e( 'Besoin des unités?', 'panier-quebecois' ); ?></label>
 			</th>
 			<td>
@@ -966,6 +977,9 @@ class PQ_products_meta {
 		} else {
 			update_term_meta ( $term_id, 'pq_seller_sms', '' );
 		}
+
+		$contact_seller_early = isset($_POST['pq_contact_seller_early']) ? 1 : 0;
+		update_term_meta ( $term_id, 'pq_contact_seller_early', $contact_seller_early );
 
 		$seller_needs_units = isset($_POST['pq_seller_needs_units']) ? 1 : 0;
 		update_term_meta ( $term_id, 'pq_seller_needs_units', $seller_needs_units );
