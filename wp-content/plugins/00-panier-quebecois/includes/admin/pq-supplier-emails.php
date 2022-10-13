@@ -7,7 +7,7 @@ if ( !defined( 'ABSPATH' ) ) {
 /**
  * Send emails to sellers with the day's order details
  */
-function pq_send_seller_emails() {
+function pq_send_seller_emails($suppliers) {
   
   $headers = array(
     'Content-Type: text/html; charset=UTF-8', 
@@ -15,11 +15,6 @@ function pq_send_seller_emails() {
   );
   $fmt_fr = new IntlDateFormatter( 'fr_FR', IntlDateFormatter::MEDIUM, IntlDateFormatter::NONE, NULL, IntlDateFormatter::GREGORIAN, 'EEEE dd MMMM y' );
   $full_date = $fmt_fr->format( time() );
-
-  $suppliers = get_terms( array(
-    'taxonomy' => 'product_tag',
-    'hide_empty' => false,
-  ));
 
   foreach ($suppliers as $supplier) {
     $supplier_email = get_term_meta ( $supplier->term_id, 'pq_seller_email', true );

@@ -7,12 +7,7 @@ if ( !defined( 'ABSPATH' ) ) {
 /**
  * Send SMS to sellers 
  */
-function pq_send_seller_sms() {
-
-  $suppliers = get_terms( array(
-    'taxonomy' => 'product_tag',
-    'hide_empty' => false,
-  ));
+function pq_send_seller_sms($suppliers) {
 
   foreach ($suppliers as $supplier) {
     $supplier_nos = get_term_meta ( $supplier->term_id, 'pq_seller_sms', true );
