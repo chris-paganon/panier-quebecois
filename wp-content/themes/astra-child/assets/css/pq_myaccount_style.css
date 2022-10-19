@@ -48,17 +48,29 @@
     background-color: #4b9d50;
     padding: 25px;
     border-radius: 5px;
-    width: 290px;
+    width: 100%;
     min-width: 290px;
-    max-width: 290px;
     font-weight: 600;
     font-size: 21px;
     line-height: 25px;
     color: #ffffff;
+    text-align: left;
 }
 
 .woocommerce-dashboard .mto-dashboard-header .nav-ctas {
-    margin-top: 44px;
+    margin-top: 14px;
+}
+
+@media (min-width: 768px) {
+    .woocommerce-dashboard .mto-dashboard-header .main-cta a {
+        width: 290px;
+        max-width: 290px;
+        text-align: center;
+    }
+
+    .woocommerce-dashboard .mto-dashboard-header .nav-ctas {
+        margin-top: 44px;
+    }
 }
 
 .woocommerce-dashboard .mto-dashboard-header .nav-ctas ul {
@@ -87,20 +99,29 @@
 .woocommerce-dashboard .mto-dashboard-header .nav-ctas ul li a {
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
     background-color: #4b9d50;
-    padding: 12px 40px;
+    padding: 12px 25px;
     border-radius: 5px;
     font-weight: 600;
     font-size: 21px;
     line-height: 25px;
     color: #ffffff;
     min-height: 75px;
+    text-align: left;
 }
 
 @media (min-width: 992px) {
     .woocommerce-dashboard .mto-dashboard-header .nav-ctas ul li a {
         min-width: 290px;
+    }
+}
+
+@media (min-width: 768px) {
+    .woocommerce-dashboard .mto-dashboard-header .nav-ctas ul li a {
+        justify-content: center;
+        padding: 12px 40px;
+        text-align: center;
     }
 }
 
