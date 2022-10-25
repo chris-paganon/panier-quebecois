@@ -12,18 +12,6 @@
 }
 
 /* Tab menu */
-/* @media (max-width: 767px) {
-    .woocommerce-account #tgwc-woocommerce .tgwc-woocommerce-MyAccount-navigation.tgwc-navbar-tab ul.scroll_tabs_container div.scroll_tab_inner {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-    
-    .woocommerce-account #tgwc-woocommerce .tgwc-woocommerce-MyAccount-navigation.tgwc-navbar-tab ul.scroll_tabs_container div.scroll_tab_inner li {
-        border: none;
-        display: block;
-    }
-} */
-
 #tgwc-woocommerce nav.tgwc-woocommerce-MyAccount-navigation.tgwc-navbar-tab {
     display: none !important;
 }
