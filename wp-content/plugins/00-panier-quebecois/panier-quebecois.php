@@ -83,6 +83,7 @@ class Panier_Quebecois {
     include_once( PQ_INCLUDE_ADMIN_DIR . 'pq-supplier-emails.php' );
     include_once( PQ_INCLUDE_ADMIN_DIR . 'pq-supplier-sms.php' );
     include_once( PQ_INCLUDE_ADMIN_DIR . 'pq-inventory-manager.php' );
+    include_once( PQ_INCLUDE_ADMIN_DIR . 'pq-missing-products-manager.php' );
 
     //AJAX shop
     include_once( PQ_INCLUDE_AJAXSHOP_DIR . 'pq-ajax-shop-starter.php' );
@@ -187,6 +188,17 @@ class Panier_Quebecois {
       wp_enqueue_script( 'pq_inventory_manager_js', PQ_JS_URL . 'pq-inventory-manager-ajax.js', array( 'jquery' ), rand( 111, 9999 ), true  );
       wp_localize_script( 'pq_inventory_manager_js', 'pq_inventory_manager_variables', array('ajax_url' => admin_url('admin-ajax.php')) );
 	    wp_enqueue_style( 'pq_inventory_manager_css', PQ_CSS_URL . '/pq-inventory-manager.css', array('astra-theme-css'), rand(111,9999) );
+    }
+
+    //Missing products manager JS, CSS and AJAX
+    if ( is_a( $post, 'WP_Post' ) && has_shortcode( $post->post_content, 'pq_missing_products_manager') ) {
+      wp_enqueue_script( 'pq_missing_products_manager_js', PQ_JS_URL . 'pq-missing-products-manager.js', array( 'jquery' ), rand( 111, 9999 ), true  );
+      wp_localize_script( 'pq_missing_products_manager_js', 'pq_missing_products_variables', array('ajax_url' => admin_url('admin-ajax.php')) );
+	    wp_enqueue_style( 'pq-missing-products-manager_css', PQ_CSS_URL . '/pq-missing-products-manager.css', array('astra-theme-css'), rand(111,9999) );
+    }
+
+    if(is_account_page() && is_wc_endpoint_url() && is_user_logged_in()){
+      wp_enqueue_script( 'pq_my_account', PQ_JS_URL . 'pq_my_account.js', array( 'jquery' ), rand( 111, 9999 ), false );
     }
   }
 }

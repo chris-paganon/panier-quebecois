@@ -42,3 +42,28 @@ function remove_downloads_my_account( $items ) {
   unset( $items[ 'downloads' ] );
   return $items;
 }
+
+// ---------- Add shortcode for loyalty balance ---------- //
+add_shortcode( 'pq_badge_loyalty_balance', 'pq_badge_loyalty_balance_fct' );
+function pq_badge_loyalty_balance_fct( $atts ) {
+  if ( is_user_logged_in() ) {
+    $user_id  = get_current_user_id();
+    if($user_id){
+      if (pq_has_main_badge($user_id)){
+        $mycred = mycred();
+        $balance = $mycred->get_users_balance( $user_id );
+        if($balance){
+          $image = PQ_loyalty_helper::get_image();
+          $html = '<div class="pq_loyalty_balance_badge">';
+          if($image){
+            $html .= '<div class="image">'.$image.'</div>';
+          }
+          $html .= '<div class="balance">'.wc_price($balance).'</div>';
+          $html .= '</div>';
+          echo $html;
+        }
+      }
+    }
+  }
+	return;	
+}

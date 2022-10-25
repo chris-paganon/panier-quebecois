@@ -134,3 +134,20 @@ function pq_style_sheets($spreadsheet) {
     $sheet->getStyle('A1:' . $last_column_string . $rows_count)->applyFromArray($styleArray);
   }
 }
+
+
+/**
+ * Split long words with extra spaces to fix FPDF WriteTag extension bug
+ */
+function pq_split_long_words($string) {
+  $arr = explode(' ', $string);
+
+  foreach ( $arr as $key => $word ) {
+    if (strlen($word) > 21) {
+      $arr[$key] = chunk_split($word, 18, ' ');
+    }
+  }
+            
+  $new_string = implode(' ', $arr);
+  return $new_string;
+}

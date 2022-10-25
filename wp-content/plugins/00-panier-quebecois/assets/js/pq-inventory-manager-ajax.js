@@ -6,6 +6,7 @@ jQuery(document).ready(function ($) {
 	$('.pq-inventory-options').change( function() {
 
 		var selectedCategory =  $('#product-categories').val();
+		var selectedInventoryType =  $('#inventory-type').val();
 		var hasStock = $('#has-stock').is(":checked");
 		var minPriority = 0;
 		var maxPriority = 100;
@@ -34,7 +35,9 @@ jQuery(document).ready(function ($) {
 		$('tr.inventory-product-row').each(function() {
 			var productData = JSON.parse( $(this).attr("product-data") );
 
-			if ( productData._packing_priority >= minPriority && productData._packing_priority <= maxPriority ) {
+			if ( productData._packing_priority >= minPriority 
+				&& productData._packing_priority <= maxPriority
+				&& ( selectedInventoryType == 'all' || productData.pq_inventory_type.indexOf(selectedInventoryType) !== -1 ) ) {
 				if ( hasStock && productData._pq_operation_stock == '' ) {
 					$(this).hide();
 				} else {

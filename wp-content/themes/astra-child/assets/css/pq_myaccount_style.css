@@ -19,10 +19,14 @@
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-    padding: 88px 20px;
+    padding: 0;
     text-align: center;
     color: #ffffff;
     font-family: 'Work Sans', sans-serif;
+}
+.woocommerce-dashboard .mto-dashboard-header-overlay {
+    background-color: #00000073;
+    padding: 88px 20px;
 }
 
 .woocommerce-dashboard .mto-dashboard-header .dashboard-header {
@@ -44,17 +48,29 @@
     background-color: #4b9d50;
     padding: 25px;
     border-radius: 5px;
-    width: 290px;
+    width: 100%;
     min-width: 290px;
-    max-width: 290px;
     font-weight: 600;
     font-size: 21px;
     line-height: 25px;
     color: #ffffff;
+    text-align: left;
 }
 
 .woocommerce-dashboard .mto-dashboard-header .nav-ctas {
-    margin-top: 44px;
+    margin-top: 14px;
+}
+
+@media (min-width: 768px) {
+    .woocommerce-dashboard .mto-dashboard-header .main-cta a {
+        width: 290px;
+        max-width: 290px;
+        text-align: center;
+    }
+
+    .woocommerce-dashboard .mto-dashboard-header .nav-ctas {
+        margin-top: 44px;
+    }
 }
 
 .woocommerce-dashboard .mto-dashboard-header .nav-ctas ul {
@@ -83,20 +99,33 @@
 .woocommerce-dashboard .mto-dashboard-header .nav-ctas ul li a {
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
     background-color: #4b9d50;
-    padding: 12px 40px;
+    padding: 12px 25px;
     border-radius: 5px;
     font-weight: 600;
     font-size: 21px;
     line-height: 25px;
     color: #ffffff;
     min-height: 75px;
+    text-align: left;
+}
+
+.woocommerce-dashboard .mto-dashboard-header .nav-ctas ul li a svg {
+    margin-right: 10px;
 }
 
 @media (min-width: 992px) {
     .woocommerce-dashboard .mto-dashboard-header .nav-ctas ul li a {
         min-width: 290px;
+    }
+}
+
+@media (min-width: 768px) {
+    .woocommerce-dashboard .mto-dashboard-header .nav-ctas ul li a {
+        justify-content: center;
+        padding: 12px 25px;
+        text-align: center;
     }
 }
 
@@ -291,4 +320,66 @@
     line-height: 42px;
     color: #54595f;
     margin-bottom: 44px;
+}
+
+.woocommerce-account .woocommerce select#pq-myAccount-mobile-nav {
+    display: block;
+    margin-bottom: 25px;
+    width: 100%;
+    border: 1px solid #DDDDDD;
+    border-radius: 5px;
+    background-color: #ffffff;
+    font-family: 'Work Sans';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 15px;
+    line-height: 18px;
+}
+
+.woocommerce-account .woocommerce select#pq-myAccount-mobile-nav option {
+    width: 100%;
+    font-family: 'Work Sans';
+    font-weight: 400;
+    font-size: 15px;
+    line-height: 18px;
+    background-color: #ffffff;
+}
+
+@media (min-width: 768px) {
+    .woocommerce-account .woocommerce select#pq-myAccount-mobile-nav {
+        display: none !important;
+    }
+}
+
+.pq_loyalty_balance_badge {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.pq_loyalty_balance_badge .image {
+    margin-right: 5px;
+}
+
+.pq_loyalty_balance_badge .image img {
+    width: 18px;
+    height: auto;
+}
+
+.pq_loyalty_balance_badge .balance .amount bdi {
+    font-family: 'Work Sans';
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 20px;
+}
+
+@media (min-width: 768px) {
+    .pq_loyalty_balance_badge .image img {
+        width: 23px;
+    }
+    
+    .pq_loyalty_balance_badge .balance .amount bdi {
+        font-size: 21px;
+        line-height: 25px;
+    }
 }

@@ -55,7 +55,7 @@ add_filter( 'body_class', function($classes){
 } );
 
 add_action('wp_head', function(){
-	if(is_front_page() && is_user_logged_in()){
+	if( is_front_page() && is_user_logged_in() && ! current_user_can('manage_options') ){
 		echo "<script type='text/javascript'>        
 			if(!sessionStorage.getItem('dashboard_seen')){
             sessionStorage.setItem('dashboard_seen', true);
@@ -67,5 +67,13 @@ add_action('wp_head', function(){
 
 
 // END ENQUEUE PARENT ACTION
+
+
+function get_icon_account_endpoint( $slug ) {
+	if( function_exists( 'tgwc_get_endpoint_icon' ) && $iconEndpoint = tgwc_get_endpoint_icon( $slug ) ){
+		 echo '<i class="'.esc_attr( $iconEndpoint ).'"></i>'; 
+	}
+	return;	
+}
 
 // ************************************************************************************************ //

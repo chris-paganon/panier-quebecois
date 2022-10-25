@@ -12,6 +12,16 @@
 }
 
 /* Tab menu */
+#tgwc-woocommerce nav.tgwc-woocommerce-MyAccount-navigation.tgwc-navbar-tab {
+    display: none !important;
+}
+
+@media (min-width: 768px) {
+    #tgwc-woocommerce nav.tgwc-woocommerce-MyAccount-navigation.tgwc-navbar-tab {
+        display: block !important;
+    }
+}
+
 .woocommerce-account .scroll_tabs_container div.scroll_tab_inner {
     display: flex;
     flex-wrap: wrap;

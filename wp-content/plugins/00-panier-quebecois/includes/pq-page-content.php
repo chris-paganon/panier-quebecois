@@ -108,14 +108,6 @@ function pq_seller_week_fct() {
     $seller_link = get_term_link( $seller );
     $image_id = get_term_meta ( $sellerID, 'image_id', true );
 
-//    $tax_query = array(
-//        array(
-//            'taxonomy' => 'pq_collections',
-//            'field' => 'slug',
-//            'terms' => 'marchand-de-la-semaine',
-//        ),
-//    );
-
 	$tax_query = array(
 		'relation' => 'OR',
 		array(
@@ -173,17 +165,13 @@ function pq_seller_week_fct() {
     echo '<p class="sellerweek_title">'.$seller->name.'</p>';
     echo '<a href="' . esc_url( $seller_link ) . '">' . esc_attr( 'Magasiner', 'woocommerce' ) . '</a>';
     echo '</li>';
-//    echo '<div class="sellerweek_products woocommerce columns-3">';
     if ( $products_query->have_posts() ) {
-//        woocommerce_product_loop_start();
         while ( $products_query->have_posts() ) {
             $products_query->the_post();
             wc_get_template_part( 'content', 'product' );
         }
-//        woocommerce_product_loop_end();
     }
     wp_reset_postdata();
-//    echo '</div>';
     echo '</ul>';
     echo '</div>';
 }

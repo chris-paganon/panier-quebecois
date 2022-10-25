@@ -24,6 +24,20 @@ if ( !defined( 'ABSPATH' ) ) {
   </div>
 
   <div class="inventory-filter">
+    <label for="inventory-type">Type d'inventaire</label>
+    <select name="inventory-type" id="inventory-type" class="pq-inventory-options">
+      <option value="all">Tous les types</option>
+      <?php 
+      $inventory_types = get_terms( array(
+        'taxonomy' => 'pq_inventory_type',
+      ));
+      foreach ( $inventory_types as $inventory_type ) : ?>
+        <option value="<?php echo $inventory_type->slug ?>"><?php echo $inventory_type->name ?></option>
+      <?php endforeach ?>
+    </select>
+  </div>
+
+  <div class="inventory-filter">
     <label for="has-stock">Stock renseigné?</label>
     <input type="checkbox" name="has-stock" id="has-stock" class="pq-inventory-options">
   </div>

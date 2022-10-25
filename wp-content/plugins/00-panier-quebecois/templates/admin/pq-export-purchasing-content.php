@@ -5,7 +5,7 @@ if ( !defined( 'ABSPATH' ) ) {
 }
 
 $timezone = new DateTimeZone( get_option( 'timezone_string' ) );
-$default_date_obj = new DateTime( 'tomorrow', $timezone );
+$default_date_obj = new DateTime( 'today', $timezone );
 $default_date = $default_date_obj->format( 'Y-m-d' ); ?>
 
 <div class="wrap">

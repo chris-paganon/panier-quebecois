@@ -110,11 +110,13 @@ function pq_print_sheets($spreadsheet, $product_rows) {
   $centrale_stock_sheet = new \PhpOffice\PhpSpreadsheet\Worksheet\Worksheet($spreadsheet, 'Centrale en stock');
   $spreadsheet->addSheet($centrale_stock_sheet, 0);
 
-  $to_print = array('_short_name', 'total_quantity');
+  $to_print = array('_short_name', 'total_quantity', '_pq_operation_stock', 'quantity_to_buy');
   $products_to_print = 'centrale-exterieur';
 
   $centrale_stock_sheet->setCellValue('A1', 'Nom court');
   $centrale_stock_sheet->setCellValue('B1', 'Conso');
+  $centrale_stock_sheet->setCellValue('C1', 'Stock');
+  $centrale_stock_sheet->setCellValue('D1', 'Besoin');
 
   pq_print_on_sheet( $centrale_stock_sheet, $product_rows, 1, 999, $to_print, $products_to_print );
 
@@ -122,12 +124,13 @@ function pq_print_sheets($spreadsheet, $product_rows) {
   $peser_sheet = new \PhpOffice\PhpSpreadsheet\Worksheet\Worksheet($spreadsheet, 'Peser');
   $spreadsheet->addSheet($peser_sheet, 0);
 
-  $to_print = array('_short_name', 'total_quantity', 'weight');
+  $to_print = array('_short_name', 'total_quantity', 'weight', '_pq_operation_stock');
   $products_to_print = 'a-peser';
 
   $peser_sheet->setCellValue('A1', 'Nom court');
   $peser_sheet->setCellValue('B1', 'Conso');
   $peser_sheet->setCellValue('C1', 'Poids');
+  $peser_sheet->setCellValue('D1', 'Stock');
 
   pq_print_on_sheet( $peser_sheet, $product_rows, 1, 999, $to_print, $products_to_print );
 }
@@ -179,7 +182,7 @@ function pq_get_pdf_array( $orders ) {
   }
 
   $columns = array_column($pdf_array, 'route_no_full');
-  array_multisort($columns, SORT_ASC, SORT_STRING, $pdf_array);
+  array_multisort($columns, SORT_DESC, SORT_STRING, $pdf_array);
 
   $pdf_array = pq_fix_same_address_sequence($pdf_array);
 
@@ -291,7 +294,7 @@ function pq_print_top_labels($pdf, $order_array) {
         default:
         $tag = 'main';
       }
-      $top_label_html .= '<' . $tag . '>' . $item_line . '</' . $tag . '>';
+      $top_label_html .= '<' . $tag . '>' . pq_split_long_words($item_line) . '</' . $tag . '>';
     }
   }
   $top_label_html .= '</' . $label_color . '>';
@@ -372,7 +375,7 @@ function pq_print_products_list($pdf, $order_array, $is_cold_labels = false) {
     if ( ! empty($product_info['product_lot_quantity']) )
       $product_line_html .= '<' . $product_lot_quantity_color . '>' . $product_info['product_lot_quantity'] . ' </' . $product_lot_quantity_color . '>';
 
-    $product_line_html .= '<' . $product_short_name_color . '>' . $product_info['product_short_name'] . '</' . $product_short_name_color . '>';
+    $product_line_html .= '<' . $product_short_name_color . '>' . pq_split_long_words($product_info['product_short_name']) . '</' . $product_short_name_color . '>';
     $product_line_html .= '</main>';
     $pdf->SetX($pdf->col_left_x);
     $pdf->WriteTag($product_info_cell_width, $product_info_cell_height, $product_line_html, 0, 'L');

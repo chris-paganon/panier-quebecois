@@ -24,58 +24,73 @@ function myfct_purchasing_export( $delivery_date_raw, $import_after_order = "" )
 
 	$spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
 
+	$to_print = array(
+		'pq_commercial_zone', 
+		'supplier', 
+		'sku',
+		'_short_name',
+		'_pq_reference',
+		'total_quantity',
+		'weight',
+		'_pq_operation_stock',
+		'quantity_to_buy',
+		'_packing_priority',
+		'supplier_auto_order_string',
+	);
+
+	$products_to_print = 'all';
+
+	$current_sheet = $spreadsheet->getActiveSheet();
+
+	pq_set_purchasing_column_default_titles($current_sheet);
+	$current_sheet->setCellValue('M1', 'No de commandes');
+	$current_sheet->setCellValue('N1', $orders_count);
+	$current_sheet->setCellValue('O1', 'Dernière commande:');
+	$current_sheet->setCellValue('P1', $last_order_number);
+
+	$commercial_zone_to_print_name = 'Jean-Talon';
+	$current_sheet->setTitle($commercial_zone_to_print_name);
+	pq_print_on_sheet( $current_sheet, $products, 1, 999, $to_print, $products_to_print, $commercial_zone_to_print_name );
+
 	$commercial_zones_to_print = get_terms( array(
     'taxonomy' => 'pq_commercial_zone',
     'hide_empty' => false,
+		'exclude' => array(504, 805), //Exclude Marché Jean-Talon and Pourtour Marché Jean-Talon, they are in the first sheet just above
   ));
 	
 	foreach ( $commercial_zones_to_print as $key => $commercial_zone_to_print ) {
 		$commercial_zone_to_print_name = $commercial_zone_to_print->name;
-		if ( $key === 0 ) {
-			$current_sheet = $spreadsheet->getActiveSheet();
-		} else {
-  		$new_sheet = new \PhpOffice\PhpSpreadsheet\Worksheet\Worksheet($spreadsheet, $commercial_zone_to_print_name);
-			$current_sheet = $spreadsheet->addSheet($new_sheet, 0);
-		}
+
+		$new_sheet = new \PhpOffice\PhpSpreadsheet\Worksheet\Worksheet($spreadsheet, $commercial_zone_to_print_name);
+		$current_sheet = $spreadsheet->addSheet($new_sheet, 0);
+		pq_set_purchasing_column_default_titles($current_sheet);
 		$current_sheet->setTitle($commercial_zone_to_print_name);
 	
-		$to_print = array(
-			'pq_commercial_zone', 
-			'supplier', 
-			'sku',
-			'_short_name',
-			'_pq_reference',
-			'total_quantity',
-			'_lot_unit',
-			'_pq_operation_stock',
-			'quantity_to_buy',
-			'_packing_priority',
-			'supplier_auto_order_string',
-		);
-	
-		$current_sheet->setCellValue('A1', 'Zone');
-		$current_sheet->setCellValue('B1', 'Marchand');
-		$current_sheet->setCellValue('C1', 'SKU');
-		$current_sheet->setCellValue('D1', 'Nom court');
-		$current_sheet->setCellValue('E1', 'Référence fournisseur');
-		$current_sheet->setCellValue('F1', 'Conso');
-		$current_sheet->setCellValue('G1', 'Unité');
-		$current_sheet->setCellValue('H1', 'Stock');
-		$current_sheet->setCellValue('I1', 'Besoin');
-		$current_sheet->setCellValue('J1', 'Ordre de prio');
-		$current_sheet->setCellValue('K1', 'Auto email/SMS');
-		$current_sheet->setCellValue('M1', 'No de commandes');
-		$current_sheet->setCellValue('N1', $orders_count);
-		$current_sheet->setCellValue('O1', 'Dernière commande:');
-		$current_sheet->setCellValue('P1', $last_order_number);
-	
-		pq_print_on_sheet( $current_sheet, $products, 1, 999, $to_print, '', $commercial_zone_to_print_name );
+		pq_print_on_sheet( $current_sheet, $products, 1, 999, $to_print, $products_to_print, $commercial_zone_to_print_name );
 	}
 
 	pq_style_sheets($spreadsheet);
 
 	$file_name = 'listes-achats';
 	pq_export_excel($spreadsheet, $file_name);
+}
+
+
+/**
+ * Set purchasing export default column names
+ */
+function pq_set_purchasing_column_default_titles($current_sheet) {
+	$current_sheet->setCellValue('A1', 'Zone');
+	$current_sheet->setCellValue('B1', 'Marchand');
+	$current_sheet->setCellValue('C1', 'SKU');
+	$current_sheet->setCellValue('D1', 'Nom court');
+	$current_sheet->setCellValue('E1', 'Référence fournisseur');
+	$current_sheet->setCellValue('F1', 'Conso');
+	$current_sheet->setCellValue('G1', 'Unité');
+	$current_sheet->setCellValue('H1', 'Stock');
+	$current_sheet->setCellValue('I1', 'Besoin');
+	$current_sheet->setCellValue('J1', 'Ordre de prio');
+	$current_sheet->setCellValue('K1', 'Commande');
 }
 
 
@@ -109,6 +124,8 @@ function myfct_orders_export($delivery_date_raw) {
 		'Produit spéciale',
 		'Priorité de livraison',
 		'Première commande',
+		'From',
+		'To',
 	));
 
 	//Loop through orders
@@ -183,25 +200,23 @@ function myfct_orders_export($delivery_date_raw) {
 		//Get delivery priority according to timeslots
 		$delivery_timeslot_array = get_post_meta($order_id, '_delivery_time_frame', true);
 
-		if ( empty( $delivery_timeslot_array ) ) {
+		if ( empty( $delivery_timeslot_array ) ) { //For pickup locations
 			$delivery_priority = 1;
+			$delivery_start_time_string = '13:30';
+			$delivery_end_time_string_with_buffer = '15:15';
 		} else {
-			$delivery_timeslot_start_string = $delivery_timeslot_array['time_from'];
-			$delivery_start_hour = floatval( substr($delivery_timeslot_start_string, 0, 2) );
-			$delivery_start_minutes = floatval( substr($delivery_timeslot_start_string, 3, 2) ) / 60;
-			$delivery_start_time = $delivery_start_hour + $delivery_start_minutes;
-			
-			$delivery_timeslot_end_string = $delivery_timeslot_array['time_to'];
-			$delivery_end_hour = floatval( substr($delivery_timeslot_end_string, 0, 2) );
-			$delivery_end_minutes = floatval( substr($delivery_timeslot_end_string, 3, 2) ) / 60;
-			$delivery_end_time = $delivery_end_hour + $delivery_end_minutes;
+			$delivery_start_time_obj = new DateTime($delivery_timeslot_array['time_from']);
+			$delivery_end_time_obj = new DateTime($delivery_timeslot_array['time_to']);
+			$cutoff_start_time_obj = new DateTime('16:00');
+			$cutoff_end_time_obj = new DateTime('19:30');
+
+			$delivery_start_time_string = $delivery_start_time_obj->format('H:i');
+			$delivery_end_time_with_buffer = $delivery_end_time_obj->modify('-30 minutes');
+			$delivery_end_time_string_with_buffer = $delivery_end_time_with_buffer->format('H:s');
 	
-			$cutoff_start_time_to_split = 16;
-			$cutoff_end_time_to_split = 19.5; //19h30
-	
-			if ( $delivery_start_time < $cutoff_start_time_to_split && $delivery_end_time > $cutoff_end_time_to_split ) {
+			if ( $delivery_start_time_obj < $cutoff_start_time_obj && $delivery_end_time_obj > $cutoff_end_time_obj ) {
 				$delivery_priority = 1; //Full ecoresponsible time slot
-			} elseif ( $delivery_start_time < $cutoff_start_time_to_split && $delivery_end_time < $cutoff_end_time_to_split ) {
+			} elseif ( $delivery_start_time_obj < $cutoff_start_time_obj && $delivery_end_time_obj < $cutoff_end_time_obj ) {
 				$delivery_priority = 2; //Afternoon time slot
 			}else {
 				$delivery_priority = 3; //Evening time slot
@@ -270,6 +285,8 @@ function myfct_orders_export($delivery_date_raw) {
 					$special_product_number,
 					$delivery_priority,
 					$is_first_order,
+					$delivery_start_time_string,
+					$delivery_end_time_string_with_buffer,
 				));
 
 				$csv = array_merge($csv, $product_line);

@@ -58,6 +58,7 @@ class PQ_products_meta {
 		add_action( 'init', array($this, 'myfct_food_restrictions_taxonomy') );
 		add_action( 'init', array($this, 'pq_collection_taxonomy') );
 		add_action( 'init', array($this, 'pq_inventory_type_taxonomy') );
+		add_action( 'init', array($this, 'pq_recipe_taxonomy') );
 
 		//Add custom descriptions
 		add_action( 'add_meta_boxes', array($this, 'pq_add_meta_boxes') );
@@ -235,7 +236,27 @@ class PQ_products_meta {
 					'type'                  => 'number',
 					'woocommerce_wp'        => '_text_input',
 				),
-			)
+			),
+			array(
+				'position'              => 'inventory',
+				'in_variable'           => false,
+				'input_args'            => array(
+					'id'                    => '_quantity_per_crate',
+					'label'                 => __( 'Quantité par caisse' ),
+					'type'                  => 'number',
+					'woocommerce_wp'        => '_text_input',
+				),
+			),
+			array(
+				'position'              => 'inventory',
+				'in_variable'           => false,
+				'input_args'            => array(
+					'id'                    => '_min_quantity_for_crate',
+					'label'                 => __( 'Quantité minimum pour une caisse' ),
+					'type'                  => 'number',
+					'woocommerce_wp'        => '_text_input',
+				),
+			),
 		);
 
 		return $all_custom_meta_input_args;
@@ -726,6 +747,28 @@ class PQ_products_meta {
 
 
 	/**
+	 * Register collections taxonomy to display products on certain pages
+	 */
+	public static function pq_recipe_taxonomy() {
+		$labels = array(
+			'name'                       => 'Recette',
+			'singular_name'              => 'Recette',
+			'separate_items_with_commas' => 'Séparer par des virgules',
+			'choose_from_most_used'      => 'Choisir parmis les plus utilisés',
+		);
+
+		$args = array(
+			'labels'            => $labels,
+			'public'            => true,
+			'show_admin_column' => true,
+		);
+
+		register_taxonomy( 'pq_recettes', 'product', $args );
+		register_taxonomy_for_object_type( 'pq_recettes', 'product' );
+	}
+
+
+	/**
 	 * Add custom description fields
 	 * 
 	 *	Add custom meta boxes
@@ -886,12 +929,34 @@ class PQ_products_meta {
 		</tr>
 		<tr class="form-field term-group-wrap">
 			<th scope="row">
+				<label for="pq_contact_seller_early"><?php _e( 'Envoyer email/SMS à minuit?', 'panier-quebecois' ); ?></label>
+			</th>
+			<td>
+	
+				<?php $contact_seller_early = get_term_meta ( $term -> term_id, 'pq_contact_seller_early', true ); ?>
+				<input type="checkbox" id="pq_contact_seller_early" name="pq_contact_seller_early" value="<?php echo $contact_seller_early; ?>" <?php checked($contact_seller_early); ?>>
+	
+			</div></td>
+		</tr>
+		<tr class="form-field term-group-wrap">
+			<th scope="row">
 				<label for="pq_seller_needs_units"><?php _e( 'Besoin des unités?', 'panier-quebecois' ); ?></label>
 			</th>
 			<td>
 	
 				<?php $seller_needs_units = get_term_meta ( $term -> term_id, 'pq_seller_needs_units', true ); ?>
 				<input type="checkbox" id="pq_seller_needs_units" name="pq_seller_needs_units" value="<?php echo $seller_needs_units; ?>" <?php checked($seller_needs_units); ?>>
+	
+			</div></td>
+		</tr>
+		<tr class="form-field term-group-wrap">
+			<th scope="row">
+				<label for="pq_seller_is_ordered_on_spot"><?php _e( 'Commandé sur place?', 'panier-quebecois' ); ?></label>
+			</th>
+			<td>
+	
+				<?php $seller_is_ordered_on_spot = get_term_meta ( $term -> term_id, 'pq_seller_is_ordered_on_spot', true ); ?>
+				<input type="checkbox" id="pq_seller_is_ordered_on_spot" name="pq_seller_is_ordered_on_spot" value="<?php echo $seller_is_ordered_on_spot; ?>" <?php checked($seller_is_ordered_on_spot); ?>>
 	
 			</div></td>
 		</tr>
@@ -913,8 +978,14 @@ class PQ_products_meta {
 			update_term_meta ( $term_id, 'pq_seller_sms', '' );
 		}
 
+		$contact_seller_early = isset($_POST['pq_contact_seller_early']) ? 1 : 0;
+		update_term_meta ( $term_id, 'pq_contact_seller_early', $contact_seller_early );
+
 		$seller_needs_units = isset($_POST['pq_seller_needs_units']) ? 1 : 0;
 		update_term_meta ( $term_id, 'pq_seller_needs_units', $seller_needs_units );
+
+		$seller_is_ordered_on_spot = isset($_POST['pq_seller_is_ordered_on_spot']) ? 1 : 0;
+		update_term_meta ( $term_id, 'pq_seller_is_ordered_on_spot', $seller_is_ordered_on_spot );
 	}
 }
 

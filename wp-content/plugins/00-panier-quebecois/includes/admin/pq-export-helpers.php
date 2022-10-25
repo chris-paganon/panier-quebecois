@@ -13,7 +13,7 @@ if ( !defined( 'ABSPATH' ) ) {
  /**
  * Get all the product rows in an array
  */
-function pq_get_product_rows($orders) {
+function pq_get_product_rows( $orders, $supplier_to_get = '' ) {
 
   $product_rows = array();
     
@@ -21,7 +21,9 @@ function pq_get_product_rows($orders) {
     foreach ( $order->get_items() as $item_id => $item ) {
       $product = wc_get_product( $item->get_product_id() );
 
-      if ( myfct_is_relevant_product( $product ) ) {
+      $is_relevant_product = empty($supplier_to_get) ? myfct_is_relevant_product($product) : pq_is_relevant_product_for_supplier($product, $supplier_to_get);
+
+      if ( $is_relevant_product ) {
 
         $has_distinct_variations = false;
         if ( $item->get_variation_id() !== 0 ) {
@@ -42,9 +44,7 @@ function pq_get_product_rows($orders) {
           $product_id = $parent_id = $product->get_id();
         }
 
-        $product_quantity_before_refund = $item->get_quantity();
-        $product_quantity_refunded = $order->get_qty_refunded_for_item( $item_id );
-        $product_quantity = $product_quantity_before_refund + $product_quantity_refunded;
+        $product_quantity = pq_get_item_qty_after_refunds( $order, $item_id );
         $lot_quantity = get_post_meta( $product_id, '_lot_quantity', true );
         $total_quantity = $product_quantity * $lot_quantity;
 
@@ -66,6 +66,8 @@ function pq_get_product_rows($orders) {
           $weight = get_post_meta( $product_id, '_pq_weight', true );
           $unit = get_post_meta( $product_id, '_lot_unit', true );
           $weight_with_unit = $weight . $unit;
+          $quantity_per_crate = get_post_meta( $parent_id, '_quantity_per_crate', true );
+          $min_quantity_for_crate = get_post_meta( $parent_id, '_min_quantity_for_crate', true );
           $packing_priority = get_post_meta( $parent_id, '_packing_priority', true );
           $commercial_zone = wp_get_post_terms( $parent_id, 'pq_commercial_zone', array( 'fields' => 'names' ) );
           $commercial_zone_string = implode( ', ', $commercial_zone );
@@ -94,11 +96,11 @@ function pq_get_product_rows($orders) {
             array_push($suppliers_names, $supplier->name);
             $supplier_email = get_term_meta ( $supplier->term_id, 'pq_seller_email', true );
             $supplier_sms = get_term_meta ( $supplier->term_id, 'pq_seller_sms', true );
-            if ( ! empty($supplier_email) ) {
-              $supplier_auto_order_string .= $supplier_email . ', ';
-            }
-            if ( ! empty($supplier_sms) ) {
-              $supplier_auto_order_string .= $supplier_sms;
+            $supplier_is_ordered_on_spot = get_term_meta ( $supplier->term_id, 'pq_seller_is_ordered_on_spot', true );
+            if ( ! empty($supplier_email) || ! empty($supplier_sms) ) {
+              $supplier_auto_order_string = 'oui';
+            } elseif ( $supplier_is_ordered_on_spot == 1 ) {
+              $supplier_auto_order_string = 'sur place';
             }
           }
 
@@ -116,6 +118,8 @@ function pq_get_product_rows($orders) {
             'total_quantity' => $total_quantity,
             '_lot_unit' => $unit,
             'weight' => $weight_with_unit,
+            '_quantity_per_crate' => $quantity_per_crate,
+            '_min_quantity_for_crate' => $min_quantity_for_crate,
             '_pq_operation_stock' => $operation_stock,
             '_packing_priority' => $packing_priority,
             'pq_inventory_type' => $inventory_type,
@@ -133,18 +137,68 @@ function pq_get_product_rows($orders) {
 
 
 /**
+ * Get item quantity after refunds
+ */
+function pq_get_item_qty_after_refunds ( $order, $item_id ) {
+  $item = $order->get_item($item_id);
+  $product_quantity_before_refund = $item->get_quantity();
+  $product_quantity_refunded = $order->get_qty_refunded_for_item( $item_id );
+  $product_quantity = $product_quantity_before_refund + $product_quantity_refunded;
+
+  return $product_quantity;
+}
+
+
+/**
  * Add quantity to buy to products rows
  */
 function pq_add_quantity_to_buy_to_products($products) {
   foreach ( $products as $key => $product ) {
 		$operation_stock = $product['_pq_operation_stock'];
 		$total_quantity = $product['total_quantity'];
+		$supplier_auto_order_string = $product['supplier_auto_order_string'];
 
 		if ( is_numeric($operation_stock) ) {
-			$products[$key]['quantity_to_buy'] = max( $total_quantity - $operation_stock, 0 );
-		} else {
+      $quantity_to_buy = max( $total_quantity - $operation_stock, 0 );
+			$products[$key]['quantity_to_buy'] = $quantity_to_buy;
+
+      if ( $quantity_to_buy == 0 && $supplier_auto_order_string == 'oui' ) {
+        $products[$key]['supplier_auto_order_string'] = 'non';
+      }
+		} elseif ( empty($operation_stock) ) {
+      $products[$key]['quantity_to_buy'] = $total_quantity;
+    } else {
 			$products[$key]['quantity_to_buy'] = '';
+      if ( $supplier_auto_order_string == 'oui' ) {
+        $products[$key]['supplier_auto_order_string'] = 'non';
+      }
 		}
+
+		$quantity_per_crate = $product['_quantity_per_crate'];
+		$min_quantity_for_crate = ! empty( $product['_min_quantity_for_crate'] ) ? $product['_min_quantity_for_crate'] : 0;
+		$quantity_to_buy = $products[$key]['quantity_to_buy'];
+		$supplier_auto_order_string = $products[$key]['supplier_auto_order_string'];
+
+    if ( ! empty($quantity_per_crate) && $quantity_per_crate != 0 && ! empty($quantity_to_buy) && $quantity_to_buy != 0 ) {
+
+      $crates_to_order = $quantity_to_buy / $quantity_per_crate;
+      $reminder = $quantity_to_buy % $quantity_per_crate;
+
+      if ( $reminder >= $min_quantity_for_crate || $reminder == 0 || empty($min_quantity_for_crate) ) {
+        $crates_to_order_string = ceil($crates_to_order) . ' caisse';
+      } elseif ( $crates_to_order < 1 ) {
+        $crates_to_order_string = $quantity_to_buy . ' unités';
+      } else {
+        $crates_to_order_string = floor($crates_to_order) . ' caisse + ' . $reminder;
+      }
+      
+      $products[$key]['crates_to_order'] = $crates_to_order_string;
+      if ( empty($supplier_auto_order_string) ) {
+        $products[$key]['supplier_auto_order_string'] = $crates_to_order_string;
+      } else {
+        $products[$key]['supplier_auto_order_string'] = $supplier_auto_order_string . ' -- ' . $crates_to_order_string;
+      }
+    }
 	}
 
   return $products;
@@ -499,9 +553,8 @@ function pq_print_on_sheet( $sheet, $product_rows, $low_priority, $high_priority
     $commercial_zone_string = $product_row['pq_commercial_zone'];
 
     if ( $packing_priority >= $low_priority && $packing_priority <= $high_priority 
-    && ((empty($inventory_type) && empty($products_to_print)) 
-    || in_array($products_to_print, $inventory_type)) 
-    && (empty($commercial_zone_to_print) || empty($commercial_zone_string) || (!empty($commercial_zone_to_print) && strpos($commercial_zone_string, $commercial_zone_to_print) !== false)) ) {
+    && ((empty($inventory_type) && empty($products_to_print)) || $products_to_print == 'all' || in_array($products_to_print, $inventory_type))
+    && (empty($commercial_zone_to_print) || (empty($commercial_zone_string) && $commercial_zone_to_print == 'Jean-Talon') || (!empty($commercial_zone_to_print) && strpos($commercial_zone_string, $commercial_zone_to_print) !== false)) ) {
       foreach ( $to_print as $to_print_key ) {
         $sheet->setCellValueByColumnAndRow($column, $row, $product_row[$to_print_key]);
         $column++;
