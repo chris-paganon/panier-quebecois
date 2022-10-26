@@ -139,3 +139,37 @@
     float: none;
     width: 100%;
 }
+
+
+.pq_loyalty_balance_badge {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.pq_loyalty_balance_badge .image {
+    margin-right: 5px;
+}
+
+.pq_loyalty_balance_badge .image img {
+    width: 18px;
+    height: auto;
+}
+
+.pq_loyalty_balance_badge .balance .amount bdi {
+    font-family: 'Work Sans';
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 20px;
+}
+
+@media (min-width: 768px) {
+    .pq_loyalty_balance_badge .image img {
+        width: 23px;
+    }
+    
+    .pq_loyalty_balance_badge .balance .amount bdi {
+        font-size: 21px;
+        line-height: 25px;
+    }
+}
