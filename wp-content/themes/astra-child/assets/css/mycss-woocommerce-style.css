@@ -12,12 +12,20 @@
 }
 
 /* Tab menu */
-#tgwc-woocommerce nav.tgwc-woocommerce-MyAccount-navigation.tgwc-navbar-tab {
+#tgwc-woocommerce nav.tgwc-woocommerce-MyAccount-navigation.tgwc-navbar-tab, .woocommerce-dashboard #tgwc-woocommerce nav.tgwc-woocommerce-MyAccount-navigation.tgwc-navbar-tab {
+    display: none;
+}
+
+.woocommerce-dashboard #tgwc-woocommerce nav.tgwc-woocommerce-MyAccount-navigation.tgwc-navbar-tab {
     display: none !important;
 }
 
+.woocommerce-dashboard #tgwc-woocommerce .woocommerce-MyAccount-content {
+    width: 100% !important;
+}
+
 @media (min-width: 768px) {
-    #tgwc-woocommerce nav.tgwc-woocommerce-MyAccount-navigation.tgwc-navbar-tab {
+    #tgwc-woocommerce nav.tgwc-woocommerce-MyAccount-navigation.tgwc-navbar-tab  {
         display: block !important;
     }
 }
@@ -41,6 +49,65 @@
     border-bottom-width: 1px;
 }
 
+.woocommerce-account.ast-separate-container .ast-article-single {
+    padding: 50px;
+}
+
+.woocommerce-account #tgwc-woocommerce {
+    flex-direction: column;
+}
+
+@media (min-width: 768px) {
+    .woocommerce-account #tgwc-woocommerce {
+        flex-direction: row;
+        flex-wrap: nowrap;
+        justify-content: flex-start;
+        align-items: flex-start;
+    }
+
+    .woocommerce-account #tgwc-woocommerce .tgwc-woocommerce-MyAccount-navigation.tgwc-navbar-tab {
+        width: 25%;
+        margin-right: 5%;
+    }
+
+    .woocommerce-account #tgwc-woocommerce .woocommerce-MyAccount-content {
+        width: 70%;
+    }
+
+    .woocommerce-account .scroll_tabs_container div.scroll_tab_inner {
+        justify-content: flex-start;
+        align-items: flex-start;
+    }
+
+    .woocommerce-account #tgwc-woocommerce .woocommerce-MyAccount-navigation-link {
+        width: 100%;
+        border: 1px solid #54595F;
+        border-width: 1px !important;
+        border-radius: 5px;
+        margin-bottom: 12px !important;
+        background-color: transparent;
+    }
+
+    .woocommerce-account #tgwc-woocommerce .woocommerce-MyAccount-navigation-link.is-active a {
+        background-color: #4B9D50;
+        color: #ffffff !important;
+    }
+
+    .woocommerce-account #tgwc-woocommerce .woocommerce-MyAccount-navigation-link.is-active a svg {
+        color: #ffffff !important;
+    }
+
+    .woocommerce-account #tgwc-woocommerce .woocommerce-MyAccount-navigation-link a {
+        background-color: transparent;
+        padding: 15px !important;
+        color: #54595F;
+        font-weight: 600;
+        font-size: 16px;
+        line-height: 19px;
+        border-style: none !important;
+    }
+}
+
 @media ( max-width: 767px ) {
     .woocommerce-account #content div.ast-container {
         padding: 0;
@@ -57,9 +124,52 @@
     .woocommerce-account #tgwc-woocommerce .tgwc-woocommerce-MyAccount-navigation ul li.woocommerce-MyAccount-navigation-link a svg {
         margin-bottom: 8px;
     }
+
+    #tgwc-woocommerce .tgwc-woocommerce-MyAccount-navigation.tgwc-navbar-tab.tgwc-navbar-tab {
+        display: none !important;
+    }
 }
 @media (max-width: 440px) {
     .woocommerce-account #tgwc-woocommerce .tgwc-woocommerce-MyAccount-navigation ul li.woocommerce-MyAccount-navigation-link a svg {
         display: none;
+    }
+}
+
+.woocommerce-account #tgwc-woocommerce .woocommerce-MyAccount-content .woocommerce-Addresses .woocommerce-Address {
+    float: none;
+    width: 100%;
+}
+
+
+.pq_loyalty_balance_badge {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.pq_loyalty_balance_badge .image {
+    margin-right: 5px;
+}
+
+.pq_loyalty_balance_badge .image img {
+    width: 18px;
+    height: auto;
+}
+
+.pq_loyalty_balance_badge .balance .amount bdi {
+    font-family: 'Work Sans';
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 20px;
+}
+
+@media (min-width: 768px) {
+    .pq_loyalty_balance_badge .image img {
+        width: 23px;
+    }
+    
+    .pq_loyalty_balance_badge .balance .amount bdi {
+        font-size: 21px;
+        line-height: 25px;
     }
 }
