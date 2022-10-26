@@ -134,3 +134,8 @@
         display: none;
     }
 }
+
+.woocommerce-account #tgwc-woocommerce .woocommerce-MyAccount-content .woocommerce-Addresses .woocommerce-Address {
+    float: none;
+    width: 100%;
+}
