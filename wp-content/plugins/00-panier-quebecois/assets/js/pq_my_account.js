@@ -13,9 +13,12 @@ jQuery(function($){
         $(".tgwc-woocommerce-MyAccount-navigation-wrap > ul.scroll_tabs_container > .scroll_tab_inner > li").each(function( index ) {
             var link = $(this).find('a:first');
             var option = $(document.createElement('option'));
-
+            var isSelected = $(this).hasClass( "tab_selected" );
             option.val(link.attr('href'));
             option.html(link.html());
+            if(isSelected){
+                option.attr('selected','selected')
+            }
             MyAccountMobileNavMenu.append(option);
         });
 
