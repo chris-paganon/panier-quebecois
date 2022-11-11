@@ -10,32 +10,32 @@
             <ul>
                 <li>
                     <a href="<?php echo wc_get_endpoint_url('favoris', '', get_permalink(get_option('woocommerce_myaccount_page_id'))); ?>">
-                        <?php get_icon_account_endpoint('favoris'); echo __('Favorites', 'panierquebecois'); ?>
+                        <?php echo __('Favorites', 'panierquebecois'); ?>
                     </a>
                 </li>
                 <li>
                     <a href="<?php echo wc_get_endpoint_url('fidelite', '', get_permalink(get_option('woocommerce_myaccount_page_id'))); ?>">
-                        <?php get_icon_account_endpoint('fidelite'); echo __('Loyalty program', 'panierquebecois'); ?>
+                        <?php echo __('Loyalty program', 'panierquebecois'); ?>
                     </a>
                 </li>
                 <li>
                     <a href="<?php echo wc_get_endpoint_url('fidelite', '', get_permalink(get_option('woocommerce_myaccount_page_id'))); ?>#referral">
-                        <?php get_icon_account_endpoint('fidelite'); echo __('Refer a friend', 'panierquebecois'); ?>
+                        <?php echo __('Refer a friend', 'panierquebecois'); ?>
                     </a>
                 </li>
                 <li>
                     <a href="<?php echo wc_get_endpoint_url('orders', '', get_permalink(get_option('woocommerce_myaccount_page_id'))); ?>">
-                        <?php get_icon_account_endpoint('orders'); echo __('See my order history', 'panierquebecois'); ?>
+                        <?php echo __('See my order history', 'panierquebecois'); ?>
                     </a>
                 </li>
                 <li>
                     <a href="<?php echo wc_get_endpoint_url('edit-account', '', get_permalink(get_option('woocommerce_myaccount_page_id'))); ?>">
-                        <?php get_icon_account_endpoint('edit-account'); echo __('Edit my profile', 'panierquebecois'); ?>
+                        <?php echo __('Edit my profile', 'panierquebecois'); ?>
                     </a>
                 </li>
                 <li>
                     <a href="<?php echo wp_logout_url( get_permalink( wc_get_page_id( 'myaccount' ) ) ); ?>">
-                        <?php get_icon_account_endpoint('customer-logout'); echo __('Log out', 'panierquebecois'); ?>
+                        <?php echo __('Log out', 'panierquebecois'); ?>
                     </a>
                 </li>
             </ul>

@@ -68,12 +68,4 @@ add_action('wp_head', function(){
 
 // END ENQUEUE PARENT ACTION
 
-
-function get_icon_account_endpoint( $slug ) {
-	if( function_exists( 'tgwc_get_endpoint_icon' ) && $iconEndpoint = tgwc_get_endpoint_icon( $slug ) ){
-		 echo '<i class="'.esc_attr( $iconEndpoint ).'"></i>'; 
-	}
-	return;	
-}
-
 // ************************************************************************************************ //
