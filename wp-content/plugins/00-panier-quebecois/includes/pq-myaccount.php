@@ -44,7 +44,7 @@ function remove_downloads_my_account( $items ) {
 }
 
 add_filter('walker_nav_menu_start_el', function($item_output, $menu_item, $depth, $args){
-	if($menu_item->object_id === get_option( 'woocommerce_myaccount_page_id' ) && $args->menu == 'menu-langue') {
+	if($menu_item->object_id === get_option( 'woocommerce_myaccount_page_id' ) && ($args->menu == 'menu-langue' || $args->menu == 'menu-mobile')) {
 		$item_output .= pq_badge_loyalty_balance_fct();
 	}
 	return $item_output;

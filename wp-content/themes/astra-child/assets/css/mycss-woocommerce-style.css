@@ -154,14 +154,23 @@
     /*justify-content: flex-end;*/
 }
 
+
 .pq_loyalty_balance_badge .balance .amount {
     font-family: 'Work Sans';
     color: #ffffff;
-    background-color: red;
+    background-color: #E8AE11;
     border-radius: 15px;
     padding: 0 10px 3px;
 }
 
 .pq_loyalty_balance_badge .balance .amount bdi {
     font-size: 14px;
+}
+.elementor-nav-menu--dropdown-mobile .pq_loyalty_balance_badge {
+    right: 30%;
+    top: 0;
+}
+
+.elementor-nav-menu--dropdown-mobile .pq_loyalty_balance_badge .balance .amount bdi{
+    font-size: 11px;
 }
