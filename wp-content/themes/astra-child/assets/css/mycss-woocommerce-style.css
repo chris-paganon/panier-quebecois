@@ -146,14 +146,13 @@
 
 .pq_loyalty_balance_badge {
     position: absolute;
-    right: 0;
-    left: auto;
     transform: translateY(-50%);
-    /*display: flex;*/
-    /*align-items: center;*/
-    /*justify-content: flex-end;*/
 }
 
+.elementor-nav-menu--main .pq_loyalty_balance_badge {
+    right: 0;
+    left: auto;
+}
 
 .pq_loyalty_balance_badge .balance .amount {
     font-family: 'Work Sans';
