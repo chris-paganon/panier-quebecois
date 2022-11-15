@@ -16,17 +16,25 @@ function custom_product_function() {
       $filters = ( !empty( $_GET[ 'filters' ] ) ) ? explode( ',', $_GET[ 'filters' ] ) : array();
       $filters_tax_query_array = pq_get_filters_tax_query_array( $filters );
 
-
       /**
-       * Display the featured prodcuts
+       * Display the christmas prodcuts
        */
+      $christmas_slug = 'noel';
+
+			$christmas_children_args = array(
+				'taxonomy' => 'product_cat',
+				'hide_empty' => true,
+				'parent'   => 237,
+			);
+
+      ?>
+      <div class="mainCategory___this christmas produit-unite categoryTitle infiniteScroll elementor-menu-anchor"><a id="christmasTarget" class="pq_anchor"></a><h3><?php echo get_option( 'pq_featured_products_title' ) ?></h3><hr></div>
+      <?php
+
+			$christmas_children_cats = get_terms( $christmas_children_args );
+			$count_christmas_children_cat = count( $christmas_children_cats );
+
       $tax_query = array(
-        'relation' => 'AND',
-        array(
-          'taxonomy' => 'product_visibility',
-          'field' => 'name',
-          'terms' => 'featured',
-        ),
         array(
           'taxonomy' => 'product_visibility',
           'field'    => 'term_taxonomy_id',
@@ -39,33 +47,66 @@ function custom_product_function() {
         $tax_query[] = $filters_tax_query;
       }
 
-      $featured_products_query = new WP_Query( array(
-        'post_type'      => 'product',
-        'posts_per_page' => 50,
-        'tax_query'      => $tax_query,
-        'orderby'        => 'menu_order',
-			  'order'          => 'ASC'
-      ));
+      //If no sub categories of christmas, display all of them
+      if ( $count_christmas_children_cat == 0 ) {
+				
+				$christmas_query_args = array(
+					'posts_per_page' => 200,
+          'tax_query'      => $tax_query,
+					'post_type'      => 'product',
+					'post_status'    => 'publish',
+					'product_cat'    => $christmas_slug,
+					'orderby'        => 'menu_order',
+					'order'          => 'ASC'
+				);
+				$christmas_query = new WP_Query( $christmas_query_args );
 
-      if ( $featured_products_query->have_posts() ) { ?>
-        <div class="selection parent">
-          <a id="selection" class="pq_anchor"></a>
-          <div class="selection categoryTitle infiniteScroll">
-            <h3><?php echo get_option( 'pq_featured_products_title' ) ?></h3>
-            <hr>
-          </div>
-          <div class="selection woocommerce columns-6 infiniteScroll">
-            <?php
-            woocommerce_product_loop_start();
-            while ( $featured_products_query->have_posts() ): $featured_products_query->the_post();
-              wc_get_template_part( 'content', 'product' );
-            endwhile;
-            woocommerce_product_loop_end();
-            ?>
-          </div>
-        </div><?php
-      }
-      wp_reset_postdata(); ?>
+				if ( $christmas_query->have_posts() ) {
+					?>
+					<div class="subCategory___this subCategory___christmasTarget christmas woocommerce columns-6 infiniteScroll child">
+						<?php woocommerce_product_loop_start(); ?>
+							<?php while ( $christmas_query->have_posts() ) : $christmas_query->the_post(); ?>
+								<?php wc_get_template_part( 'content', 'product' ); ?>
+							<?php endwhile; // end of the loop. ?>
+						<?php woocommerce_product_loop_end(); ?>
+					</div>
+					<?php
+				}
+				wc_reset_loop();
+				wp_reset_postdata();
+      
+      //Display child categories (only) of christmas if they exist
+			} else {
+				foreach ( $christmas_children_cats as $christmas_children_cat ) {
+
+					$christmas_products_args = array(
+						'posts_per_page' => 200,
+            'tax_query'      => $tax_query,
+						'post_type'      => 'product',
+						'post_status'    => 'publish',
+						'product_cat'    => $christmas_children_cat->slug,
+						'orderby'        => 'menu_order',
+						'order'          => 'ASC'
+					);
+					$christmas_products = new WP_Query( $christmas_products_args );
+	
+					if ( $christmas_products->have_posts() ) {
+
+						echo '<div class="subCategory___this subCategory___christmasTarget '.$christmas_children_cat->slug. ' '.$christmas_slug.' categoryTitle infiniteScroll"><a id="'.$christmas_children_cat->slug.'Target" class="pq_anchor"></a><div class="subchild"></div><h4>'.$christmas_children_cat->name.' </h4></div>';
+						?>
+						<div class="product___this product___christmasTarget product___<?php echo $christmas_children_cat->slug?>Target woocommerce columns-6 infiniteScroll child">
+							<?php woocommerce_product_loop_start(); ?>
+								<?php while ( $christmas_products->have_posts() ) : $christmas_products->the_post(); ?>
+									<?php wc_get_template_part( 'content', 'product' ); ?>
+								<?php endwhile; // end of the loop. ?>
+							<?php woocommerce_product_loop_end(); ?>
+						</div>
+						<?php
+					}
+					wc_reset_loop();
+          wp_reset_postdata();
+				}
+			} ?>
       <?php
 
       /**
