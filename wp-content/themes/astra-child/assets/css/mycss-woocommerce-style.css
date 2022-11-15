@@ -150,7 +150,7 @@
 }
 
 .elementor-nav-menu--main .pq_loyalty_balance_badge {
-    right: 0;
+    right: 0 !important;
     left: auto;
 }
 
