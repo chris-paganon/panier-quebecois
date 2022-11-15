@@ -524,7 +524,7 @@ function pq_send_refunded_product( $missing_products_form_data ) {
       'Reply-To: Panier Québécois <commandes@panierquebecois.ca>',
     );
 
-    wp_mail( $order_to_replace['billing_email'], 'Produit remplacé', $email_content, $headers);
+    wp_mail( $order_to_replace['billing_email'], 'Produit remboursé', $email_content, $headers);
 
     $order_id = $order_to_replace['order_id'];
     $order = wc_get_order( $order_id );
