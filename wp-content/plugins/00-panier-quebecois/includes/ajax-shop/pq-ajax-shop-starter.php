@@ -299,7 +299,7 @@ function prod_cats_list() {
       <nav migration_allowed="1" migrated="0" role="navigation" class="elementor-nav-menu--main elementor-nav-menu__container elementor-nav-menu--layout-vertical e--pointer-text e--animation-none">
         <ul class="elementor-nav-menu sm-vertical">
           <li data-sequence="1" class="lesProducts menu-item menu-item-type-custom menu-item-object-custom current-menu-item"> <a href="<?php echo $url;?>" aria-current="page" class="elementor-item elementor-item-anchor menu-link" producttarget="selectionTargetSidebar"><?php _e( 'Tous les produits' );?></a> </li>
-          <li data-sequence="1" class="lesProducts menu-item menu-item-type-custom menu-item-object-custom current-menu-item"> <a href="<?php echo $url;?>#selection" aria-current="page" class="elementor-item elementor-item-anchor menu-link" producttarget="selectionTargetSidebar"><?php echo get_option( 'pq_featured_products_title' );?></a> </li>
+          <li data-sequence="1" class="lesProducts menu-item menu-item-type-custom menu-item-object-custom current-menu-item christmas-side-menu-item"> <a href="<?php echo $url;?>#selection" aria-current="page" class="elementor-item elementor-item-anchor menu-link" producttarget="selectionTargetSidebar"><?php echo get_option( 'pq_featured_products_title' );?></a> </li>
           <li data-sequence="2" class="lesProducts menu-item menu-item-type-custom menu-item-object-custom current-menu-item"> <a href="<?php echo $url;?>#panier" aria-current="page" class="elementor-item elementor-item-anchor menu-link" producttarget="panierTargetSidebar"><?php _e( 'Les paniers' );?></a></li>
 
           <?php
