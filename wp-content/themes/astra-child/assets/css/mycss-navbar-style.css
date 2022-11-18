@@ -84,8 +84,18 @@ section.pq_sticky{
 }
 
 /* ------ Special event menu item style ------ */
-#my-nav-bar .elementor-nav-menu .my-gift-menu a.elementor-item, #my-nav-bar .elementor-nav-menu .my-gift-menu a.elementor-sub-item {
+#my-nav-bar .elementor-nav-menu .my-gift-menu a.elementor-item, 
+#my-nav-bar .elementor-nav-menu .my-gift-menu a.elementor-sub-item,
+.elementor-nav-menu .my-gift-menu a.elementor-sub-item,
+.awwm-cat-loop.elementor-widget-nav-menu nav.elementor-nav-menu--main ul.elementor-nav-menu .christmas-side-menu-item a {
     color: #E93C42;
+}
+
+.elementor-nav-menu .my-gift-menu:hover a.elementor-sub-item {
+    color: white;
+}
+.awwm-cat-loop.elementor-widget-nav-menu nav.elementor-nav-menu--main ul.elementor-nav-menu .christmas-side-menu-item:hover a {
+    color: #4B9E50;
 }
 
 #my-nav-bar .elementor-nav-menu .my-gift-menu a.elementor-item:after {
