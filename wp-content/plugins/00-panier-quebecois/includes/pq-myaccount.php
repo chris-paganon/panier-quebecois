@@ -42,3 +42,30 @@ function remove_downloads_my_account( $items ) {
   unset( $items[ 'downloads' ] );
   return $items;
 }
+
+add_filter('walker_nav_menu_start_el', function($item_output, $menu_item, $depth, $args){
+	if($menu_item->object_id === get_option( 'woocommerce_myaccount_page_id' ) && ($args->menu == 'menu-langue' || $args->menu == 'menu-mobile')) {
+		$item_output .= pq_badge_loyalty_balance_fct();
+	}
+	return $item_output;
+}, 10, 4 );
+
+// ---------- Add shortcode for loyalty balance ---------- //
+function pq_badge_loyalty_balance_fct(  ) {
+  if ( is_user_logged_in() ) {
+    $user_id  = get_current_user_id();
+    if($user_id){
+      if (pq_has_main_badge($user_id)){
+        $mycred = mycred();
+        $balance = $mycred->get_users_balance( $user_id );
+        if($balance){
+          $html = '<div class="pq_loyalty_balance_badge">';
+          $html .= '<div class="balance">'.wc_price($balance).'</div>';
+          $html .= '</div>';
+          return $html;
+        }
+      }
+    }
+  }
+  return '';
+}
