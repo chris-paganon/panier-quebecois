@@ -348,6 +348,9 @@ class PQ_shop_content {
     } elseif ( has_term( array(414 /*recette*/, 571 /*kit*/), 'product_cat', $product_id ) ) {
       $url = get_permalink( $product_id );
       $html = '<a class="button product_type_' . $product->get_type() . ' add_to_cart_button pq_recipe" href="' . $url . '">Découvrir</a>';
+    } elseif ( has_term('carte-cadeau', 'product_cat', $product_id) ){
+      $url = get_permalink( $product_id );
+      $html = '<a class="button product_type_' . $product->get_type() . ' add_to_cart_button pq_recipe" href="' . $url . '">Offrir</a>';
     }
 
     return $html;
