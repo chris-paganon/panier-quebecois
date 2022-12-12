@@ -100,7 +100,7 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', g
 				
 					//$args = apply_filters( 'woocommerce_loop_add_to_cart_args', wp_parse_args( $args, $defaults ), $product );
 		
-					if ($product_type == "variable") {
+					if ($product_type == "variable" && ! has_term('carte-cadeau', 'product_cat', $product->get_id())) {
 						woocommerce_variable_add_to_cart();
 					}
 					else {
