@@ -16,6 +16,7 @@ function pq_get_main_badge_id() {
  * Check if user has the main PQ badge
  */
 function pq_has_main_badge( $user_id ) {
+    if ( !function_exists( 'mycred' ) ) return false;
     $pq_badge_id = pq_get_main_badge_id();
 	$user_badges = mycred_get_users_badges($user_id);
 
