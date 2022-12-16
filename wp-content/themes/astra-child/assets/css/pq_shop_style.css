@@ -558,8 +558,8 @@ div.woocommerce ul.products li.product div.astra-shop-summary-wrap span.price {
 .woocommerce ul.products li.product img.pq_double_points_icon {
     width: 50px;
     position: absolute;
-    top: 0;
-    left: 0;
+    bottom: 0;
+    right: 0;
 }
 
 /* Food restrictions */
