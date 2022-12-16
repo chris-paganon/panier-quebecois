@@ -271,9 +271,11 @@ class PQ_shop_content {
   public static function pq_add_product_double_points_icon() {
     $product_id = get_the_ID();
     $has_double_points = get_post_meta( $product_id, '_pq_double_points', true );
-
-    if ( !empty( $has_double_points ) ) {
-      echo $this->pq_get_double_points_icon();
+    if ( is_user_logged_in() ) {
+      $user_id  = get_current_user_id();
+      if (!empty($has_double_points) && $user_id && pq_has_main_badge($user_id)){
+        echo $this->pq_get_double_points_icon();
+      }
     }
   }
 
