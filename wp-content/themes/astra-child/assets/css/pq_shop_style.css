@@ -559,7 +559,7 @@ div.woocommerce ul.products li.product div.astra-shop-summary-wrap span.price {
     width: 50px;
     position: absolute;
     bottom: 0;
-    right: 0;
+    left: 0;
 }
 
 /* Food restrictions */
