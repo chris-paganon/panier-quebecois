@@ -324,36 +324,36 @@ class PQ_shop_content {
     $product_id = $product->get_id();
     $button_text = '';
 
-  if ( has_term( array(171 /*Paniers*/, 153 /*produit unité*/), 'product_cat', $product_id ) ) {
-      if ( $product && $product->is_type( array( 'simple', 'bundle' ) ) && $product->is_purchasable() && $product->is_in_stock() && !$product->is_sold_individually() ) {
-        // Get the necessary classes
-        $class = implode( ' ', array_filter( array(
-          'button',
-          'product_type_' . $product->get_type(),
-          $product->is_purchasable() && $product->is_in_stock() ? 'add_to_cart_button' : '',
-          $product->supports( 'ajax_add_to_cart' ) ? 'ajax_add_to_cart' : '',
-        ) ) );
+  if ( has_term( array(414 /*recette*/, 571 /*kit*/), 'product_cat', $product_id ) ) {
+    $url = get_permalink( $product_id );
+    $html = '<a class="button product_type_' . $product->get_type() . ' add_to_cart_button pq-no-cart-icon" href="' . $url . '">Découvrir</a>';
+  } elseif ( has_term('carte-cadeau', 'product_cat', $product_id) ){
+    $url = get_permalink( $product_id );
+    $html = '<a class="button product_type_' . $product->get_type() . ' add_to_cart_button pq-no-cart-icon" href="' . $url . '">Offrir</a>';
+  } elseif ( has_term( array(171 /*Paniers*/, 153 /*produit unité*/), 'product_cat', $product_id ) ) {
+    if ( $product && $product->is_type( array( 'simple', 'bundle' ) ) && $product->is_purchasable() && $product->is_in_stock() && !$product->is_sold_individually() ) {
+      // Get the necessary classes
+      $class = implode( ' ', array_filter( array(
+        'button',
+        'product_type_' . $product->get_type(),
+        $product->is_purchasable() && $product->is_in_stock() ? 'add_to_cart_button' : '',
+        $product->supports( 'ajax_add_to_cart' ) ? 'ajax_add_to_cart' : '',
+      ) ) );
 
-        // Embedding the quantity field to Ajax add to cart button
-        $html = sprintf(
-          '<div class="qty-and-add-to-cart">%s<a rel="nofollow" href="%s" data-quantity="%s" data-product_id="%s" data-product_sku="%s" class="%s">%s</a></div>',
-          woocommerce_quantity_input( array(), $product, false ),
-          esc_url( $product->add_to_cart_url() ),
-          esc_attr( isset( $quantity ) ? $quantity : 1 ),
-          esc_attr( $product->get_id() ),
-          esc_attr( $product->get_sku() ),
-          esc_attr( isset( $class ) ? $class : 'button' ),
-          $button_text //replaces the commented argument below
-          //esc_html( $product->add_to_cart_text() )
-        );
-      }
-    } elseif ( has_term( array(414 /*recette*/, 571 /*kit*/), 'product_cat', $product_id ) ) {
-      $url = get_permalink( $product_id );
-      $html = '<a class="button product_type_' . $product->get_type() . ' add_to_cart_button pq_recipe" href="' . $url . '">Découvrir</a>';
-    } elseif ( has_term('carte-cadeau', 'product_cat', $product_id) ){
-      $url = get_permalink( $product_id );
-      $html = '<a class="button product_type_' . $product->get_type() . ' add_to_cart_button pq_recipe" href="' . $url . '">Offrir</a>';
+      // Embedding the quantity field to Ajax add to cart button
+      $html = sprintf(
+        '<div class="qty-and-add-to-cart">%s<a rel="nofollow" href="%s" data-quantity="%s" data-product_id="%s" data-product_sku="%s" class="%s">%s</a></div>',
+        woocommerce_quantity_input( array(), $product, false ),
+        esc_url( $product->add_to_cart_url() ),
+        esc_attr( isset( $quantity ) ? $quantity : 1 ),
+        esc_attr( $product->get_id() ),
+        esc_attr( $product->get_sku() ),
+        esc_attr( isset( $class ) ? $class : 'button' ),
+        $button_text //replaces the commented argument below
+        //esc_html( $product->add_to_cart_text() )
+      );
     }
+  }
 
     return $html;
   }

@@ -672,7 +672,7 @@ button.single_add_to_cart_button::before,
     font-family: eicons;
     font-size: 17px;
 }
-.woocommerce ul.products li.product a.pq_recipe::before {
+.woocommerce ul.products li.product a.pq-no-cart-icon::before {
     content: "";
 }
 .woocommerce ul.products li.product a.add_to_cart_button,
@@ -683,7 +683,7 @@ button.single_add_to_cart_button::before,
     border-radius: 5px 5px 5px 5px;
     padding: 6px 8px 7px 8px;
 }
-.woocommerce ul.products li.product a.pq_recipe{
+.woocommerce ul.products li.product a.pq-no-cart-icon{
     width: auto;
 }
 .woocommerce a.button.added::after, .woocommerce button.single_add_to_cart_button.added::after {
