@@ -54,7 +54,7 @@ class PQ_loyalty_rewards {
       $has_double_points = get_post_meta( $product_id, '_pq_double_points', true );
 
       if ( !empty( $has_double_points ) ) {
-        $reward += $item->get_total();
+        $reward += round( $item->get_total() * $multiplier, 2 );
       }
     }
 
