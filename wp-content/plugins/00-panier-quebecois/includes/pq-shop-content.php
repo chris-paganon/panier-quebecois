@@ -274,7 +274,7 @@ class PQ_shop_content {
     if ( is_user_logged_in() ) {
       $user_id  = get_current_user_id();
       if (!empty($has_double_points) && $user_id && pq_has_main_badge($user_id)){
-        echo $this->pq_get_double_points_icon();
+        echo self::pq_get_double_points_icon();
       }
     }
   }
