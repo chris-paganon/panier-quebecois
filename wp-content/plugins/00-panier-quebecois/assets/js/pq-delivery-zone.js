@@ -7,12 +7,26 @@ jQuery(document).ready(function ($) {
   $('#pq-postal-code-submit').click(function () {
     const postalCode = $('#pq-postal-code').val();
     const postalCodeIsValid = validatePostalCodeString(postalCode)
+
     if (!postalCodeIsValid) {
       $('.pq-postal-code-response').html('Le code postal est invalide')
       return
     } else {
       $('.pq-postal-code-response').html('')
-      // getDeliveryZone()
+
+      const data = {
+			  'action': 'pq_get_delivery_zone',
+        'nonce': pq_delivery_zone_variables.nonce,
+        'postal_code': postalCode,
+      }
+
+      $.post( pq_delivery_zone_variables.ajax_url, data, function(response) {
+        if (response) {
+          $('.pq-postal-code-response').html(response)
+        } else {
+          $('.pq-postal-code-response').html('nope')
+        }
+      });
       // setDeliveryZoneCookie()
     }
   });
