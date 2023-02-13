@@ -7,7 +7,7 @@ if ( !defined( 'ABSPATH' ) ) exit;
  */ 
 add_action( 'init', 'wc_session_enabler' );
 function wc_session_enabler() {
-    if ( ! is_admin() && ! WC()->session->has_session() ) {
+    if ( ! is_admin() && ! is_user_logged_in() && (isset(WC()->session) && WC()->session != null && ! WC()->session->has_session()) ) {
         WC()->session->set_customer_session_cookie( true );
     }
 }
@@ -43,4 +43,19 @@ function pq_get_delivery_zone_with_ajax() {
 
   echo $postal_code;
   wp_die();
+}
+
+add_action('wp_footer', 'pq_test_cart');
+
+function pq_test_cart() {
+
+  // Use this to match the shipping zone to the postal code & display the products accordingly
+  $shipping_postcode = WC()->customer->get_shipping_postcode();
+  $billing_postcode = WC()->customer->get_billing_postcode();
+
+  $postcode = ! empty($shipping_postcode) ? $shipping_postcode : $billing_postcode;
+	$shipping_zones = WC_Shipping_Zones::get_zones();
+
+  error_log('postcode:' . print_r($postcode, true));
+  error_log('shipping_zones:' . print_r($shipping_zones, true));
 }

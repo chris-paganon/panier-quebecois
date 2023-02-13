@@ -23,11 +23,12 @@ jQuery(document).ready(function ($) {
       $.post( pq_delivery_zone_variables.ajax_url, data, function(response) {
         if (response) {
           $('.pq-postal-code-response').html(response)
+          $('.delivery-zone-select-popup-wrapper').hide()
+          window.location.reload()
         } else {
           $('.pq-postal-code-response').html('nope')
         }
       });
-      // setDeliveryZoneCookie()
     }
   });
 
