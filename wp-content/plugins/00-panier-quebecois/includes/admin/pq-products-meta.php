@@ -309,7 +309,7 @@ class PQ_products_meta {
 		<div class="options_group pricing">
 			<?php
 
-			$custom_price_args = $this->pq_get_clean_input_args( 'price' );
+			$custom_price_args = self::pq_get_clean_input_args( 'price' );
 
 			foreach ( $custom_price_args as $input_args ) {
 				woocommerce_wp_text_input( $input_args );
@@ -330,7 +330,7 @@ class PQ_products_meta {
 		<div class="options_group">
 			<?php
 
-			$custom_inventory_args = $this->pq_get_clean_input_args( 'inventory' );
+			$custom_inventory_args = self::pq_get_clean_input_args( 'inventory' );
 
 			foreach ( $custom_inventory_args as $input_args ) {
 				$woocommerce_wp_type = array_pop($input_args);
@@ -384,7 +384,7 @@ class PQ_products_meta {
 		<div class="options_group form-row pricing">
 			<?php
 
-			$custom_price_args = $this->pq_get_clean_input_args( 'price', true );
+			$custom_price_args = self::pq_get_clean_input_args( 'price', true );
 
 			foreach ( $custom_price_args as $input_args ) {
 				
@@ -412,7 +412,7 @@ class PQ_products_meta {
 		<div class="options_group form-row pricing">
 			<?php
 
-			$custom_price_args = $this->pq_get_clean_input_args( 'inventory', true );
+			$custom_price_args = self::pq_get_clean_input_args( 'inventory', true );
 
 			foreach ( $custom_price_args as $input_args ) {
 				
@@ -462,7 +462,7 @@ class PQ_products_meta {
 		}
 		$product->update_meta_data('_pq_inactive', $inactive);
 
-		$custom_args = $this->pq_get_clean_input_args( 'all' );
+		$custom_args = self::pq_get_clean_input_args( 'all' );
 		
 		foreach ( $custom_args as $input_args ) {
 
@@ -486,7 +486,7 @@ class PQ_products_meta {
 	 */
 	public static function myfct_save_custom_variable_product_data( $post_id ) {
 		
-		$custom_args = $this->pq_get_clean_input_args( 'all', true );
+		$custom_args = self::pq_get_clean_input_args( 'all', true );
 		
 		foreach ( $custom_args as $input_args ) {
 
