@@ -159,6 +159,16 @@ class PQ_products_meta {
 				'position'              => 'inventory',
 				'in_variable'           => false,
 				'input_args'            => array(
+					'id'                    => '_pq_available_long_distance',
+					'label'                 => __( 'Livraison hors Montréal disponible' ),
+					'cbvalue'               => 1,
+					'woocommerce_wp'        => '_checkbox',
+				),
+			),
+			array(
+				'position'              => 'inventory',
+				'in_variable'           => false,
+				'input_args'            => array(
 					'id'                    => '_pq_double_points',
 					'label'                 => __( 'Points de fidélisations doublés' ),
 					'cbvalue'               => 1,
@@ -440,14 +450,17 @@ class PQ_products_meta {
 
 		$product = wc_get_product($post_id);
 
+		$long_distance = isset($_POST['_pq_available_long_distance']) ? 1 : 0;
+		$product->update_meta_data('_pq_available_long_distance', $long_distance);
+
 		$double_points = isset($_POST['_pq_double_points']) ? 1 : 0;
 		$product->update_meta_data('_pq_double_points', $double_points);
 
-		$double_points = isset($_POST['_pq_new']) ? 1 : 0;
-		$product->update_meta_data('_pq_new', $double_points);
+		$pq_new = isset($_POST['_pq_new']) ? 1 : 0;
+		$product->update_meta_data('_pq_new', $pq_new);
 
-		$double_points = isset($_POST['_pq_last_chance']) ? 1 : 0;
-		$product->update_meta_data('_pq_last_chance', $double_points);
+		$last_chance = isset($_POST['_pq_last_chance']) ? 1 : 0;
+		$product->update_meta_data('_pq_last_chance', $last_chance);
 
 		$special_delivery = isset($_POST['_pq_special_delivery']) ? 1 : 0;
 		$product->update_meta_data('_pq_special_delivery', $special_delivery);
