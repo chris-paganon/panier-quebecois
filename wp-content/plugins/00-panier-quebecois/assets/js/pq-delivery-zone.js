@@ -33,7 +33,11 @@ jQuery(document).ready(function ($) {
   });
 
   function validatePostalCodeString(postalCode) {
+    postalCode = postalCode.replace(/\s+/g, '').toUpperCase() // remove spaces and make uppercase
     const postalCodeRegex = /[ABCEGHJ-NPRSTVXYabceghj-nprstvxy]\d[ABCEGHJ-NPRSTV-Zabceghj-nprstv-z][ -]?\d[ABCEGHJ-NPRSTV-Zabceghj-nprstv-z]\d/
+    if (postalCode[0] !== 'J' && postalCode[0] !== 'G' && postalCode[0] !== 'H') {
+      return false;
+    }
     return postalCode.match(postalCodeRegex) === null ? false : true
   }
 });
