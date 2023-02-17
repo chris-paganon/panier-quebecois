@@ -5,11 +5,16 @@ jQuery(document).ready(function ($) {
   });
 
   $('#pq-postal-code-submit').click(function () {
-    const postalCode = $('#pq-postal-code').val();
+    $('.pq-postal-code-response').html('')
+    const postalCode = $('#pq-postal-code').val().replace(/\s+/g, '').toUpperCase() // remove spaces and make uppercase
     const postalCodeIsValid = validatePostalCodeString(postalCode)
+    const postalCodeIsFromQC = isPostalCodeFromQC(postalCode)
 
     if (!postalCodeIsValid) {
       $('.pq-postal-code-response').html('Le code postal est invalide')
+      return
+    } else if (!postalCodeIsFromQC) {
+      $('.pq-postal-code-response').html('Le code postal n\'est pas du Québec')
       return
     } else {
       $('.pq-postal-code-response').html('')
@@ -23,8 +28,9 @@ jQuery(document).ready(function ($) {
       $.post( pq_delivery_zone_variables.ajax_url, data, function(response) {
         if (response) {
           $('.pq-postal-code-response').html(response)
-          $('.delivery-zone-select-popup-wrapper').hide()
-          window.location.reload()
+          // Disable for dev
+          // $('.delivery-zone-select-popup-wrapper').hide()
+          // window.location.reload()
         } else {
           $('.pq-postal-code-response').html('nope')
         }
@@ -33,11 +39,11 @@ jQuery(document).ready(function ($) {
   });
 
   function validatePostalCodeString(postalCode) {
-    postalCode = postalCode.replace(/\s+/g, '').toUpperCase() // remove spaces and make uppercase
     const postalCodeRegex = /[ABCEGHJ-NPRSTVXYabceghj-nprstvxy]\d[ABCEGHJ-NPRSTV-Zabceghj-nprstv-z][ -]?\d[ABCEGHJ-NPRSTV-Zabceghj-nprstv-z]\d/
-    if (postalCode[0] !== 'J' && postalCode[0] !== 'G' && postalCode[0] !== 'H') {
-      return false;
-    }
     return postalCode.match(postalCodeRegex) === null ? false : true
+  }
+
+  function isPostalCodeFromQC(postalCode) {
+    return postalCode[0] !== 'J' && postalCode[0] !== 'G' && postalCode[0] !== 'H' ? false : true;
   }
 });
