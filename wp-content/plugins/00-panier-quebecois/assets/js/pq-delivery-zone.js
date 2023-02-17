@@ -33,6 +33,9 @@ jQuery(document).ready(function ($) {
           // window.location.reload()
         } else {
           $('.pq-postal-code-response').html('nope')
+          const url = new URL(window.location.href)
+          url.searchParams.append('pqOutsideMtl', 'true')
+          window.location = url
         }
       });
     }
