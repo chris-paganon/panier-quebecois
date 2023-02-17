@@ -7,7 +7,8 @@ if ( !defined( 'ABSPATH' ) ) {
 add_shortcode( 'product_data', 'custom_product_function' );
 
 function custom_product_function() {
-  ob_start(); ?>
+  ob_start();
+	$meta_query = pq_get_meta_query(); ?>
   <!--/* Woocommerce featured products loop */-->
   <div class='awwm-product-loop'>
     <div class='parent-cat panier-perso'>
@@ -43,6 +44,7 @@ function custom_product_function() {
         'post_type'      => 'product',
         'posts_per_page' => 50,
         'tax_query'      => $tax_query,
+        'meta_query'     => $meta_query,
         'orderby'        => 'menu_order',
 			  'order'          => 'ASC'
       ));
@@ -113,7 +115,7 @@ function custom_product_function() {
       );
       $baskets_query = new WP_Query( $baskets_query_args );
 
-      if ( $baskets_query->have_posts() ) { 
+      if ( $baskets_query->have_posts() && (empty( $_GET[ 'pqOutsideMtl' ] ) || $_GET[ 'pqOutsideMtl' ] !== 'true') ) { 
 
         $basket_term = get_term(171, 'product_cat');?>
 
@@ -168,6 +170,7 @@ function custom_product_function() {
 				$vegetables_query_args = array(
 					'posts_per_page' => 200,
           'tax_query'      => $tax_query,
+          'meta_query'     => $meta_query,
 					'post_type'      => 'product',
 					'post_status'    => 'publish',
 					'product_cat'    => $vegetables_slug,
@@ -197,6 +200,7 @@ function custom_product_function() {
 					$vegetables_products_args = array(
 						'posts_per_page' => 200,
             'tax_query'      => $tax_query,
+            'meta_query'     => $meta_query,
 						'post_type'      => 'product',
 						'post_status'    => 'publish',
 						'product_cat'    => $vegetables_children_cat->slug,
