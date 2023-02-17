@@ -18,11 +18,11 @@ function wc_session_enabler() {
 add_action( 'wp_footer', 'pq_delivery_zone_popup' );
 
 function pq_delivery_zone_popup() {
-  if ( !isset( $_COOKIE['pq_delivery_zone'] ) || $_COOKIE['pq_delivery_zone'] == '0' ) {
+  // if ( !isset( $_COOKIE['pq_delivery_zone'] ) || $_COOKIE['pq_delivery_zone'] == '0' ) {
     // todo: do not show if customer is logged in & has a postal code set
     $args = array();
     wc_pq_get_template( 'popup/delivery-zone-select.php', $args );
-  }
+  // }
 }
 
 
@@ -39,23 +39,34 @@ function pq_get_delivery_zone_with_ajax() {
   WC()->customer->set_shipping_postcode($postal_code);
   WC()->customer->set_billing_postcode($postal_code);
 
-  setcookie( 'pq_delivery_zone', preg_replace('/\s+/', '', $postal_code), time() + (86400 * 30), '/' );
+	$shipping_zones = WC_Shipping_Zones::get_zones();
 
-  echo $postal_code;
+  $matched_zone_id = false;
+  foreach ($shipping_zones as $zone) {
+    $zone_locations = $zone['zone_locations'];
+    foreach ($zone_locations as $location) {
+      if ($location->type === 'postcode' && is_postcode_match( $postal_code, $location->code )) {
+        $matched_zone_id = $zone['id'];
+      }
+    }
+  }
+
+  setcookie( 'pq_delivery_zone', preg_replace('/\s+/', '', $postal_code), time() + (86400 * 30), '/' );
+  echo $matched_zone_id;
   wp_die();
 }
 
-add_action('wp_footer', 'pq_test_cart');
-
-function pq_test_cart() {
-
-  // Use this to match the shipping zone to the postal code & display the products accordingly
-  $shipping_postcode = WC()->customer->get_shipping_postcode();
-  $billing_postcode = WC()->customer->get_billing_postcode();
-
-  $postcode = ! empty($shipping_postcode) ? $shipping_postcode : $billing_postcode;
-	$shipping_zones = WC_Shipping_Zones::get_zones();
-
-  error_log('postcode:' . print_r($postcode, true));
-  error_log('shipping_zones:' . print_r($shipping_zones, true));
+function is_postcode_match($user_postcode, $zone_postcode) {
+  $is_match = false;
+  if ( strpos($zone_postcode, '*') !== false ) {
+    $zone_postcode = str_replace('*', '', $zone_postcode);
+    if ( strpos(substr($user_postcode, 0, 3), $zone_postcode) !== false ) {
+      $is_match = true;
+    }
+  } else {
+    if ( $user_postcode === $zone_postcode ) {
+      $is_match = true;
+    }
+  }
+  return $is_match;
 }
