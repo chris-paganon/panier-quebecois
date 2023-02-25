@@ -115,7 +115,7 @@ function custom_product_function() {
       );
       $baskets_query = new WP_Query( $baskets_query_args );
 
-      if ( $baskets_query->have_posts() && (empty( $_GET[ 'pqOutsideMtl' ] ) || $_GET[ 'pqOutsideMtl' ] !== 'true') ) { 
+      if ( $baskets_query->have_posts() && !is_delivery_zone_outside_mtl() ) { 
 
         $basket_term = get_term(171, 'product_cat');?>
 

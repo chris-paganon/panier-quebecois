@@ -26,16 +26,13 @@ jQuery(document).ready(function ($) {
       }
 
       $.post( pq_delivery_zone_variables.ajax_url, data, function(response) {
-        if (response) {
+        if (response === 'MTL') {
           $('.pq-postal-code-response').html(response)
-          // Disable for dev
-          // $('.delivery-zone-select-popup-wrapper').hide()
-          // window.location.reload()
+          $('.delivery-zone-select-popup-wrapper').hide()
         } else {
-          $('.pq-postal-code-response').html('nope')
+          $('.pq-postal-code-response').html(response)
           const url = new URL(window.location.href)
-          url.searchParams.append('pqOutsideMtl', 'true')
-          window.location = url
+          window.location.reload()
         }
       });
     }

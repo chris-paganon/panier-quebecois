@@ -35,7 +35,7 @@ foreach ( $child_product_cats as $child_product_cat ) {
   if ( $countSubChild == 0 ) {
 
     // Starting child term products loop
-    $childprodargs = pq_get_wp_query_arguments($child_product_cat->slug, $filters_tax_query_array, true);
+    $childprodargs = pq_get_wp_query_arguments($child_product_cat->slug, $filters_tax_query_array);
     
     $childproducts = new WP_Query( $childprodargs );
     if ( $childproducts->have_posts() ) { ?>
@@ -59,7 +59,7 @@ foreach ( $child_product_cats as $child_product_cat ) {
   foreach ( $sub_child_product_cats as $subchild_key => $subchild_product_cat ) {
 
     // Setting up query for loading products from sub child terms
-    $subchildprodargs = pq_get_wp_query_arguments($subchild_product_cat->slug, $filters_tax_query_array, true);
+    $subchildprodargs = pq_get_wp_query_arguments($subchild_product_cat->slug, $filters_tax_query_array);
 
     $subchildproducts = new WP_Query( $subchildprodargs );
 

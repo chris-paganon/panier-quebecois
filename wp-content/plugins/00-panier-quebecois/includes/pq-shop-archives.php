@@ -169,7 +169,7 @@ function pq_get_filters_tax_query_array( $filters ) {
 /**
  * Get meta query for products in stock and maybe if use is outside Montreal
  */
-function pq_get_meta_query($overwrite_outside_mtl = false) {
+function pq_get_meta_query() {
 	$meta_query = array(
 	'relation' => 'AND',
 		array(
@@ -177,7 +177,7 @@ function pq_get_meta_query($overwrite_outside_mtl = false) {
 			'value'   => 'instock',
 		)
 	);
-	if ( (!empty( $_GET[ 'pqOutsideMtl' ] ) && $_GET[ 'pqOutsideMtl' ] == 'true') || $overwrite_outside_mtl === true) {
+	if ( is_delivery_zone_outside_mtl() ) {
 		$meta_query[] = array(
 			'key'     => '_pq_available_long_distance',
 			'value'   => 1,
@@ -218,7 +218,7 @@ function pq_get_child_categories( $category_slug ) {
 /**
  * Get arguments for wp_query
  */
-function pq_get_wp_query_arguments($term_slug, $filters_tax_query_array, $overwrite_outside_mtl = false) {
+function pq_get_wp_query_arguments($term_slug, $filters_tax_query_array) {
 	$tax_query = array(
 		'relation' => 'AND',
 		array(
@@ -239,7 +239,7 @@ function pq_get_wp_query_arguments($term_slug, $filters_tax_query_array, $overwr
 		$tax_query[] = $filters_tax_query;
 	}
 
-	$meta_query = pq_get_meta_query($overwrite_outside_mtl);
+	$meta_query = pq_get_meta_query();
 
 	$pq_wp_query_args = array(
 		'posts_per_page' => 300,
