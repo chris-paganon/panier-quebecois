@@ -102,3 +102,53 @@ function is_delivery_zone_outside_mtl() {
     return false;
   }
 }
+
+
+/**
+ * Validate delivery zone in checkout
+ */
+add_action( 'woocommerce_checkout_process', 'pq_validate_products_shipping' );
+add_action( 'woocommerce_before_cart', 'pq_validate_products_shipping' );
+
+function pq_validate_products_shipping() {
+
+  // Get the delivery zone selected by the customer in the cart data
+  $shipping_packages = WC()->cart->get_shipping_packages();
+  $shipping_zone = wc_get_shipping_zone( reset( $shipping_packages ) );
+
+  if ( $shipping_zone->get_zone_name() !== 'Outside MTL' ) return;
+
+  $cart_has_unavailable_product = false;
+  $product_names = '';
+
+  foreach ( WC()->cart->get_cart() as $cart_item ) {
+    $product_id = $cart_item[ 'product_id' ];
+    if ( get_post_meta($product_id, '_pq_available_long_distance', true) != true ) {
+      $cart_has_unavailable_product = true;
+      if ( ! empty($product_names) ) {
+        $product_names .= ', ';
+      }
+      $product_names .= get_the_title($product_id);
+    }
+  }
+  
+  if ( $cart_has_unavailable_product ) {
+    if ( is_cart() ) {
+      wc_print_notice(
+        sprintf(
+          'Les produits suivants sont disponibles uniquement à Montréal, veuillez les retirer de votre panier ou insérer une adresse de livraison à Montréal: %s',
+          $product_names
+        ),
+        'error'
+      );
+    } else {
+      wc_add_notice(
+        sprintf(
+          'Les produits suivants sont disponibles uniquement à Montréal, veuillez les retirer de votre panier ou insérer une adresse de livraison à Montréal: %s',
+          $product_names
+        ),
+        'error'
+      );
+    }
+  }
+}
