@@ -19,19 +19,8 @@ add_action( 'wp_footer', 'pq_delivery_zone_popup' );
 
 function pq_delivery_zone_popup() {
 
-  $has_postal_code = false;
-  if ( WC()->customer->get_billing_postcode() ) {
-    $postal_code = WC()->customer->get_billing_postcode();
-    $has_postal_code = true;
-  } elseif ( is_user_logged_in() ) {
-    $user = wp_get_current_user();
-    if ( get_user_meta( $user->ID, 'billing_postcode', true ) ) {
-      $postal_code = get_user_meta( $user->ID, 'billing_postcode', true );
-      $has_postal_code = true;
-    }
-  }
-
-  if ( $has_postal_code && $postal_code ) {
+  $postal_code = pq_get_postal_code_from_user();
+  if ( !empty($postal_code) ) {
     if ( is_postcode_in_mtl($postal_code) === true ) {
       $delivery_zone_cookie = 'MTL';
     } else {
@@ -49,6 +38,24 @@ function pq_delivery_zone_popup() {
     $args = array();
     wc_pq_get_template( 'popup/delivery-zone-select.php', $args );
   }
+}
+
+
+/**
+ * Get the postal code from the checkout form or from the user if not set at checkout
+ */
+function pq_get_postal_code_from_user() {
+  $postal_code = '';
+  if ( WC()->customer->get_billing_postcode() ) {
+    $postal_code = WC()->customer->get_billing_postcode();
+  } elseif ( is_user_logged_in() ) {
+    $user = wp_get_current_user();
+    if ( get_user_meta( $user->ID, 'billing_postcode', true ) ) {
+      $postal_code = get_user_meta( $user->ID, 'billing_postcode', true );
+    }
+  }
+  $postal_code = strtoupper( str_replace(' ', '', $postal_code) );
+  return $postal_code;
 }
 
 
