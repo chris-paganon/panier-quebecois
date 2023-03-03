@@ -18,10 +18,29 @@ function wc_session_enabler() {
 add_action( 'wp_footer', 'pq_delivery_zone_popup' );
 
 function pq_delivery_zone_popup() {
+  $has_postal_code = false;
+  if ( is_user_logged_in() ) {
+    $user = wp_get_current_user();
+    $postal_code = get_user_meta( $user->ID, 'billing_postcode', true );
+    if ( $postal_code ) {
+      $has_postal_code = true;
+      if ( is_postcode_in_mtl($postal_code) === true ) {
+        $delivery_zone_cookie = 'MTL';
+      } else {
+        $delivery_zone_cookie = 'QC';
+      }
+      setcookie( 'pq_delivery_zone', $delivery_zone_cookie, time() + (86400 * 30), '/' );
+      if ( isset( $_COOKIE['pq_delivery_zone'] ) && $_COOKIE['pq_delivery_zone'] != $delivery_zone_cookie ) {
+        header("refresh: 0;");
+      }
+    }
+  }
+
   if ( !isset( $_COOKIE['pq_delivery_zone'] ) || $_COOKIE['pq_delivery_zone'] == '0' ) {
-    // todo: do not show if customer is logged in & has a postal code set
-    $args = array();
-    wc_pq_get_template( 'popup/delivery-zone-select.php', $args );
+    if ( !$has_postal_code ) {
+      $args = array();
+      wc_pq_get_template( 'popup/delivery-zone-select.php', $args );
+    }
   }
 }
 
@@ -41,12 +60,12 @@ function pq_get_delivery_zone_with_ajax() {
 
   $matched_zone_id = is_postcode_in_mtl($postal_code);
 
-  if ( $matched_zone_id === false ) {
-    setcookie( 'pq_delivery_zone', 'QC', time() + (86400 * 30), '/' );
-    echo 'QC';
-  } else {
+  if ( $matched_zone_id === true ) {
     setcookie( 'pq_delivery_zone', 'MTL', time() + (86400 * 30), '/' );
     echo 'MTL';
+  } else {
+    setcookie( 'pq_delivery_zone', 'QC', time() + (86400 * 30), '/' );
+    echo 'QC';
   }
 
   wp_die();
@@ -59,17 +78,17 @@ function pq_get_delivery_zone_with_ajax() {
 function is_postcode_in_mtl($postal_code) {
   $shipping_zones = WC_Shipping_Zones::get_zones();
 
-  $matched_zone_id = false;
+  $is_postcode_in_mtl = false;
   foreach ($shipping_zones as $zone) {
     $zone_locations = $zone['zone_locations'];
     foreach ($zone_locations as $location) {
       if ($location->type === 'postcode' && is_postcode_match( $postal_code, $location->code )) {
-        $matched_zone_id = $zone['id'];
+        $is_postcode_in_mtl = true;
       }
     }
   }
 
-  return $matched_zone_id;
+  return $is_postcode_in_mtl;
 }
 
 
