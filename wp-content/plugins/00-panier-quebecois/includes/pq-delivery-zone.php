@@ -58,7 +58,7 @@ add_action( 'woocommerce_checkout_update_order_review', 'my_custom_checkout_fiel
 
 function my_custom_checkout_field_update_order_review( $post_data ) {
   parse_str( $post_data, $post_array );
-  if ( isset( $post_array['billing_postcode'] ) ) {
+  if ( ! empty( $post_array['billing_postcode'] ) ) {
     if ( is_postcode_in_mtl($post_array['billing_postcode']) === true ) {
       setcookie( 'pq_delivery_zone', 'MTL', time() + (86400 * 30), '/' );
     } else {
