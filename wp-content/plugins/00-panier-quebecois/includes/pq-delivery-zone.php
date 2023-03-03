@@ -44,7 +44,8 @@ function pq_delivery_zone_popup() {
     }
   }
 
-  if ( (!isset( $_COOKIE['pq_delivery_zone'] ) || $_COOKIE['pq_delivery_zone'] == '0') && !$has_postal_code ) {
+  // Show the popup if we are on a shop page and the cookie is not set or was just set above
+  if ( (!isset( $_COOKIE['pq_delivery_zone'] ) || $_COOKIE['pq_delivery_zone'] == '0') && empty($postal_code) && (is_archive() || get_the_ID() == 6720) ) {
     $args = array();
     wc_pq_get_template( 'popup/delivery-zone-select.php', $args );
   }
