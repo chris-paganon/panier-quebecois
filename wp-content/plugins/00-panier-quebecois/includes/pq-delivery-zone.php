@@ -62,16 +62,50 @@ function pq_get_postal_code_from_user() {
 /**
  * Set the delivery zone cookie when postal code is updated at checkout
  */
-add_action( 'woocommerce_checkout_update_order_review', 'my_custom_checkout_field_update_order_review', 10, 1 );
+add_action( 'woocommerce_checkout_update_order_review', 'pq_update_postal_code_cookie_at_checkout', 10, 1 );
 
-function my_custom_checkout_field_update_order_review( $post_data ) {
-  parse_str( $post_data, $post_array );
-  if ( ! empty( $post_array['billing_postcode'] ) ) {
-    if ( is_postcode_in_mtl($post_array['billing_postcode']) === true ) {
-      setcookie( 'pq_delivery_zone', 'MTL', time() + (86400 * 30), '/' );
+function pq_update_postal_code_cookie_at_checkout( $post_data ) {
+  parse_str( $post_data, $checkout_data );
+  if ( pq_is_checkout_in_mtl($checkout_data) === true) {
+    setcookie( 'pq_delivery_zone', 'MTL', time() + (86400 * 30), '/' );
+  } else {
+    setcookie( 'pq_delivery_zone', 'QC', time() + (86400 * 30), '/' );
+    add_filter( 'wc_od_checkout_delivery_details_args', 'pq_delivery_outside_mtl_args', 10, 1);
+  }
+}
+
+/**
+ * Check if delivery in MTL from the checkout post_data
+ */
+function pq_is_checkout_in_mtl($checkout_data) {
+  if ( ! empty( $checkout_data['billing_postcode'] ) ) {
+    if ( is_postcode_in_mtl($checkout_data['billing_postcode']) === true ) {
+      return true;
     } else {
-      setcookie( 'pq_delivery_zone', 'QC', time() + (86400 * 30), '/' );
+      return false;
     }
+  }
+}
+
+/**
+ * Overwrite the delivery dates plugin args for the form-delivery-date checkout template to display delivery estimate instead of delivery date datepicker
+ */
+function pq_delivery_outside_mtl_args($args) {
+  $args['delivery_option'] = 'shipping_date';
+  $args['delivery_range']['min'] = 4;
+  $args['delivery_range']['max'] = 7;
+  return $args;
+}
+
+/**
+ * Delivery date is not mandatory outside of MTL
+ */
+add_action( 'woocommerce_after_checkout_validation', 'pq_delivery_date_not_mandatory', 10, 2 );
+
+function pq_delivery_date_not_mandatory($checkout_data, $errors) {
+  if ( pq_is_checkout_in_mtl($checkout_data) !== true) {
+    $errors->remove('delivery_date_required');
+    $errors->remove('delivery_time_frame_required');
   }
 }
 
@@ -98,7 +132,6 @@ function pq_get_delivery_zone_with_ajax() {
     setcookie( 'pq_delivery_zone', 'QC', time() + (86400 * 30), '/' );
     echo 'QC';
   }
-
   wp_die();
 }
 

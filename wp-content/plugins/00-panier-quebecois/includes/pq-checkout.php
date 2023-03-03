@@ -49,10 +49,12 @@ function pq_default_delivery_time_frame($choices, $time_frames, $context) {
 }
 
 
-// ------ ------- //
+// ------ Show an extra message to explain delivery timeslots below delivery datepicker ------- //
 add_action( 'wc_od_checkout_after_delivery_details', 'pq_timeslot_info', 10, 1);
 
 function pq_timeslot_info($args) {
+
+  if ('calendar' !== $args['delivery_option'] ) return;
 
   $checkout_fields = $args['checkout']->checkout_fields;
   $delivery_time_slots = $checkout_fields['delivery']['delivery_time_frame']['options'];
