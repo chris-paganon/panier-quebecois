@@ -13,33 +13,56 @@ function wc_session_enabler() {
 }
 
 /**
- * Add a popup to select the delivery zone
+ * Add a popup to select the delivery zone & set the delivery zone cookie
  */
 add_action( 'wp_footer', 'pq_delivery_zone_popup' );
 
 function pq_delivery_zone_popup() {
+
   $has_postal_code = false;
-  if ( is_user_logged_in() ) {
+  if ( WC()->customer->get_billing_postcode() ) {
+    $postal_code = WC()->customer->get_billing_postcode();
+    $has_postal_code = true;
+  } elseif ( is_user_logged_in() ) {
     $user = wp_get_current_user();
-    $postal_code = get_user_meta( $user->ID, 'billing_postcode', true );
-    if ( $postal_code ) {
+    if ( get_user_meta( $user->ID, 'billing_postcode', true ) ) {
+      $postal_code = get_user_meta( $user->ID, 'billing_postcode', true );
       $has_postal_code = true;
-      if ( is_postcode_in_mtl($postal_code) === true ) {
-        $delivery_zone_cookie = 'MTL';
-      } else {
-        $delivery_zone_cookie = 'QC';
-      }
-      setcookie( 'pq_delivery_zone', $delivery_zone_cookie, time() + (86400 * 30), '/' );
-      if ( isset( $_COOKIE['pq_delivery_zone'] ) && $_COOKIE['pq_delivery_zone'] != $delivery_zone_cookie ) {
-        header("refresh: 0;");
-      }
     }
   }
 
-  if ( !isset( $_COOKIE['pq_delivery_zone'] ) || $_COOKIE['pq_delivery_zone'] == '0' ) {
-    if ( !$has_postal_code ) {
-      $args = array();
-      wc_pq_get_template( 'popup/delivery-zone-select.php', $args );
+  if ( $has_postal_code && $postal_code ) {
+    if ( is_postcode_in_mtl($postal_code) === true ) {
+      $delivery_zone_cookie = 'MTL';
+    } else {
+      $delivery_zone_cookie = 'QC';
+    }
+    setcookie( 'pq_delivery_zone', $delivery_zone_cookie, time() + (86400 * 30), '/' );
+    // If we have a postal code and the delivery zone cookie is not set or is not up to date, refresh if user is on a shop page to make sure they see the right products
+    if ( (!isset( $_COOKIE['pq_delivery_zone'] ) || $_COOKIE['pq_delivery_zone'] != $delivery_zone_cookie) && (is_archive() || get_the_ID() == 6720) ) {
+      header("refresh: 0;");
+    }
+  }
+
+  if ( (!isset( $_COOKIE['pq_delivery_zone'] ) || $_COOKIE['pq_delivery_zone'] == '0') && !$has_postal_code ) {
+    $args = array();
+    wc_pq_get_template( 'popup/delivery-zone-select.php', $args );
+  }
+}
+
+
+/**
+ * Set the delivery zone cookie when postal code is updated at checkout
+ */
+add_action( 'woocommerce_checkout_update_order_review', 'my_custom_checkout_field_update_order_review', 10, 1 );
+
+function my_custom_checkout_field_update_order_review( $post_data ) {
+  parse_str( $post_data, $post_array );
+  if ( isset( $post_array['billing_postcode'] ) ) {
+    if ( is_postcode_in_mtl($post_array['billing_postcode']) === true ) {
+      setcookie( 'pq_delivery_zone', 'MTL', time() + (86400 * 30), '/' );
+    } else {
+      setcookie( 'pq_delivery_zone', 'QC', time() + (86400 * 30), '/' );
     }
   }
 }
@@ -96,6 +119,7 @@ function is_postcode_in_mtl($postal_code) {
  * Check if postal code matches a zone postal code
  */
 function is_postcode_match($user_postcode, $zone_postcode) {
+  $user_postcode = strtoupper( str_replace(' ', '', $user_postcode) );
   $is_match = false;
   if ( strpos($zone_postcode, '*') !== false ) {
     $zone_postcode = str_replace('*', '', $zone_postcode);
