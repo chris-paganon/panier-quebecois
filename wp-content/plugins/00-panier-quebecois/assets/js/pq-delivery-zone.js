@@ -1,7 +1,7 @@
 jQuery(document).ready(function ($) {
 
-  $('.delivery-zone-select-popup__close').click(function () {
-    $('.delivery-zone-select-popup-wrapper').hide()
+  $('.pq-popup__close').click(function () {
+    $('.pq-popup-box').hide()
   });
 
   $('#pq-postal-code-submit').click(function () {
