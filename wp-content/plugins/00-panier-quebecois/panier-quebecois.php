@@ -161,7 +161,7 @@ class Panier_Quebecois {
     // Register, Enqueue and localise ajax script for getting the delivery zone through a popup
     wp_enqueue_script( 'pq_delivery_zone_js', PQ_JS_URL . 'pq-delivery-zone.js', array( 'jquery' ), rand( 111, 9999 ), false );
     wp_localize_script( 'pq_delivery_zone_js', 'pq_delivery_zone_variables', array('ajax_url' => admin_url('admin-ajax.php'), 'nonce' => wp_create_nonce('pq-delivery-zone-nonce')) );
-    wp_enqueue_style( 'pq_delivery_zone_css', PQ_CSS_URL . '/pq-delivery-zone.css', array('astra-theme-css'), rand(111,9999) );
+    wp_enqueue_style( 'pq_delivery_zone_css', PQ_CSS_URL . 'pq-delivery-zone.css', array('astra-theme-css'), rand(111,9999) );
 
 
     // Register, Enqueue and localise ajax script for loading all products through ajax (on marketplace only)

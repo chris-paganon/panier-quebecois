@@ -11,13 +11,13 @@ jQuery(document).ready(function ($) {
     const postalCodeIsFromQC = isPostalCodeFromQC(postalCode)
 
     if (!postalCodeIsValid) {
-      $('.pq-postal-code-response').html('Le code postal est invalide')
+      $('.pq-postal-code-error').html('Le code postal est invalide')
       return
     } else if (!postalCodeIsFromQC) {
-      $('.pq-postal-code-response').html('Le code postal n\'est pas du Québec')
+      $('.pq-postal-code-error').html('Le code postal n\'est pas au Québec')
       return
     } else {
-      $('.pq-postal-code-response').html('')
+      $('.pq-postal-code-error').html('')
 
       const data = {
 			  'action': 'pq_get_delivery_zone',
@@ -30,7 +30,7 @@ jQuery(document).ready(function ($) {
           $('.pq-postal-code-response').html(response)
           $('.delivery-zone-select-popup-wrapper').hide()
         } else {
-          $('.pq-postal-code-response').html(response)
+          $('.pq-postal-code-error').html(response)
           const url = new URL(window.location.href)
           window.location.reload()
         }

@@ -127,10 +127,8 @@ function pq_get_delivery_zone_with_ajax() {
 
   if ( $matched_zone_id === true ) {
     setcookie( 'pq_delivery_zone', 'MTL', time() + (86400 * 30), '/' );
-    echo 'MTL';
   } else {
     setcookie( 'pq_delivery_zone', 'QC', time() + (86400 * 30), '/' );
-    echo 'QC';
   }
   wp_die();
 }
