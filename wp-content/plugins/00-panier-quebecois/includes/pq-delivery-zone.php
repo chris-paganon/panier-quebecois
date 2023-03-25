@@ -187,6 +187,20 @@ function is_delivery_zone_outside_mtl() {
 
 
 /**
+ * Hide some elementor content if outisde MTL
+ */
+add_action( 'elementor/frontend/before_render', 'pq_maybe_hide_elementor_content', 10, 1 );
+
+function pq_maybe_hide_elementor_content( $element ) {
+  if ( is_delivery_zone_outside_mtl() === true ) {
+    if ($element->get_raw_data()['id'] === '2a408805') {
+      $element->add_render_attribute( '_wrapper', 'class', 'pq-hide-outside-mtl' );
+    }
+  }
+}
+
+
+/**
  * Validate delivery zone in checkout
  */
 add_action( 'woocommerce_checkout_process', 'pq_validate_products_shipping' );

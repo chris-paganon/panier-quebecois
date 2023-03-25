@@ -1,3 +1,7 @@
+.pq-hide-outside-mtl {
+  display: none !important;
+}
+
 .delivery-zone-select-popup-wrapper {
   position: fixed;
   top: 0;
