@@ -259,11 +259,17 @@ function wc_minimum_order_amount() {
 add_action( 'woocommerce_before_cart', 'myfct_cart_notification' );
 
 function myfct_cart_notification() {
-  ?>
-<div id='cart-notification-wrapper'><span id='cart-notification'>
-  <h4> Livraison gratuite à partir de $150 </h4>
-  </span></div>
-<?php
+  if (
+    (isset( $_COOKIE['pq_delivery_zone'] ) && $_COOKIE['pq_delivery_zone'] === 'MTL') || 
+    (!isset( $_COOKIE['pq_delivery_zone'] ) || $_COOKIE['pq_delivery_zone'] == '0')
+  )
+  {
+    ?>
+    <div id='cart-notification-wrapper'>
+      <span id='cart-notification'><h4>Livraison gratuite à partir de $150</h4></span>
+    </div>
+    <?php
+  }
 }
 
 // -------- Change continue shopping button to link to products page -------- //
