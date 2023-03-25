@@ -2,6 +2,7 @@ jQuery(document).ready(function ($) {
 
   $('.pq-popup__close').click(function () {
     $('.pq-popup-box').hide()
+    document.cookie = 'pq_free_delivery_popup_closed=1;';
   });
 
   $('#pq-postal-code-submit').click(function () {

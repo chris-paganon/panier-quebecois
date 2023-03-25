@@ -40,7 +40,15 @@ function pq_delivery_zone_popup() {
   }
 
   // Show the free delivery above X popup if delivery is inside mtl or if the popup is not set
-  if ( ((isset( $_COOKIE['pq_delivery_zone'] ) && $_COOKIE['pq_delivery_zone'] === 'MTL') || (!isset( $_COOKIE['pq_delivery_zone'] ) || $_COOKIE['pq_delivery_zone'] == '0')) && (is_front_page() || get_the_ID() == 65432)) {
+  if ( 
+    (
+      (isset( $_COOKIE['pq_delivery_zone'] ) && $_COOKIE['pq_delivery_zone'] === 'MTL') || 
+      (!isset( $_COOKIE['pq_delivery_zone'] ) || $_COOKIE['pq_delivery_zone'] == '0')
+    ) && 
+      !isset( $_COOKIE['pq_free_delivery_popup_closed']) &&
+      (is_front_page() || get_the_ID() == 6720)
+    )
+  {
     $args = array();
     wc_pq_get_template( 'popup/free-delivery.php', $args );
   }
