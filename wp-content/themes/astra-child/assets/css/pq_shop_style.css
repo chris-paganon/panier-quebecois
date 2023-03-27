@@ -344,6 +344,8 @@ a.pq_anchor {
     .leftMenuCat {
         overflow-y: scroll;
         overflow-x: clip;
+        position: sticky;
+        top: 125px;
     }
     .awwm-cat-loop .elementor-nav-menu li.menu-item-has-children.pq-active ul.sub-menu {
         display: block;
