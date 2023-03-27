@@ -1,0 +1,131 @@
+.pq-hide-outside-mtl {
+  display: none !important;
+}
+
+/* Popups */
+.pq-popup-lightbox {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  z-index: 150;
+}
+.pq-popup-box {
+  border-radius: 10px;
+  background-color: #fff;
+  text-align: center;
+}
+.pq-popup__close {
+  position: absolute;
+  cursor: pointer;
+  top: 10px;
+  right: 10px;
+}
+@media (max-width: 768px) {
+  .pq-popup__close {
+    top: 5px;
+    right: 5px;
+  }
+}
+
+/* Free delivery popup */
+.free-delivery-popup {
+  position: fixed;
+  left: 20px;
+  bottom: 20px;
+  max-width: 550px;
+  box-shadow: 2px 8px 23px 3px rgba(0,0,0,0.2);
+  z-index: 150;
+  display: flex;
+  align-items: center;
+  padding: 12px 30px 12px 10px;
+}
+.free-delivery-popup__content {
+  display: flex;
+  align-items: center;
+}
+
+.free-delivery-popup__content .pq-img-box {
+  max-width: 70px;
+}
+.free-delivery-popup__content img {
+  width: 100%;
+  height: auto;
+}
+.free-delivery-popup__content p {
+  font-size: 26px;
+  font-weight: 500;
+  color: #4B9E50;
+  margin-bottom: 0;
+}
+
+@media (max-width: 768px) {
+  .free-delivery-popup {
+    left: 10px;
+    bottom: 10px;
+    padding: 15px 25px 15px 10px;
+  }
+  .free-delivery-popup__content p {
+    font-size: 20px;
+  }
+  .free-delivery-popup__content .pq-img-box {
+    display: none;
+  }
+}
+
+@media (max-width: 500px) {
+  .free-delivery-popup {
+    max-width: min(350px, 90vw);
+    padding: 12px 25px 12px 7px;
+  }
+  .free-delivery-popup__content p {
+    font-size: 15px;
+  }
+}
+/* Delivery zone select popup */
+.delivery-zone-select-popup-lightbox {
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.425);
+}
+.delivery-zone-select-popup {
+  position: relative;
+  padding: 40px;
+  margin: 0 10px;
+}
+
+.delivery-zone-select-popup h3,
+.delivery-zone-select-popup input,
+.delivery-zone-select-popup button {
+  margin-bottom: 10px;
+}
+.delivery-zone-select-popup input {
+  height: 39px;
+}
+.delivery-zone-select-popup p {
+  margin-top: 10px;
+  margin-bottom: 0px;
+  font-size: 0.9em;
+}
+
+.pq-postal-code-error {
+  color: red;
+}
+
+@media (max-width: 768px) {
+  .delivery-zone-select-popup {
+    padding: 20px;
+    margin: 0;
+  }
+}
+
+@media (max-width: 400px) {
+  .delivery-zone-select-popup {
+    padding: 10px;
+  }
+  .delivery-zone-select-popup p {
+    font-size: 0.7em;
+  }
+}
