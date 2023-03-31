@@ -643,7 +643,8 @@ div.woocommerce .astra-shop-summary-wrap{
     align-items: center;
     width: 100%;
 }
-div.woocommerce ul.products li.product {
+div.woocommerce ul.products li.product,
+div.elementor-products-grid div.woocommerce ul.products li.product {
     display:flex !important;
     flex-direction: column;
     justify-content: space-between;
