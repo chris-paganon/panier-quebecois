@@ -33,6 +33,10 @@ class PQ_order_schedules {
    */
   public static function pq_get_close_orders_schedule() {
     $schedules_args = array(
+      array(
+        'date' => 'Monday 9:30pm',
+        'is_delivery' => true,
+      ),
       // array(
       //   'date' => 'Tuesday 9:30pm',
       //   'is_delivery' => true,
