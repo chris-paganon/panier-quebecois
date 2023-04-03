@@ -33,42 +33,42 @@ class PQ_order_schedules {
    */
   public static function pq_get_close_orders_schedule() {
     $schedules_args = array(
+      // array(
+      //   'date' => 'Tuesday 9:30pm',
+      //   'is_delivery' => true,
+      // ),
+      // array(
+      //   'date' => 'Tuesday 1:30pm',
+      //   'is_delivery' => false,
+      // ),
+      // array(
+      //   'date' => 'Tuesday 3:30pm',
+      //   'is_delivery' => false,
+      // ),
       array(
-        'date' => 'Monday 9:30pm',
+        'date' => 'Thursday 9:30pm',
         'is_delivery' => true,
       ),
       array(
-        'date' => 'Monday 1:30pm',
+        'date' => 'Thursday 1:30pm',
         'is_delivery' => false,
       ),
       array(
-        'date' => 'Monday 3:30pm',
+        'date' => 'Thursday 3:30pm',
         'is_delivery' => false,
       ),
-      array(
-        'date' => 'Wednesday 9:30pm',
-        'is_delivery' => true,
-      ),
-      array(
-        'date' => 'Wednesday 1:30pm',
-        'is_delivery' => false,
-      ),
-      array(
-        'date' => 'Wednesday 3:30pm',
-        'is_delivery' => false,
-      ),
-      array(
-        'date' => 'Friday 9:30pm',
-        'is_delivery' => true,
-      ),
-      array(
-        'date' => 'Friday 1:30pm',
-        'is_delivery' => false,
-      ),
-      array(
-        'date' => 'Friday 3:30pm',
-        'is_delivery' => false,
-      ),
+      // array(
+      //   'date' => 'Friday 9:30pm',
+      //   'is_delivery' => true,
+      // ),
+      // array(
+      //   'date' => 'Friday 1:30pm',
+      //   'is_delivery' => false,
+      // ),
+      // array(
+      //   'date' => 'Friday 3:30pm',
+      //   'is_delivery' => false,
+      // ),
     );
 
     return $schedules_args;
