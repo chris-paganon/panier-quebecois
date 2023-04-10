@@ -45,30 +45,30 @@ class PQ_order_schedules {
         'date' => 'Tuesday 3:30pm',
         'is_delivery' => false,
       ),
-      array(
-        'date' => 'Thursday 9:30pm',
-        'is_delivery' => true,
-      ),
-      array(
-        'date' => 'Thursday 1:30pm',
-        'is_delivery' => false,
-      ),
-      array(
-        'date' => 'Thursday 3:30pm',
-        'is_delivery' => false,
-      ),
       // array(
-      //   'date' => 'Friday 9:30pm',
+      //   'date' => 'Thursday 9:30pm',
       //   'is_delivery' => true,
       // ),
       // array(
-      //   'date' => 'Friday 1:30pm',
+      //   'date' => 'Thursday 1:30pm',
       //   'is_delivery' => false,
       // ),
       // array(
-      //   'date' => 'Friday 3:30pm',
+      //   'date' => 'Thursday 3:30pm',
       //   'is_delivery' => false,
       // ),
+      array(
+        'date' => 'Friday 9:30pm',
+        'is_delivery' => true,
+      ),
+      array(
+        'date' => 'Friday 1:30pm',
+        'is_delivery' => false,
+      ),
+      array(
+        'date' => 'Friday 3:30pm',
+        'is_delivery' => false,
+      ),
     );
 
     return $schedules_args;
