@@ -372,6 +372,15 @@ function prod_filters_list() {
           <li class="lesProducts menu-item menu-item-type-custom menu-item-object-custom">
             <label for="prod_filter-marche">
               <?php $filtersArray = (isset($_GET['filters'])) ? explode(',', $_GET['filters']) : array(); ?>
+              <input type="checkbox" class='prod_filter' name="prod_filter-marche" value="marche-maisonneuve" <?= (in_array('marche-maisonneuve', $filtersArray)) ? 'checked' : '' ?>>
+              <span class="customcheckbox"></span> <span class="checkedlabel">Marché Maisonneuve</span> 
+            </label>
+            <br>
+          </li>
+
+          <li class="lesProducts menu-item menu-item-type-custom menu-item-object-custom">
+            <label for="prod_filter-marche">
+              <?php $filtersArray = (isset($_GET['filters'])) ? explode(',', $_GET['filters']) : array(); ?>
               <input type="checkbox" class='prod_filter' name="prod_filter-marche" value="vegan" <?= (in_array('vegan', $filtersArray)) ? 'checked' : '' ?>>
               <span class="customcheckbox"></span> <span class="checkedlabel">Végé/Vegan</span> 
             </label>

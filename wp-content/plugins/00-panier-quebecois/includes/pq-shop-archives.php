@@ -132,6 +132,7 @@ function pq_get_filters_mapping() {
 		'bio' => 'food_restrictions',
 		'quebec' => 'country_origin',
 		'marche-jean-talon' => 'pq_commercial_zone',
+		'marche-maisonneuve' => 'pq_commercial_zone',
 		'marche-atwater' => 'pq_commercial_zone',
 		'vegan' => 'food_restrictions',
 	);
