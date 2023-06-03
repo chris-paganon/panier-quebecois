@@ -10,9 +10,8 @@ add_filter( 'woocommerce_email_recipient_customer_completed_renewal_order', 'pro
 
 function product_cat_avoid_email_notification( $recipient, $order ) {
   if ( myfct_return_true_if_has_category_from_order( $order, 'entreprise' ) ) {
+
     return ''; // If it's found, we return an empty recipient
-  } elseif ( ! is_postcode_in_mtl( $order->get_shipping_postcode() ) ) {
-    return '';
   }
 
   return $recipient;
@@ -135,8 +134,6 @@ function myfct_order_email_custom_text( $order, $sent_to_admin, $plain_text, $em
 
   // ---- VARIABLES ---- //
   $order_id = $order->get_id();
-  $postal_code = $order->get_shipping_postcode();
-
   $custom_language = get_post_meta( $order_id, '_billing_language', true );
   if ( empty( $custom_language ) ) {
     $custom_language = 'francais';
@@ -200,16 +197,10 @@ function myfct_order_email_custom_text( $order, $sent_to_admin, $plain_text, $em
     <br/><br/>
     Si vous avez commandé des produits frais avec Panier Québécois la semaine passée, <strong>merci de préparer vos blocs réfrigérants et votre sac isotherme afin que notre livreur puisse les récupérer lors de son passage chez vous.</strong></p>';
 
-  $processing_delivery_out_mtl_fr = '<p>
-    Votre commande sera envoyée par la poste le ' . $fmt_fr->format( $delivery_timestamp ) . ' et doit arriver sous 7 jours ouvrables à votre adresse.</p>';
-
   $processing_delivery_en = '<p>
     We will drop your order in front of your door on <strong>' . $fmt_en->format( $delivery_timestamp ) . '</strong> between ' . $delivery_time_slot_en . '. Our driver will call and/or ring your doorbell when they arrive.
     <br/><br/>
     If you have ordered cold products from Panier Québécois last week, <strong>please prepare your ice packs and isotherm bag so that our driver can pick it up during his delivery.</strong></p>';
-
-  $processing_delivery_out_mtl_en = '<p>
-  Your order will be shipped by post on ' . $fmt_en->format( $delivery_timestamp ) . ' and it should arrive at your address within 7 business days.</p>';
 
   $completed_delivery_fr_intro = '<p>Bonne nouvelle, votre Panier Québécois a été livré! Si vous ne l\'avez pas déjà récupéré, notre livreur l\'a déposé devant votre porte.</p>';
 
@@ -345,9 +336,10 @@ function myfct_order_email_custom_text( $order, $sent_to_admin, $plain_text, $em
       // For local pickup shipping method
       if ( $is_pickup ) {
         echo $processing_pickup_fr;
-      } elseif ( ! is_postcode_in_mtl($postal_code) ) {
-        echo $processing_delivery_out_mtl_fr;
-      } else {
+      }
+
+      // For other shipping methods
+      else {
         echo $processing_delivery_fr;
       }
 
@@ -401,9 +393,10 @@ function myfct_order_email_custom_text( $order, $sent_to_admin, $plain_text, $em
       if ( $is_pickup ) {
 
         echo $processing_pickup_en;
-      } elseif ( ! is_postcode_in_mtl($postal_code) ) {
-        echo $processing_delivery_out_mtl_en;
-      } else {
+      }
+
+      // For other shipping methods
+      else {
         echo $processing_delivery_en;
       }
 

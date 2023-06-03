@@ -110,7 +110,6 @@ class Panier_Quebecois {
     include_once( PQ_INCLUDE_DIR . 'pq-checkout.php' );
     include_once( PQ_INCLUDE_DIR . 'pq-myaccount.php' );
     include_once( PQ_INCLUDE_DIR . 'pq-delivery-days.php' );
-    include_once( PQ_INCLUDE_DIR . 'pq-delivery-zone.php' );
     include_once( PQ_INCLUDE_DIR . 'pq-products-slider.php' );
     include_once( PQ_INCLUDE_DIR . 'pq-wishlist.php' );
     include_once( PQ_INCLUDE_DIR . 'pq-page-content.php' );
@@ -149,7 +148,6 @@ class Panier_Quebecois {
    * Enqueue scripts
    */
   public static function pq_enqueue_scripts() {
-
     //Enqueue JS
     wp_enqueue_script( 'pq_header', PQ_JS_URL . 'pq-header.js', array( 'jquery' ), rand( 111, 9999 ), true );
     wp_enqueue_script( 'pq_optional_bundle_item_button', PQ_JS_URL . 'pq_optional_bundle_item_button.js', array( 'jquery' ), rand( 111, 9999 ), true );
@@ -157,12 +155,6 @@ class Panier_Quebecois {
     wp_enqueue_script( 'pq_anchor_switcher', PQ_JS_URL . 'pq-anchor-switcher.js', array( 'jquery' ), rand( 111, 9999 ), false );
     wp_enqueue_script( 'pq_shop_archives', PQ_JS_URL . 'pq-shop-archives.js', array( 'jquery' ), rand( 111, 9999 ), false );
     wp_enqueue_script( 'pq_delivery_countdown', PQ_JS_URL . 'pq-delivery-countdown.js', array( 'jquery' ), rand( 111, 9999 ), false );
-    
-    // Register, Enqueue and localise ajax script for getting the delivery zone through a popup
-    wp_enqueue_script( 'pq_delivery_zone_js', PQ_JS_URL . 'pq-delivery-zone.js', array( 'jquery' ), rand( 111, 9999 ), false );
-    wp_localize_script( 'pq_delivery_zone_js', 'pq_delivery_zone_variables', array('ajax_url' => admin_url('admin-ajax.php'), 'nonce' => wp_create_nonce('pq-delivery-zone-nonce')) );
-    wp_enqueue_style( 'pq_delivery_zone_css', PQ_CSS_URL . 'pq-delivery-zone.css', array('astra-theme-css'), rand(111,9999) );
-
 
     // Register, Enqueue and localise ajax script for loading all products through ajax (on marketplace only)
     if ( get_the_ID() == 6720 ) {

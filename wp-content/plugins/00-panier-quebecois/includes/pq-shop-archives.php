@@ -36,7 +36,11 @@ function pq_replace_with_empty_category_query( $query ) {
 			}
 	
 			$query->set('tax_query', $tax_query);
-			$meta_query = pq_get_meta_query();
+
+			$meta_query = array( array(
+				'key'     => '_stock_status',
+				'value'   => 'instock',
+			));
 			$query->set('meta_query', $meta_query);
 		}
 	}
@@ -168,27 +172,6 @@ function pq_get_filters_tax_query_array( $filters ) {
 
 
 /**
- * Get meta query for products in stock and maybe if use is outside Montreal
- */
-function pq_get_meta_query() {
-	$meta_query = array(
-	'relation' => 'AND',
-		array(
-			'key'     => '_stock_status',
-			'value'   => 'instock',
-		)
-	);
-	if ( is_delivery_zone_outside_mtl() ) {
-		$meta_query[] = array(
-			'key'     => '_pq_available_long_distance',
-			'value'   => 1,
-		);
-	}
-	return $meta_query;
-}
-
-
-/**
  * Get child categories (return false if it has no children)
  */
 function pq_get_child_categories( $category_slug ) {
@@ -240,12 +223,13 @@ function pq_get_wp_query_arguments($term_slug, $filters_tax_query_array) {
 		$tax_query[] = $filters_tax_query;
 	}
 
-	$meta_query = pq_get_meta_query();
-
 	$pq_wp_query_args = array(
 		'posts_per_page' => 300,
 		'tax_query' => $tax_query,
-		'meta_query' => $meta_query,
+		'meta_query'    => array( array(
+			'key'     => '_stock_status',
+			'value'   => 'instock',
+		)),
 		'post_type' => 'product',
 		'orderby' => 'menu_order',
 		'order' => 'ASC',

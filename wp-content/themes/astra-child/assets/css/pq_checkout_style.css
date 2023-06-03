@@ -23,9 +23,6 @@ table.my-custom-shipping-table{
 .my-custom-shipping-table td, .my-custom-shipping-table th{
     border: 0;
 }
-.my-custom-shipping-table .lpp-shipping-package-wrapper {
-    table-layout: fixed;
-}
 
 /* Delivery time frame background */
 #delivery_time_frame{
